@@ -12,11 +12,12 @@ import javax.persistence.*;
 public class Disease {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String diseaseId;   // primary key
+    private Integer diseaseId;   // primary key
+    @Column(unique = true)
     private String name;
     private String description;
 
-    public Disease(String diseaseId, String name, String description) {
+    public Disease(Integer diseaseId, String name, String description) {
         this.diseaseId = diseaseId;
         this.name = name;
         this.description = description;
@@ -26,11 +27,16 @@ public class Disease {
 
     }
 
-    public String getDiseaseId() {
+    public Disease(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
+
+    public Integer getDiseaseId() {
         return diseaseId;
     }
 
-    public void setDiseaseId(String diseaseId) {
+    public void setDiseaseId(Integer diseaseId) {
         this.diseaseId = diseaseId;
     }
 

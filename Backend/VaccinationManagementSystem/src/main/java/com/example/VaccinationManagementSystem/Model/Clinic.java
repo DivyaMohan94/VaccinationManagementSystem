@@ -8,19 +8,18 @@ import javax.persistence.*;
 @Entity
 @Table(name = "Clinic")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "clinicId")
+        property = "id")
 public class Clinic {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String clinicId;   // primary key
+    private Integer clinicId;   // primary key
     private String name;
     @Embedded
     private Address address;
     private Integer businessHours;
     private Integer numOfPhysicians;
 
-    public Clinic(String clinicId, String name, Address address, Integer businessHours, Integer numOfPhysicians) {
-        this.clinicId = clinicId;
+    public Clinic(String name, Address address, Integer businessHours, Integer numOfPhysicians) {
         this.name = name;
         this.address = address;
         this.businessHours = businessHours;
@@ -31,11 +30,11 @@ public class Clinic {
 
     }
 
-    public String getClinicId() {
+    public Integer getClinicId() {
         return clinicId;
     }
 
-    public void setClinicId(String clinicId) {
+    public void setClinicId(Integer clinicId) {
         this.clinicId = clinicId;
     }
 
