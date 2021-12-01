@@ -11,21 +11,22 @@ import java.util.List;
 @Entity
 @Table(name = "Vaccine")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "vaccineId")
+        property = "id")
 public class Vaccine {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String vaccineId;   // primary key
+    private Integer vaccineId;   // primary key
     private String name;
-    @OneToMany(mappedBy = "Vaccine")
+    @OneToMany(targetEntity=Disease.class,cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY, orphanRemoval = true)
+    //@JoinColumn(name = "vaccineId")
     private List<Disease> diseases = new ArrayList<>();
     private String manufacturer;
     private Integer numOfShots;
     private Integer shotInternalVal;
     private Integer duration;
 
-    public Vaccine(String vaccineId, String name, List<Disease> diseases, String manufacturer, Integer numOfShots, Integer shotInternalVal, Integer duration) {
-        this.vaccineId = vaccineId;
+    public Vaccine(String name, List<Disease> diseases, String manufacturer, Integer numOfShots, Integer shotInternalVal, Integer duration) {
         this.name = name;
         this.diseases = diseases;
         this.manufacturer = manufacturer;
@@ -38,11 +39,11 @@ public class Vaccine {
 
     }
 
-    public String getVaccineId() {
+    public Integer getVaccineId() {
         return vaccineId;
     }
 
-    public void setVaccineId(String vaccineId) {
+    public void setVaccineId(Integer vaccineId) {
         this.vaccineId = vaccineId;
     }
 
