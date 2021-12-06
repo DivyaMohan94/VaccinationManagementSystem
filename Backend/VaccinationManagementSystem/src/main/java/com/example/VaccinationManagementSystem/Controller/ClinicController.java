@@ -7,6 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.VaccinationManagementSystem.Service.ClinicService;
 
+import java.time.LocalTime;
+import java.util.List;
+
 @RestController
 @RequestMapping(path = "/clinic")
 public class ClinicController {
@@ -21,9 +24,10 @@ public class ClinicController {
     public @ResponseBody
     Object createClinic(@RequestBody String payload) {
         try {
-            System.out.println("Inside controller");
             JSONObject clinic = new JSONObject(payload);
             JSONObject address = new JSONObject(clinic.get("address").toString());
+            JSONObject startTime = new JSONObject(clinic.get("startTime").toString());
+            JSONObject endTime = new JSONObject(clinic.get("endTime").toString());
 
             Address add = new Address(
                     (String) address.get("street"),
@@ -32,18 +36,44 @@ public class ClinicController {
                     (String) address.get("state"),
                     (String) address.get("zipcode"));
 
-            System.out.println(add.getNumber());
+            LocalTime start = LocalTime.of(
+                    (int) startTime.get("hour"),
+                    (int) startTime.get("minute"),
+                    (int) startTime.get("second"));
+            LocalTime end = LocalTime.of(
+                    (int) endTime.get("hour"),
+                    (int) endTime.get("minute"),
+                    (int) endTime.get("second"));
+
             return clinicService.createClinic(
                     (String) clinic.get("name"),
                     add,
-                    (String) clinic.get("businessHours"),
-                    (Integer) clinic.get("numberOfPhysicians"));
+                    //(String) clinic.get("businessHours"),
+                    (Integer) clinic.get("numberOfPhysicians"),
+                    start,
+                    end);
 
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new ErrorResponse(new ErrorDetail("400", e.getMessage())));
         }
     }
 
+    @GetMapping(path="/slots")
+    public @ResponseBody
+    List<LocalTime> getAllClinicSlots(){
+        return clinicService.getAllSlots();
+    }
+
+    @GetMapping()
+    public @ResponseBody
+    List<Clinic> getAllClinicsWithSpecificSlot(@RequestParam("specificSlot") String specificSlot){
+        String[] slotDetails = specificSlot.split(":");
+        LocalTime selectedSlot = LocalTime.of(
+                Integer.valueOf(slotDetails[0]),
+                Integer.valueOf(slotDetails[1]),
+                Integer.valueOf(slotDetails[2]));
+        return clinicService.getAllClinicsWithSpecificSlot(selectedSlot);
+    }
 //    @PutMapping(path = "{clinicId}")
 //    public @ResponseBody Object updatePassenger(@PathVariable("clinicId") Integer clinicId,
 //                                                @RequestParam(value = "name", required = false) String name,
