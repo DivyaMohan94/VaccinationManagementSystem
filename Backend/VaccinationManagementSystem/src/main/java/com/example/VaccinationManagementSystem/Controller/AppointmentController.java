@@ -9,6 +9,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalTime;
+
 
 @RestController
 @RequestMapping(path="/appointment")
@@ -34,7 +36,11 @@ public class AppointmentController {
             Integer patient_id = (Integer) appointment.get("patient_id");
             Integer clinic_id = (Integer) appointment.get("clinic_id");
             String date = (String) appointment.get("date");
-            String slot = appointment.get("slot").toString();
+            JSONObject slotDetails = new JSONObject(appointment.get("slot").toString());
+            LocalTime slot = LocalTime.of(
+                    (int) slotDetails.get("hour"),
+                    (int) slotDetails.get("minute"),
+                    (int) slotDetails.get("second"));
             return appointmentService.makeAppointment(patient_id,clinic_id,date,slot);
 
         } catch(Exception e){

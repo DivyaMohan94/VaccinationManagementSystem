@@ -10,17 +10,28 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalTime;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-
+import com.example.VaccinationManagementSystem.Repository.AppointmentRepository;
 @Service
 public class ClinicService {
-    private final ClinicRepository clinicRepository;
+    @Autowired
+    private ClinicRepository clinicRepository;
+
+    @Autowired
+    private AppointmentRepository appointmentRepository;
 
     @Autowired
     public ClinicService(ClinicRepository clinicRepository) {
         this.clinicRepository = clinicRepository;
+
+    }
+
+    public ClinicService(AppointmentRepository appointmentRepository) {
+        this.appointmentRepository = appointmentRepository;
+
     }
 
     @Transactional(rollbackOn = {IOException.class, SQLException.class})
@@ -93,11 +104,18 @@ public class ClinicService {
         return totalSlotList;
     }
 
-    public List<Clinic> getAllClinicsWithSpecificSlot(LocalTime selectedSlot) {
+    public List<Clinic> getAllClinicsWithSpecificSlot(Date selecteddate, LocalTime selectedSlot) {
+        System.out.println("inside get clinic service---");
         List<Clinic> clinicsWithSpcSlot = new LinkedList<>();
         List<Clinic> allClinics = clinicRepository.findAll();
         for(Clinic c : allClinics){
+            System.out.println("inside get clinic service for---" +c);
+            System.out.println("inside get clinic service for999---" +selectedSlot);
+            System.out.println("inside get clinic service for999999---" +c.getStartTime());
             if(selectedSlot.isAfter(c.getStartTime()) && selectedSlot.isBefore(c.getEndTime())){
+                System.out.println("inside get clinic service if---" +c);
+                List<Integer> clinicAppointments = appointmentRepository.getClinicAppointments(c.getClinicId(), selecteddate, selectedSlot);
+                System.out.println("List on clinics with appointments----"+clinicAppointments);
                 clinicsWithSpcSlot.add(c);
             }
         }
