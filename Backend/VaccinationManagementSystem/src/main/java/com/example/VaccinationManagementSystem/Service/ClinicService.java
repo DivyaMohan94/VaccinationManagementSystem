@@ -109,14 +109,12 @@ public class ClinicService {
         List<Clinic> clinicsWithSpcSlot = new LinkedList<>();
         List<Clinic> allClinics = clinicRepository.findAll();
         for(Clinic c : allClinics){
-            System.out.println("inside get clinic service for---" +c);
-            System.out.println("inside get clinic service for999---" +selectedSlot);
-            System.out.println("inside get clinic service for999999---" +c.getStartTime());
-            if(selectedSlot.isAfter(c.getStartTime()) && selectedSlot.isBefore(c.getEndTime())){
-                System.out.println("inside get clinic service if---" +c);
+            if(selectedSlot == c.getStartTime() || selectedSlot == c.getEndTime() ||
+                    (selectedSlot.isAfter(c.getStartTime()) && selectedSlot.isBefore(c.getEndTime()))){
                 List<Integer> clinicAppointments = appointmentRepository.getClinicAppointments(c.getClinicId(), selecteddate, selectedSlot);
-                System.out.println("List on clinics with appointments----"+clinicAppointments);
-                clinicsWithSpcSlot.add(c);
+                if(clinicAppointments.size() < c.getNumOfPhysicians()){
+                    clinicsWithSpcSlot.add(c);
+                }
             }
         }
         return clinicsWithSpcSlot;
