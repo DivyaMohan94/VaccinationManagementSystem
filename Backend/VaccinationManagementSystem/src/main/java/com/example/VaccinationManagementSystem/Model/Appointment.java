@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -23,7 +24,7 @@ public class Appointment {
     private Integer clinicId;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd",timezone = "PST")
     private Date date;
-    private String slot;
+    private LocalTime slot;
     /*@OneToMany(mappedBy = "Appointment")*/
     @OneToMany(targetEntity=Vaccine.class,cascade = CascadeType.ALL,
             fetch = FetchType.LAZY, orphanRemoval = true)
@@ -31,7 +32,7 @@ public class Appointment {
     private String status;
 
 
-    public Appointment(Integer patientId, Integer clinicId, Date date, String slot, String status) {
+    public Appointment(Integer patientId, Integer clinicId, Date date, LocalTime slot, String status) {
         this.patientId = patientId;
         this.clinicId = clinicId;
         this.date = date;
@@ -84,11 +85,11 @@ public class Appointment {
         this.date = date;
     }
 
-    public String getSlot() {
+    public LocalTime getSlot() {
         return slot;
     }
 
-    public void setSlot(String slot) {
+    public void setSlot(LocalTime slot) {
         this.slot = slot;
     }
 

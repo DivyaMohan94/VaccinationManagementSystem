@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -28,7 +29,7 @@ public class AppointmentService {
     }
 
     @Transactional(rollbackOn = {IOException.class, SQLException.class})
-    public Object makeAppointment(Integer patient_id, Integer clinic_id, String date, String slot) throws ParseException {
+    public Object makeAppointment(Integer patient_id, Integer clinic_id, String date, LocalTime slot) throws ParseException {
         Date appointmentDate = null;
         System.out.println("Inside Appointment service");
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
@@ -39,4 +40,5 @@ public class AppointmentService {
         System.out.println("Inside Appointment service+++++"+appointment);
         return appointment;
     }
+
 }

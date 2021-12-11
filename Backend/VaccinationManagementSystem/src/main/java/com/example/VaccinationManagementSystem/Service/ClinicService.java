@@ -10,17 +10,28 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalTime;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-
+import com.example.VaccinationManagementSystem.Repository.AppointmentRepository;
 @Service
 public class ClinicService {
-    private final ClinicRepository clinicRepository;
+    @Autowired
+    private ClinicRepository clinicRepository;
+
+    @Autowired
+    private AppointmentRepository appointmentRepository;
 
     @Autowired
     public ClinicService(ClinicRepository clinicRepository) {
         this.clinicRepository = clinicRepository;
+
+    }
+
+    public ClinicService(AppointmentRepository appointmentRepository) {
+        this.appointmentRepository = appointmentRepository;
+
     }
 
     @Transactional(rollbackOn = {IOException.class, SQLException.class})
@@ -93,12 +104,17 @@ public class ClinicService {
         return totalSlotList;
     }
 
-    public List<Clinic> getAllClinicsWithSpecificSlot(LocalTime selectedSlot) {
+    public List<Clinic> getAllClinicsWithSpecificSlot(Date selecteddate, LocalTime selectedSlot) {
+        System.out.println("inside get clinic service---");
         List<Clinic> clinicsWithSpcSlot = new LinkedList<>();
         List<Clinic> allClinics = clinicRepository.findAll();
         for(Clinic c : allClinics){
-            if(selectedSlot.isAfter(c.getStartTime()) && selectedSlot.isBefore(c.getEndTime())){
-                clinicsWithSpcSlot.add(c);
+            if(selectedSlot == c.getStartTime() || selectedSlot == c.getEndTime() ||
+                    (selectedSlot.isAfter(c.getStartTime()) && selectedSlot.isBefore(c.getEndTime()))){
+                List<Integer> clinicAppointments = appointmentRepository.getClinicAppointments(c.getClinicId(), selecteddate, selectedSlot);
+                if(clinicAppointments.size() < c.getNumOfPhysicians()){
+                    clinicsWithSpcSlot.add(c);
+                }
             }
         }
         return clinicsWithSpcSlot;
