@@ -7,7 +7,6 @@ import com.example.VaccinationManagementSystem.Repository.VaccineRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -34,16 +33,17 @@ public class AppointmentService {
         Date appointmentDate = null;
         Date currentDate = null;
         System.out.println("Inside Appointment service");
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-        appointmentDate = dateFormat.parse(date);
-        currentDate = dateFormat.parse(current_date);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH:mm", Locale.US);
+        String datetime = date + "-"+slot.toString();
+        appointmentDate = dateFormat.parse(datetime);
+        SimpleDateFormat currentdateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.US);
+        currentDate = currentdateFormat.parse(current_date);
         List<Vaccine>  vaccines1 = new ArrayList<>();
         for(int i=0; i< vaccines.size();i++){
             vaccines1.add(vaccineRepository.findById(vaccines.get(i)).get());
         }
         Appointment appointment = new Appointment(patient_id, clinic_id, appointmentDate,slot,"booked",vaccines1,currentDate);
         appointmentRepository.save(appointment);
-        System.out.println("Inside Appointment service+++++"+appointment);
         return appointment;
     }
 
@@ -53,7 +53,7 @@ public class AppointmentService {
         Appointment appointment = appointmentRepository.findById(appointmentId).get();
         if(!clinic_id.equals(appointment.getClinicId())) appointment.setClinicId(clinic_id);
         Date appointmentDate = null;
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss", Locale.US);
         appointmentDate = dateFormat.parse(date);
         if(!appointmentDate.equals(appointment.getDate())) appointment.setDate(appointmentDate);
         if(!slot.equals(appointment.getSlot())) appointment.setSlot(slot);
@@ -77,7 +77,7 @@ public class AppointmentService {
     @Transactional(rollbackOn = {IOException.class, SQLException.class})
     public Object getPastAppointment(Integer patient_id, String current_date) throws ParseException {
         Date cdate = null;
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.US);
         cdate = dateFormat.parse(current_date);
         List<Appointment> appointments = appointmentRepository.getPastAppointments(cdate,patient_id);
         List<Appointment> results = appointments;
@@ -96,10 +96,29 @@ public class AppointmentService {
     @Transactional(rollbackOn = {IOException.class, SQLException.class})
     public Object getFutureAppointment(Integer patient_id, String current_date) throws ParseException {
         Date cdate = null;
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.US);
         cdate = dateFormat.parse(current_date);
         List<Appointment> appointments = appointmentRepository.getFutureAppointments(cdate,patient_id);
         return appointments;
+    }
+
+    @Transactional(rollbackOn = {IOException.class, SQLException.class})
+    public Object getCheckinAppointment(Integer patient_id, String current_date) throws ParseException {
+        Date cdate = null;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyy-MM-dd-HH-mm-ss", Locale.US);
+        cdate = dateFormat.parse(current_date);
+        Calendar cal = Calendar.getInstance(); // creates calendar
+        cal.setTime(cdate);               // sets calendar time/date
+        cal.add(Calendar.HOUR_OF_DAY, 24);      // adds 24 hour
+        List<Appointment> appointments = appointmentRepository.getCheckinAppointments(cdate,cal.getTime(),patient_id);
+        return appointments;
+    }
+
+    @Transactional(rollbackOn = {IOException.class, SQLException.class})
+    public Object makeCheckinAppointment(Integer patient_id, Integer appointment_id) throws ParseException {
+        Appointment appointment = appointmentRepository.findById(appointment_id).get();
+        appointment.setStatus("Checked In");
+        return appointment;
     }
 
 }
