@@ -15,4 +15,10 @@ import java.util.Optional;
 public interface AppointmentRepository  extends JpaRepository<Appointment, Integer>{
     @Query("SELECT appoint.clinicId FROM Appointment appoint where appoint.clinicId = ?1 and appoint.appointment_date =?2 and appoint.slot = ?3")
     List<Integer> getClinicAppointments(Integer clinic_id, Date selecteddate, LocalTime selectedSlot);
+
+    @Query("SELECT appoint FROM Appointment appoint where appoint.appointment_date < ?1 and appoint.patientId = ?2")
+    List<Appointment> getPastAppointments(Date currentDate, Integer patient_id);
+
+    @Query("SELECT appoint FROM Appointment appoint where appoint.appointment_date >= ?1 and appoint.created_date <= ?1 and appoint.patientId = ?2")
+    List<Appointment> getFutureAppointments(Date currentDate, Integer patient_id);
 }

@@ -10,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.example.VaccinationManagementSystem.Service.AppointmentService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -67,6 +68,7 @@ public class AppointmentController {
             return ResponseEntity.badRequest().body(new ErrorResponse(new ErrorDetail("400", e.getMessage())));
         }
     }
+
     @PostMapping("/update")
     public @ResponseBody
     Object update_Appointment(
@@ -101,6 +103,39 @@ public class AppointmentController {
         }
     }
 
+    @DeleteMapping(path = "/cancel/{id}")
+    public Object delete_Appointmnet(@PathVariable("id") Integer id){
+        try{
+            appointmentService.cancelAppointment(id);
+            return ResponseEntity.ok().body(new SuccessResponse("200", "Appointment with id "+id+" is deleted successfully"));
+        } catch(Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(new ErrorDetail("404", e.getMessage())));
+        }
+    }
+
+    @GetMapping(path="/past")
+    public Object getPastAppointments(@RequestBody String payload){
+        try{
+            JSONObject appointment = new JSONObject(payload);
+            String date = (String) appointment.get("current_date");
+            Integer patient_id = (Integer) appointment.get("patient_id");
+            return appointmentService.getPastAppointment(patient_id, date);
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(new ErrorDetail("404", e.getMessage())));
+        }
+    }
+
+    @GetMapping(path="/future")
+    public Object getFutureAppointments(@RequestBody String payload){
+        try{
+            JSONObject appointment = new JSONObject(payload);
+            String date = (String) appointment.get("current_date");
+            Integer patient_id = (Integer) appointment.get("patient_id");
+            return appointmentService.getFutureAppointment(patient_id, date);
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(new ErrorDetail("404", e.getMessage())));
+        }
+    }
 
 }
 
