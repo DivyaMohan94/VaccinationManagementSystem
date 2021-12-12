@@ -28,7 +28,7 @@ public class VaccineService {
     }
 
     @Transactional(rollbackOn = {IOException.class, SQLException.class})
-    public Object createVaccine(String name, List<String> diseases, String manufacturer, Integer numOfShots, Integer shotInternalVal, Integer duration) {
+    public Object createVaccine(String name, List<Integer> diseases, String manufacturer, Integer numOfShots, Integer shotInternalVal, Integer duration) {
 
         List<Disease> diseasesList;
 
@@ -40,7 +40,7 @@ public class VaccineService {
 
         if (numOfShots == 1) {
             shotInternalVal = 0;
-            duration = Integer.MAX_VALUE;
+            //duration = Integer.MAX_VALUE;
         }
 
         Vaccine vaccine = new Vaccine(name, diseasesList, manufacturer, numOfShots, shotInternalVal, duration);
@@ -48,7 +48,7 @@ public class VaccineService {
         return vaccine;
     }
 
-    @Transactional(rollbackOn = {IOException.class, SQLException.class})
+    /*@Transactional(rollbackOn = {IOException.class, SQLException.class})
     public Object updateVaccine(Integer vaccineId, String name, List<String> diseases, String manufacturer, Integer numOfShots, Integer shotInternalVal, Integer duration) {
 
         List<Disease> diseasesList;
@@ -82,13 +82,13 @@ public class VaccineService {
         } else {
             throw new IllegalStateException("Sorry, the requested disease with " + vaccineId + " does not exist.");
         }
-    }
+    }*/
 
-    private List<Disease> getDiseaseList(List<String> diseases) {
+    private List<Disease> getDiseaseList(List<Integer> diseases) {
         List<Disease> diseasesList = new ArrayList<>();
 
-        for (String disease : diseases) {
-            Disease current = diseaseRepository.findByName(disease);
+        for (Integer disease : diseases) {
+            Disease current = diseaseRepository.findByDiseaseId(disease);
             if (current != null) {
                 diseasesList.add(current);
             } else {
@@ -98,13 +98,13 @@ public class VaccineService {
         return diseasesList;
     }
 
-    @Transactional(rollbackOn = {IOException.class, SQLException.class})
+    /*@Transactional(rollbackOn = {IOException.class, SQLException.class})
     public void deleteVaccine(Integer vaccineId) {
         boolean vaccine = vaccineRepository.existsById(vaccineId);
         if (!vaccine) {
             throw new IllegalStateException("Sorry, the requested clinicExists with ID " + vaccineId + " does not exist.");
         }
         vaccineRepository.deleteById(vaccineId);
-    }
+    }*/
 
 }

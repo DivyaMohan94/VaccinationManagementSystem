@@ -43,4 +43,14 @@ public class DiseaseController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(new ErrorDetail("404", e.getMessage())));
         }
     }
+
+    @GetMapping("/diseases")
+    public @ResponseBody
+    Object getAllDiseases() {
+        try {
+            return diseaseService.getAllDiseases();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(new ErrorDetail("404", e.getMessage())));
+        }
+    }
 }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
 @Service
 public class DiseaseService {
@@ -40,5 +41,15 @@ public class DiseaseService {
         }else{
             throw new IllegalStateException("Sorry, the requested disease with " + diseaseId + " does not exist.");
         }
+    }
+
+    @Transactional(rollbackOn = {IOException.class, SQLException.class})
+    public Object getAllDiseases() {
+            List<Disease> diseases = (List<Disease>) diseaseRepository.findAll();
+            if(diseases != null){
+                return diseases;
+            }else{
+                throw new IllegalStateException("Sorry, no diseases found");
+            }
     }
 }
