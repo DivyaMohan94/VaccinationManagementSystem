@@ -24,15 +24,16 @@ public class ClinicService {
     private AppointmentRepository appointmentRepository;
 
     @Autowired
-    public ClinicService(ClinicRepository clinicRepository) {
+    public ClinicService(ClinicRepository clinicRepository, AppointmentRepository appointmentRepository) {
         this.clinicRepository = clinicRepository;
-
-    }
-
-    public ClinicService(AppointmentRepository appointmentRepository) {
         this.appointmentRepository = appointmentRepository;
 
     }
+/*
+    public ClinicService(AppointmentRepository appointmentRepository) {
+        this.appointmentRepository = appointmentRepository;
+
+    } */
 
     @Transactional(rollbackOn = {IOException.class, SQLException.class})
     public Object createClinic(String name, Address address,

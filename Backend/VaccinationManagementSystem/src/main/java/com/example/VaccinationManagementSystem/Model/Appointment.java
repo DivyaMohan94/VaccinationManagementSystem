@@ -24,6 +24,8 @@ public class Appointment {
     private Integer clinicId;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd",timezone = "PST")
     private Date date;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd",timezone = "PST")
+    private Date created_date;
     private LocalTime slot;
     /*@OneToMany(mappedBy = "Appointment")*/
     @OneToMany(targetEntity=Vaccine.class,cascade = CascadeType.ALL,
@@ -32,12 +34,14 @@ public class Appointment {
     private String status;
 
 
-    public Appointment(Integer patientId, Integer clinicId, Date date, LocalTime slot, String status) {
+    public Appointment(Integer patientId, Integer clinicId, Date date, LocalTime slot, List<Vaccine> vaccines, String status, Date created_date) {
         this.patientId = patientId;
         this.clinicId = clinicId;
         this.date = date;
         this.slot = slot;
         this.status = status;
+        this.vaccines = vaccines;
+        this.created_date = created_date;
     }
 
     public Appointment() {
@@ -83,6 +87,14 @@ public class Appointment {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public Date getCurrentDate() {
+        return created_date ;
+    }
+
+    public void setCurrentDate(Date date) {
+        this.created_date = created_date;
     }
 
     public LocalTime getSlot() {
