@@ -23,7 +23,7 @@ public class Appointment {
     private Integer patientId; //MRN number
     private Integer clinicId;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd",timezone = "PST")
-    private Date date;
+    private Date appointment_date;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd",timezone = "PST")
     private Date created_date;
     private LocalTime slot;
@@ -37,7 +37,7 @@ public class Appointment {
     public Appointment(Integer patientId, Integer clinicId, Date date, LocalTime slot, List<Vaccine> vaccines, String status, Date created_date) {
         this.patientId = patientId;
         this.clinicId = clinicId;
-        this.date = date;
+        this.appointment_date = date;
         this.slot = slot;
         this.status = status;
         this.vaccines = vaccines;
@@ -82,11 +82,11 @@ public class Appointment {
     }
 
     public Date getDate() {
-        return date;
+        return appointment_date;
     }
 
     public void setDate(Date date) {
-        this.date = date;
+        this.appointment_date = date;
     }
 
     public Date getCurrentDate() {

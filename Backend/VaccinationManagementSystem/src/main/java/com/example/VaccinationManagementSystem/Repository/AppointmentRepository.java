@@ -13,6 +13,6 @@ import java.util.Optional;
 
 @Repository
 public interface AppointmentRepository  extends JpaRepository<Appointment, Integer>{
-    @Query("SELECT appoint.clinicId FROM Appointment appoint where appoint.clinicId = ?1 and appoint.date =?2 and appoint.slot = ?3")
+    @Query("SELECT appoint.clinicId FROM Appointment appoint where appoint.clinicId = ?1 and appoint.appointment_date =?2 and appoint.slot = ?3")
     List<Integer> getClinicAppointments(Integer clinic_id, Date selecteddate, LocalTime selectedSlot);
 }
