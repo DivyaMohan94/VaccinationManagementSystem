@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useRef} from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -180,7 +180,15 @@ export default function Login() {
             >
               Sign In
             </Button>
-
+            <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            className={classes.submit}
+          >
+            Continue With Google
+          </Button>
             
 
             <Box mt={5}>
