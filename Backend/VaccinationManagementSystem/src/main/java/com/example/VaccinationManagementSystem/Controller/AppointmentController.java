@@ -137,6 +137,30 @@ public class AppointmentController {
         }
     }
 
+    @GetMapping(path="/checkin/eligibleAppointments")
+    public Object getCheckinAppointments(@RequestBody String payload){
+        try{
+            JSONObject appointment = new JSONObject(payload);
+            String date = (String) appointment.get("current_date");
+            Integer patient_id = (Integer) appointment.get("patient_id");
+            return appointmentService.getCheckinAppointment(patient_id, date);
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(new ErrorDetail("404", e.getMessage())));
+        }
+    }
+
+    @PostMapping(path="/makecheckin")
+    public Object checkinAppointments(@RequestBody String payload){
+        try{
+            JSONObject appointment = new JSONObject(payload);
+            Integer appointment_id = (Integer) appointment.get("appointment_id");
+            Integer patient_id = (Integer) appointment.get("patient_id");
+            return appointmentService.makeCheckinAppointment(patient_id, appointment_id);
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(new ErrorDetail("404", e.getMessage())));
+        }
+    }
+
 }
 
 

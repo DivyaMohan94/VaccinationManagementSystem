@@ -22,9 +22,9 @@ public class Appointment {
     private Integer appointmentId;   // primary key
     private Integer patientId; //MRN number
     private Integer clinicId;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd",timezone = "PST")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd-HH:mm",timezone = "PST")
     private Date appointment_date;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd",timezone = "PST")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd-HH-mm-ss",timezone = "PST")
     private Date created_date;
     private LocalTime slot;
     @ManyToMany (targetEntity = Vaccine.class)
