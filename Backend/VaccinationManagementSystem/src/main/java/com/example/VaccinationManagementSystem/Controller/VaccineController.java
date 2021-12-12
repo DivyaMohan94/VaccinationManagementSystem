@@ -5,11 +5,14 @@ import com.example.VaccinationManagementSystem.Model.ErrorDetail;
 import com.example.VaccinationManagementSystem.Model.ErrorResponse;
 import com.example.VaccinationManagementSystem.Model.SuccessResponse;
 import com.example.VaccinationManagementSystem.Service.VaccineService;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -25,25 +28,36 @@ public class VaccineController {
 
 
     //String name, List<Disease> diseases, String manufacturer, Integer numOfShots, Integer shotInternalVal, Integer duration
-    @PostMapping(params = {"name", "diseases", "manufacturer", "numOfShots", "shotInternalVal", "duration"})
+    //@PostMapping(params = {"name", "diseases", "manufacturer", "numOfShots", "shotInternalVal", "duration"})
+    @PostMapping()
     public @ResponseBody
     Object createVaccine(
-            @RequestParam(value = "name") String name,
-            @RequestParam(value = "diseases") List<String> diseases,
-            @RequestParam(value = "manufacturer") String manufacturer,
-            @RequestParam(value = "numOfShots") Integer numOfShots,
-            @RequestParam(value = "shotInternalVal", required = false) Integer shotInternalVal,
-            @RequestParam(value = "duration") Integer duration
+            @RequestBody String payload
     ) {
         try {
-            return vaccineService.createVaccine(name, diseases, manufacturer, numOfShots, shotInternalVal, duration);
+            JSONObject vaccine = new JSONObject(payload);
+            String name = (String) vaccine.get("name");
+            JSONArray diseases = (JSONArray)vaccine.get("diseaseIds");
+            String manufacturer = (String) vaccine.get("manufacturer");
+            Integer numOfShots = (Integer) vaccine.get("numOfShots");
+            Integer shotInternalVal = (Integer) vaccine.get("shotInternalVal");
+            Integer duration = (Integer) vaccine.get("duration");
+            List<Integer> diseasesIds = new ArrayList<>();
+            if (diseases != null) {
+                int len = diseases.length();
+                for (int i=0;i<len;i++){
+                    diseasesIds.add((Integer) diseases.get(i));
+                }
+            }
+
+            return vaccineService.createVaccine(name, diseasesIds, manufacturer, numOfShots, shotInternalVal, duration);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new ErrorResponse(new ErrorDetail("400", e.getMessage())));
         }
     }
 
     //String name, List<Disease> diseases, String manufacturer, Integer numOfShots, Integer shotInternalVal, Integer duration
-    @PutMapping(path = "{vaccineId}")
+    /*@PutMapping(path = "{vaccineId}")
     public @ResponseBody
     Object updateVaccine(@PathVariable("vaccineId") Integer vaccineId,
                          @RequestParam(value = "name", required = false) String name,
@@ -69,6 +83,6 @@ public class VaccineController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new ErrorResponse(new ErrorDetail("404", e.getMessage())));
         }
-    }
+    }*/
 
 }

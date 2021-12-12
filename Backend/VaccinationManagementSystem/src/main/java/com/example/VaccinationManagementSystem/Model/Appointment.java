@@ -22,21 +22,25 @@ public class Appointment {
     private Integer appointmentId;   // primary key
     private Integer patientId; //MRN number
     private Integer clinicId;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd",timezone = "PST")
-    private Date date;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd-HH:mm",timezone = "PST")
+    private Date appointment_date;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd-HH-mm-ss",timezone = "PST")
+    private Date created_date;
     private LocalTime slot;
-    /*@OneToMany(mappedBy = "Appointment")*/
-    @OneToMany(targetEntity=Vaccine.class,cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY, orphanRemoval = true)
+    @ManyToMany (targetEntity = Vaccine.class)
     private List<Vaccine> vaccines = new ArrayList<>();
     private String status;
 
 
-    public Appointment(Integer patientId, Integer clinicId, Date date, LocalTime slot, String status) {
+
+    public Appointment(Integer patientId, Integer clinicId, Date date, LocalTime slot, String status, List vaccines, Date created_date) {
+
         this.patientId = patientId;
         this.clinicId = clinicId;
-        this.date = date;
+        this.appointment_date = date;
         this.slot = slot;
+        this.vaccines = vaccines;
+        this.created_date = created_date;
         this.status = status;
     }
 
@@ -78,13 +82,20 @@ public class Appointment {
     }
 
     public Date getDate() {
-        return date;
+        return appointment_date;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setDate(Date appointment_date) {
+        this.appointment_date = appointment_date;
     }
 
+    public Date getCurrentDate() {
+        return created_date;
+    }
+
+    public void setCurrentDate(Date created_date) {
+        this.created_date = created_date;
+    }
     public LocalTime getSlot() {
         return slot;
     }
