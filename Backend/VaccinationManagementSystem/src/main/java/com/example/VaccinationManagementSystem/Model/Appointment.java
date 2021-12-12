@@ -25,18 +25,19 @@ public class Appointment {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd",timezone = "PST")
     private Date date;
     private LocalTime slot;
-    /*@OneToMany(mappedBy = "Appointment")*/
-    @OneToMany(targetEntity=Vaccine.class,cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY, orphanRemoval = true)
+    @ManyToMany (targetEntity = Vaccine.class)
     private List<Vaccine> vaccines = new ArrayList<>();
     private String status;
 
 
-    public Appointment(Integer patientId, Integer clinicId, Date date, LocalTime slot, String status) {
+
+    public Appointment(Integer patientId, Integer clinicId, Date date, LocalTime slot, String status, List vaccines, Date created_date) {
+
         this.patientId = patientId;
         this.clinicId = clinicId;
         this.date = date;
         this.slot = slot;
+        this.vaccines = vaccines;
         this.status = status;
     }
 
