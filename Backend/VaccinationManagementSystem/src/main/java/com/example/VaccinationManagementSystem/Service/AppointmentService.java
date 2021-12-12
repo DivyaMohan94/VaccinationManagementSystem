@@ -7,6 +7,7 @@ import com.example.VaccinationManagementSystem.Repository.VaccineRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -71,6 +72,34 @@ public class AppointmentService {
             throw new IllegalStateException("Appointment with " + appointmentId + " does not exist.");
         }
         appointmentRepository.deleteById(appointmentId);
+    }
+
+    @Transactional(rollbackOn = {IOException.class, SQLException.class})
+    public Object getPastAppointment(Integer patient_id, String current_date) throws ParseException {
+        Date cdate = null;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+        cdate = dateFormat.parse(current_date);
+        List<Appointment> appointments = appointmentRepository.getPastAppointments(cdate,patient_id);
+        List<Appointment> results = appointments;
+        //need to handle this in front end as setter method will change DB status.
+        /*
+        for(int i=0;i<appointments.size();i++){
+            if((appointments.get(i)).getStatus().equals("booked")){
+                (results.get(i)).setStatus("No Show");
+            } else if ((appointments.get(i)).getStatus().equals("Checked-In")){
+                (results.get(i)).setStatus("Completed");
+            }
+        } */
+        return results;
+    }
+
+    @Transactional(rollbackOn = {IOException.class, SQLException.class})
+    public Object getFutureAppointment(Integer patient_id, String current_date) throws ParseException {
+        Date cdate = null;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+        cdate = dateFormat.parse(current_date);
+        List<Appointment> appointments = appointmentRepository.getFutureAppointments(cdate,patient_id);
+        return appointments;
     }
 
 }
