@@ -93,7 +93,7 @@ public class Appointment {
         return created_date ;
     }
 
-    public void setCurrentDate(Date date) {
+    public void setCurrentDate(Date created_date) {
         this.created_date = created_date;
     }
 
