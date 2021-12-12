@@ -23,7 +23,9 @@ public class Appointment {
     private Integer patientId; //MRN number
     private Integer clinicId;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd",timezone = "PST")
-    private Date date;
+    private Date appointment_date;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd",timezone = "PST")
+    private Date created_date;
     private LocalTime slot;
     @ManyToMany (targetEntity = Vaccine.class)
     private List<Vaccine> vaccines = new ArrayList<>();
@@ -35,9 +37,10 @@ public class Appointment {
 
         this.patientId = patientId;
         this.clinicId = clinicId;
-        this.date = date;
+        this.appointment_date = date;
         this.slot = slot;
         this.vaccines = vaccines;
+        this.created_date = created_date;
         this.status = status;
     }
 
@@ -79,13 +82,20 @@ public class Appointment {
     }
 
     public Date getDate() {
-        return date;
+        return appointment_date;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setDate(Date appointment_date) {
+        this.appointment_date = appointment_date;
     }
 
+    public Date getCurrentDate() {
+        return created_date;
+    }
+
+    public void setCurrentDate(Date created_date) {
+        this.created_date = created_date;
+    }
     public LocalTime getSlot() {
         return slot;
     }
