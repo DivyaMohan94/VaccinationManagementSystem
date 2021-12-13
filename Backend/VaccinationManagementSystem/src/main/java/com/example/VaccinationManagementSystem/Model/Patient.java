@@ -26,6 +26,7 @@ public class Patient {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd-HH",timezone = "PST")
     private Date dob;
     private String gender;
+    private String status;
     private boolean isAdmin;
     @Embedded
     private Address address;
@@ -116,5 +117,13 @@ public class Patient {
 
     public void setAddress(Address address) {
         this.address = address;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
