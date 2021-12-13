@@ -4,11 +4,9 @@ package com.example.VaccinationManagementSystem.Model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.UUID;
 
 @Entity
 @Table
@@ -16,14 +14,16 @@ import java.util.UUID;
         property = "mrn")
 public class Patient {
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
-    private UUID mrn;
+    @TableGenerator(name = "mrnGenerator", initialValue = 100)
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "mrnGenerator")
+    private Integer mrn;
     private String emailId;
     private String fname;
     private String mname;
     private String lname;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd-HH",timezone = "PST")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd-HH", timezone = "PST")
     private Date dob;
     private String gender;
     private String status;
@@ -31,7 +31,7 @@ public class Patient {
     @Embedded
     private Address address;
 
-    public Patient(UUID mrn, String emailId, String fname, String mname, String lname, Date dob, String gender, boolean isAdmin, Address address) {
+    public Patient(Integer mrn, String emailId, String fname, String mname, String lname, Date dob, String gender, boolean isAdmin, Address address) {
         this.mrn = mrn;
         this.emailId = emailId;
         this.fname = fname;
@@ -47,11 +47,11 @@ public class Patient {
 
     }
 
-    public UUID getMrn() {
+    public Integer getMrn() {
         return mrn;
     }
 
-    public void setMrn(UUID mrn) {
+    public void setMrn(Integer mrn) {
         this.mrn = mrn;
     }
 
