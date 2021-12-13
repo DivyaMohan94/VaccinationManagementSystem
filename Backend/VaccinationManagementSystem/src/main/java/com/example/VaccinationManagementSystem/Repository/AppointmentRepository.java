@@ -25,6 +25,7 @@ public interface AppointmentRepository  extends JpaRepository<Appointment, Integ
 
     @Query("SELECT appoint FROM Appointment appoint where appoint.appointment_date > ?1 and appoint.appointment_date < ?2 and appoint.patientId = ?3")
     List<Appointment> getCheckinAppointments(Date currentDate,Date hrDate, Integer patient_id);
+
     //    @Query("SELECT \n" +
 //            "    v.vaccine_id,\n" +
 //            "    COUNT(a.appointment_id),\n" +
@@ -79,5 +80,11 @@ public interface AppointmentRepository  extends JpaRepository<Appointment, Integ
 //            this.lastAppointmentDate = lastAppointmentDate;
 //        }
 //    }
+
+    @Query("SELECT appoint FROM Appointment appoint where appoint.appointment_date >= ?2 and appoint.appointment_date <= ?3 and appoint.patientId = ?1")
+    List<Appointment> getPerPatientReport(Integer patient_id, Date from_date, Date to_Date);
+
+    @Query("SELECT appoint FROM Appointment appoint where appoint.appointment_date >= ?2 and appoint.appointment_date <= ?3 and appoint.clinicId = ?1")
+    List<Appointment> getSystemReport(Integer clinic_id, Date from_date, Date to_Date);
 
 }
