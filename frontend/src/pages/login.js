@@ -11,6 +11,8 @@ import Grid from "@material-ui/core/Grid";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
+import { GoogleLogin } from'react-google-login';
+import {GoogleAuthProvider} from "firebase/auth"
 //import image from "./splitwise.png";
 import { useState } from "react";
 
@@ -21,6 +23,8 @@ import  {useNavigate, Link}  from "react-router-dom";
 //import { useDispatch } from "react-redux";
 import swal from "sweetalert";
 import Navbar from "../components/navbar";
+
+const provider = new GoogleAuthProvider();
 
 function Copyright() {
   return (
@@ -76,6 +80,9 @@ export default function Login() {
 
   //const dispatch = useDispatch();
 
+  const responseGoogle = async (response) => {
+    
+  }
   const handleSubmit = (e) => {
     debugger;
     e.preventDefault();
@@ -180,17 +187,13 @@ export default function Login() {
             >
               Sign In
             </Button>
-            <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
-            Continue With Google
-          </Button>
-            
-
+            <GoogleLogin
+              clientId="664857607032-ok389vi4jghphm7t69trrq8vc0hdeagj.apps.googleusercontent.com"
+              buttonText="Login"
+              onSuccess={responseGoogle}
+              onFailure={responseGoogle}
+              cookiePolicy={'single_host_origin'}
+            />, 
             <Box mt={5}>
               <Copyright />
             </Box>

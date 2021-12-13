@@ -3,7 +3,10 @@ import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import Radio from "@material-ui/core/Radio";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormLabel from "@material-ui/core/FormLabel"
 import Checkbox from "@material-ui/core/Checkbox";
 import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";
@@ -135,10 +138,23 @@ export default function Login() {
               <TextField
                 required
                 fullWidth
-                name="Name"
-                label="Name"
+                name="First Name"
+                label="First Name"
                 type="text"
-                id="Name"
+                id="fName"
+                autoFocus
+                autoComplete="current-Name"
+                onChange={(event) => {
+                  event.preventDefault();
+                  setName(event.target.value);
+                }}
+              />
+              <TextField
+                fullWidth
+                name="Middle Name"
+                label="Middle Name(Optional)"
+                type="text"
+                id="mName"
                 autoFocus
                 autoComplete="current-Name"
                 onChange={(event) => {
@@ -149,33 +165,110 @@ export default function Login() {
               <TextField
                 required
                 fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"                
+                name="Last Name"
+                label="Last Name"
+                type="text"
+                id="lName"
+                autoFocus
+                autoComplete="current-Name"
                 onChange={(event) => {
                   event.preventDefault();
-                  setEmail(event.target.value);
+                  setName(event.target.value);
                 }}
               />
               <TextField
                 required
                 fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
+                name="DOB"
+                label="DOB"
+                type="text"
+                id="dob"
+                autoFocus
+                autoComplete="current-Name"
                 onChange={(event) => {
                   event.preventDefault();
-                  setPassword(event.target.value);
+                  setName(event.target.value);
                 }}
-              />              
-
-              <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
               />
+              <TextField
+                fullWidth
+                name="Add1"
+                label="Street and number"
+                type="text"
+                id="add1"
+                autoFocus
+                autoComplete="current-Name"
+                onChange={(event) => {
+                  event.preventDefault();
+                  setName(event.target.value);
+                }}
+              />
+              <TextField
+                required
+                fullWidth
+                name="Add2"
+                label="City"
+                type="text"
+                id="add2"
+                autoFocus
+                autoComplete="current-Name"
+                onChange={(event) => {
+                  event.preventDefault();
+                  setName(event.target.value);
+                }}
+              />
+              <TextField
+                required
+                halfWidth
+                name="Add3"
+                label="State"
+                type="text"
+                id="add3"
+                autoFocus
+                autoComplete="current-Name"
+                onChange={(event) => {
+                  event.preventDefault();
+                  setName(event.target.value);
+                }}
+              />
+              <TextField
+                sx= {{m:2}}
+                required
+                halfWidth
+                name="Add4"
+                label="Zipcode"
+                type="text"
+                id="add4"
+                autoFocus
+                autoComplete="current-Name"
+                onChange={(event) => {
+                  event.preventDefault();
+                  setName(event.target.value);
+                }}
+              />
+              <TextField
+                required
+                fullWidth
+                id="mrn"
+                label="MRN number"
+                name="mrn"
+                autoComplete="mrn"                
+                onChange={(event) => {
+                  event.preventDefault();
+                  setEmail(event.target.value);
+                }}
+              />
+              <FormLabel component="legend">Gender</FormLabel>
+              <RadioGroup row
+    aria-label="gender"
+    defaultValue="female"
+    name="radio-buttons-group"
+  >
+    <FormControlLabel value="female" control={<Radio />} label="Female" />
+    <FormControlLabel value="male" control={<Radio />} label="Male" />
+    <FormControlLabel value="other" control={<Radio />} label="Other" />
+  </RadioGroup>
+
               <Button
                 type="submit"
                 fullWidth
