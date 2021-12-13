@@ -12,6 +12,7 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import { GoogleLogin } from'react-google-login';
+import {GoogleAuthProvider} from "firebase/auth"
 //import image from "./splitwise.png";
 import { useState } from "react";
 
@@ -22,6 +23,8 @@ import  {useNavigate, Link}  from "react-router-dom";
 //import { useDispatch } from "react-redux";
 import swal from "sweetalert";
 import Navbar from "../components/navbar";
+
+const provider = new GoogleAuthProvider();
 
 function Copyright() {
   return (
@@ -39,6 +42,7 @@ const useStyles = makeStyles((theme) => ({
     height: "100vh",
   },
   image: {
+    //backgroundImage: `url(${image})`,
     backgroundColor:
       theme.palette.type === "light"
         ? theme.palette.grey[50]
@@ -76,19 +80,8 @@ export default function Login() {
 
   //const dispatch = useDispatch();
 
-  const responseGoogle = async (resp) => {
-    console.log(resp);
-    Axios.defaults.withCredentials = true;
-    Axios.post("http://localhost:8080/user/getGoogle", {
-        email: resp.profileObj.email,
-        fname: resp.profileObj.givenName,
-        lname: resp.profileObj.familyName,
-        gid: resp.profileObj.googleId
-      }).then((response) => {
-        if(response.status === 200){
-          console.log("ok")
-        }
-      })
+  const responseGoogle = async (response) => {
+    
   }
   const handleSubmit = (e) => {
     debugger;
