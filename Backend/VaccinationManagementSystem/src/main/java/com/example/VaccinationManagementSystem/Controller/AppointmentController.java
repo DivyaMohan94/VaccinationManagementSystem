@@ -168,12 +168,16 @@ public class AppointmentController {
             @RequestParam(value = "currentDate") String currentDate
     ) {
         try {
-            return appointmentService.getDueAppointments(patientId, currentDate);
+            System.out.println("checking dues controller");
+            List<Object> dues = (List<Object>) appointmentService.getDueAppointments(patientId, currentDate);
+            System.out.println(dues);
+            return dues;
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(new ErrorDetail("404", e.getMessage())));
         }
 
     }
+
 }
 
 
