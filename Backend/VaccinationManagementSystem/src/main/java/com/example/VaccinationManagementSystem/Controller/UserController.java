@@ -1,4 +1,3 @@
-/*
 package com.example.VaccinationManagementSystem.Controller;
 
 import com.example.VaccinationManagementSystem.Model.ErrorDetail;
@@ -29,4 +28,3 @@ public class UserController {
         return " All Okay";
     }
 }
-*/

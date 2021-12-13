@@ -16,7 +16,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 @Service
 public class AppointmentService {
@@ -125,22 +124,16 @@ public class AppointmentService {
         return appointment;
     }
 
-    @Transactional(rollbackOn = {IOException.class, SQLException.class})
     public Object getDueAppointments(Integer patientId, String currentDate) throws ParseException {
         //Consider 12 months duration for due vaccinations
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.US);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         Date currDate = dateFormat.parse(currentDate);
 
         List<VaccineDueModel> vaccinationsDue = new LinkedList<>();
 
         List<Appointment> pastAppointments = appointmentRepository.getPastAppointments(currDate, patientId);
 
-        List<Appointment> pastCompletedAppointments = pastAppointments.stream()
-                .filter(app -> app.getStatus().equals("Checked In")).collect(Collectors.toList());
-
-        System.out.println(pastAppointments);
-        System.out.println("****");
-        System.out.println(pastCompletedAppointments);
+        List<Appointment> pastCompletedAppointments = (List<Appointment>) pastAppointments.stream().filter(app -> app.getStatus() == "Checked In");
 
         HashMap<String, List<Appointment>> shotsTaken = new HashMap<>();
 
@@ -161,18 +154,14 @@ public class AppointmentService {
         for (Vaccine vaccine : allVaccines) {
             //Patient has taken this vaccine before
             String vaccineName = vaccine.getName();
-            System.out.println(vaccineName);
             Integer vaccineShots = vaccine.getNumOfShots();
-            System.out.println(vaccineShots);
             if (shotsTaken.containsKey(vaccineName)) {
                 Integer pendingShots = vaccineShots - shotsTaken.get(vaccineName).size();
-                System.out.println(pendingShots);
                 Appointment lastAppt = shotsTaken.get(vaccineName).get(shotsTaken.get(vaccineName).size() - 1);
-                System.out.println(lastAppt);
 
                 //Total number of shots taken is less than mandatory number of doses
                 if (pendingShots > 0) {
-                    Date dueDate = new SimpleDateFormat("yyyy-MM-dd").parse(LocalDate.parse(lastAppt.getDate().toString().substring(0,10)).plusDays(vaccine.getDuration()).toString());
+                    Date dueDate = new SimpleDateFormat("dd/MM/yyyy").parse(LocalDate.parse(lastAppt.toString()).plusDays(vaccine.getDuration()).toString());
                     vaccinationsDue.add(new VaccineDueModel(vaccineName, shotsTaken.get(vaccineName).size() + 1, dueDate));
                 }
 
@@ -181,13 +170,13 @@ public class AppointmentService {
                     if (vaccine.getDuration() != -1) {
                         long diffInMillies = Math.abs(currDate.getTime() - lastAppt.getDate().getTime());
                         long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-                        Date dueDate = new SimpleDateFormat("yyyy-MM-dd").parse(LocalDate.parse(lastAppt.getDate().toString().substring(0,10)).plusDays(vaccine.getDuration()).toString());
+                        Date dueDate = new SimpleDateFormat("dd/MM/yyyy").parse(LocalDate.parse(lastAppt.toString()).plusDays(vaccine.getDuration()).toString());
                         if (diff > vaccine.getDuration() && currDate.after(lastAppt.getDate()))
                             vaccinationsDue.add(new VaccineDueModel(vaccineName, shotsTaken.get(vaccineName).size() + 1, dueDate));
                     }
                 }
             } else
-                vaccinationsDue.add(new VaccineDueModel(vaccineName, 1, new SimpleDateFormat("yyyy-MM-dd").parse(LocalDate.parse(LocalDate.now().toString()).toString())));
+                vaccinationsDue.add(new VaccineDueModel(vaccineName, 1, new SimpleDateFormat("dd/MM/yyyy").parse(LocalDate.parse(LocalDate.now().toString()).toString())));
 
         }
 
