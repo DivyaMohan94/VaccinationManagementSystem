@@ -25,4 +25,59 @@ public interface AppointmentRepository  extends JpaRepository<Appointment, Integ
 
     @Query("SELECT appoint FROM Appointment appoint where appoint.appointment_date > ?1 and appoint.appointment_date < ?2 and appoint.patientId = ?3")
     List<Appointment> getCheckinAppointments(Date currentDate,Date hrDate, Integer patient_id);
+    //    @Query("SELECT \n" +
+//            "    v.vaccine_id,\n" +
+//            "    COUNT(a.appointment_id),\n" +
+//            "    v.num_of_shots,\n" +
+//            "    MAX(a.appointment_date)\n" +
+//            "FROM\n" +
+//            "    Appointment a\n" +
+//            "        INNER JOIN\n" +
+//            "    appointment_vaccines av ON a.appointment_id = av.appointment_appointment_id\n" +
+//            "        RIGHT OUTER JOIN\n" +
+//            "    Vaccine v ON av.vaccines_vaccine_id = v.vaccine_id\n" +
+//            "WHERE a.patientId = ?2 and a.created_date = ?1" +
+//            "GROUP BY v.vaccine_id , v.num_of_shots")
+//    List<AppointmentDueRecord> getDueAppointments(Date currentDate, Integer patient_id);
+//
+//    public class AppointmentDueRecord{
+//        Integer vaccineId;
+//        Integer vaccineCount;
+//        Integer numberOfShotsNeeded;
+//        Date lastAppointmentDate;
+//
+//        public Integer getVaccineId() {
+//            return vaccineId;
+//        }
+//
+//        public void setVaccineId(Integer vaccineId) {
+
+//            this.vaccineId = vaccineId;
+//        }
+//
+//        public Integer getVaccineCount() {
+//            return vaccineCount;
+//        }
+//
+//        public void setVaccineCount(Integer vaccineCount) {
+//            this.vaccineCount = vaccineCount;
+//        }
+//
+//        public Integer getNumberOfShotsNeeded() {
+//            return numberOfShotsNeeded;
+//        }
+//
+//        public void setNumberOfShotsNeeded(Integer numberOfShotsNeeded) {
+//            this.numberOfShotsNeeded = numberOfShotsNeeded;
+//        }
+//
+//        public Date getLastAppointmentDate() {
+//            return lastAppointmentDate;
+//        }
+//
+//        public void setLastAppointmentDate(Date lastAppointmentDate) {
+//            this.lastAppointmentDate = lastAppointmentDate;
+//        }
+//    }
+
 }
