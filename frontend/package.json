@@ -19,6 +19,7 @@
     "axios": "^0.24.0",
     "bootstrap": "^4.6.1",
     "mui-core": "^3.0.3",
+    "multiselect-react-dropdown": "^2.0.16",
     "nodemon": "^2.0.15",
     "react": "^17.0.2",
     "react-alert": "^7.0.3",

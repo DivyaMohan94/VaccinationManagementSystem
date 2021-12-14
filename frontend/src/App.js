@@ -3,8 +3,8 @@ import Home from './pages/home';
 import Register from './pages/register';
 import Landing from "./pages/landing";
 import Login from "./pages/login"
-import Profile from "./pages/profile";
-
+import Admin from "./pages/Admin"
+import Report from "./pages/Report"
 
 function App() {
   return (
@@ -22,10 +22,13 @@ function App() {
             </Route>   
             <Route path="/login" exact>
               <Route exact path="/login" element={<Login/>}/>
-            </Route> 
-            <Route path="/profile" exact>
-              <Route exact path="/profile" element={<Profile/>}/>
             </Route>
+            <Route path="/admin" exact>
+              <Route exact path="/admin" element={<Admin/>}/>
+            </Route> 
+            <Route path="/report" exact>
+              <Route exact path="/report" element={<Report/>}/>
+            </Route> 
         </Routes>
       </Router>
     </div>

@@ -25,9 +25,12 @@ public class DiseaseController {
             @RequestBody String payload
     ) {
         try {
+            System.out.println("create disease called");
+            System.out.println(payload);
             JSONObject disease = new JSONObject(payload);
             String name = (String) disease.get("name");
             String description = (String) disease.get("description");
+            System.out.println(disease);
             return diseaseService.createDisease(name, description);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new ErrorResponse(new ErrorDetail("400", e.getMessage())));

@@ -51,11 +51,11 @@ export default function SidePan() {
                   <ListItem button component={Link} paddingLeft={10} to="/dashboard">
                     Dashboard
                   </ListItem>
-                  <ListItem button component={Link} to="/profile">
-                    Profile
+                  <ListItem button component={Link} to="/admin">
+                    Admin
                   </ListItem>
-                  <ListItem button component={Link} to="/myReservation">
-                    My Reservations
+                  <ListItem button component={Link} to="/report">
+                    Report
                   </ListItem>
                 </>
             }

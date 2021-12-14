@@ -26,7 +26,7 @@ export default function LandingComponent() {
         <div className={classes.root} id="header">
             <div className={classes.container}>
                 <h1 className={classes.colorText}>
-                    <span>Vaccination Management System</span>
+                    <span>Report</span>
                 </h1>
             </div>
         </div>
