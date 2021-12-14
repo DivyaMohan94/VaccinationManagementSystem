@@ -4,7 +4,7 @@ package com.example.VaccinationManagementSystem.Model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-
+import com.example.VaccinationManagementSystem.Model.AppointmentStatus;
 import javax.persistence.*;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -29,11 +29,12 @@ public class Appointment {
     private LocalTime slot;
     @ManyToMany (targetEntity = Vaccine.class)
     private List<Vaccine> vaccines = new ArrayList<>();
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private AppointmentStatus status;
 
 
 
-    public Appointment(Integer patientId, Integer clinicId, Date date, LocalTime slot, String status, List vaccines, Date created_date) {
+    public Appointment(Integer patientId, Integer clinicId, Date date, LocalTime slot, AppointmentStatus status, List vaccines, Date created_date) {
 
         this.patientId = patientId;
         this.clinicId = clinicId;
@@ -104,11 +105,11 @@ public class Appointment {
         this.slot = slot;
     }
 
-    public String getStatus() {
+    public AppointmentStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(AppointmentStatus status) {
         this.status = status;
     }
 }

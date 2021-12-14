@@ -1,6 +1,7 @@
 package com.example.VaccinationManagementSystem.Service;
 
 import com.example.VaccinationManagementSystem.Model.Appointment;
+import com.example.VaccinationManagementSystem.Model.AppointmentStatus;
 import com.example.VaccinationManagementSystem.Model.Vaccine;
 import com.example.VaccinationManagementSystem.Repository.AppointmentRepository;
 import com.example.VaccinationManagementSystem.Repository.VaccineRepository;
@@ -46,7 +47,7 @@ public class AppointmentService {
         for (int i = 0; i < vaccines.size(); i++) {
             vaccines1.add(vaccineRepository.findById(vaccines.get(i)).get());
         }
-        Appointment appointment = new Appointment(patient_id, clinic_id, appointmentDate, slot, "booked", vaccines1, currentDate);
+        Appointment appointment = new Appointment(patient_id, clinic_id, appointmentDate, slot, AppointmentStatus.BOOKED, vaccines1, currentDate);
         appointmentRepository.save(appointment);
         return appointment;
     }
@@ -75,7 +76,7 @@ public class AppointmentService {
         if (!appointmentExists) {
             throw new IllegalStateException("Appointment with " + appointmentId + " does not exist.");
         }
-        appointmentRepository.deleteById(appointmentId);
+        appointmentRepository.findById(appointmentId).get().setStatus(AppointmentStatus.CANCELLED);
     }
 
     @Transactional(rollbackOn = {IOException.class, SQLException.class})
@@ -121,7 +122,7 @@ public class AppointmentService {
     @Transactional(rollbackOn = {IOException.class, SQLException.class})
     public Object makeCheckinAppointment(Integer patient_id, Integer appointment_id) throws ParseException {
         Appointment appointment = appointmentRepository.findById(appointment_id).get();
-        appointment.setStatus("Checked In");
+        appointment.setStatus(AppointmentStatus.CHECKED_IN);
         return appointment;
     }
 
@@ -228,5 +229,18 @@ public class AppointmentService {
         public void setDueDate(Date dueDate) {
             this.dueDate = dueDate;
         }
+    }
+
+    @Transactional(rollbackOn = {IOException.class, SQLException.class})
+    public Object markAppointmentCompleted(Integer patient_id, String current_date) throws ParseException {
+        List<Appointment> pastAppointments = (List<Appointment>) getPastAppointment(patient_id, current_date);
+        for (int i = 0; i < pastAppointments.size(); i++) {
+            if ((pastAppointments.get(i)).getStatus().equals(AppointmentStatus.BOOKED)) {
+                (pastAppointments.get(i)).setStatus(AppointmentStatus.NO_SHOW);
+            } else if ((pastAppointments.get(i)).getStatus().equals(AppointmentStatus.CHECKED_IN)) {
+                (pastAppointments.get(i)).setStatus(AppointmentStatus.COMPLETED);
+            }
+        }
+        return pastAppointments;
     }
 }
