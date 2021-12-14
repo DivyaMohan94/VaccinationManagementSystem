@@ -1,6 +1,7 @@
 package com.example.VaccinationManagementSystem.Service;
 
 import com.example.VaccinationManagementSystem.Model.Appointment;
+import com.example.VaccinationManagementSystem.Model.AppointmentStatus;
 import com.example.VaccinationManagementSystem.Repository.AppointmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,7 +48,7 @@ public class ReportsService {
 
         if (allAppointments.size() != 0) {
 
-            noShowAppointments = allAppointments.stream().filter(a -> a.getStatus().equalsIgnoreCase("Noshow")).collect(Collectors.toList());
+            noShowAppointments = allAppointments.stream().filter(a -> a.getStatus().equals(AppointmentStatus.NO_SHOW)).collect(Collectors.toList());
             noShowRate = (double) noShowAppointments.size() / allAppointments.size();
         }
 
@@ -76,7 +77,7 @@ public class ReportsService {
 
         if (allAppointments.size() != 0) {
 
-            noShowAppointments = allAppointments.stream().filter(a -> a.getStatus().equalsIgnoreCase("Noshow")).collect(Collectors.toList());
+            noShowAppointments = allAppointments.stream().filter(a -> a.getStatus().equals(AppointmentStatus.NO_SHOW)).collect(Collectors.toList());
             noShowRate = (double) noShowAppointments.size() / allAppointments.size();
         }
 
