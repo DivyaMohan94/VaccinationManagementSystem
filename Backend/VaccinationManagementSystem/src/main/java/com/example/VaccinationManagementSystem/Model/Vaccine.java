@@ -26,7 +26,7 @@ public class Vaccine {
      //@JoinColumn(name = "vaccineId")*/
     @ManyToMany(targetEntity = Disease.class, cascade = CascadeType.ALL)
     private List<Disease> diseases = new ArrayList<>();
-    @Length(min = 3, max = 100, message = "Manufacturer must be at least 3 characters")
+//    @Length(min = 3, max = 100, message = "Manufacturer must be at least 3 characters")
     private String manufacturer;
     @Min(value = 1, message = "Number of shots must be at least 1")
     private Integer numOfShots;
