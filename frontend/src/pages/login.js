@@ -72,7 +72,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-
+  const [stageotp, setOTP] = useState(false);
   const navigate = useNavigate();
 
   //const dispatch = useDispatch();
@@ -87,8 +87,14 @@ export default function Login() {
       }).then((response) => {
         if(response.status === 200){
           console.log("ok")
+          setOTP(true)
         }
       })
+  }
+
+  const onCancelOTP = (e) => {
+    console.log("Clearing")
+    setOTP(false);
   }
   const handleSubmit = (e) => {
     debugger;
@@ -191,17 +197,50 @@ export default function Login() {
               variant="contained"
               color="primary"
               className={classes.submit}
+              disabled={!stageotp}
             >
               Sign In
             </Button>
             <GoogleLogin
               clientId="664857607032-ok389vi4jghphm7t69trrq8vc0hdeagj.apps.googleusercontent.com"
+              fullWidth
               buttonText="Login"
               onSuccess={responseGoogle}
               onFailure={responseGoogle}
               cookiePolicy={'single_host_origin'}
+              disabled={!stageotp}
             />, 
-            
+            <TextField
+              required
+              fullWidth
+              open={stageotp}
+              name="otp"
+              label="otp"
+              type="otp"
+              id="otp"
+              autoComplete="current-password"
+              onChange={(event) => {
+                event.preventDefault();
+                setPassword(event.target.value);
+              }}
+            />
+            <Button
+              open={stageotp}
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+            >
+              Submit OTP
+            </Button>
+            <Button
+              open={stageotp}
+              variant="contained"
+              color="secondary"
+              className={classes.submit}
+              onClick = {() => onCancelOTP()}
+            >
+              Cancel
+            </Button>
 
             <Box mt={5}>
               <Copyright />
