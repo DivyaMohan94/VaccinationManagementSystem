@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path="/user")
 public class PatientController {
 
-    private final PatientService patientService;
+    private PatientService patientService;
 
     @Autowired
     public PatientController(PatientService patientService) {
@@ -28,7 +28,33 @@ public class PatientController {
             return patientService.addPatientGoogle(email, googleId, firstName, lastName);
 
         } catch(Exception e){
-           return "okay0";
+            return e.getMessage();
+        }
+    }
+
+    @PostMapping("/validateOtp")
+    public @ResponseBody Object validateOtp(@RequestBody String payload){
+        try{
+            System.out.println("Inside validateController");
+            JSONObject loginPayload = new JSONObject(payload);
+            String email = (String) loginPayload.get("email");
+            String mrn = (String) loginPayload.get("mrn");
+            String otp = (String) loginPayload.get("otp");
+            return patientService.addPatientOtp(email, mrn, otp);
+
+        } catch(Exception e){
+            return e.getMessage();
+        }
+    }
+
+    @PostMapping("/register")
+    public @ResponseBody Object reagisterUser(@RequestBody String payload){
+        try{
+            JSONObject registerPayload = new JSONObject(payload);
+            return patientService.addPatientDetails(registerPayload);
+        }
+        catch(Exception e){
+            return e.getMessage();
         }
     }
 }

@@ -72,6 +72,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [otp, setOtp] = useState("");
   const [stageotp, setOTP] = useState(false);
   const navigate = useNavigate();
 
@@ -86,7 +87,8 @@ export default function Login() {
         gid: resp.profileObj.googleId
       }).then((response) => {
         if(response.status === 200){
-          console.log("ok")
+          localStorage.setItem("email", response.data.emailId)
+          localStorage.setItem("mrn", response.data.mrn)
           setOTP(true)
         }
       })
@@ -95,6 +97,30 @@ export default function Login() {
   const onCancelOTP = (e) => {
     console.log("Clearing")
     setOTP(false);
+  }
+  const onSubmitOtp = (e) => {
+    if(otp === "") {
+      swal("Eror", "Empty OTP", "error", {
+        dangerMode: true,
+    });
+    }
+    else {
+      Axios.defaults.withCredentials = true;
+      Axios.post("http://localhost:8080/user/validateOtp", {
+        email: localStorage.getItem("email"),
+        mrn: localStorage.getItem("mrn"),
+        otp: otp,
+      }).then((response) => {
+        if(response.status === 200) {
+          navigate("/register")
+        }
+        else {
+          swal("Eror", "OTP verification failed", "error", {
+            dangerMode: true,
+        });
+        }
+      })
+    }
   }
   const handleSubmit = (e) => {
     debugger;
@@ -105,23 +131,12 @@ export default function Login() {
       });
     } else {
       Axios.defaults.withCredentials = true;
-      Axios.post("http://localhost:3002/routes/users/login", {
+      Axios.post("http://localhost:8080/user/login", {
         email: email,
         password: password,
       })
         .then((response) => {
           if (response.status === 200) {
-            debugger;
-            localStorage.setItem("loggedIn", true);
-            localStorage.setItem("email", response.data.email);
-            localStorage.setItem("name", response.data.name);
-            localStorage.setItem("phone", response.data.phone);
-            localStorage.setItem("currency", response.data.currency);
-            localStorage.setItem("timezone", response.data.timezone);
-            localStorage.setItem("language", response.data.language);
-            localStorage.setItem("id", response.data._id);
-
-            
 
             navigate("/home");
           } else if (response.status === 400) {
@@ -148,6 +163,7 @@ export default function Login() {
   return (
       
       <> 
+      {console.log(stageotp)}
       <Navbar/>
     <Grid container component="main" className={classes.root}>
       <CssBaseline />
@@ -197,7 +213,7 @@ export default function Login() {
               variant="contained"
               color="primary"
               className={classes.submit}
-              disabled={!stageotp}
+              disabled={stageotp}
             >
               Sign In
             </Button>
@@ -208,8 +224,10 @@ export default function Login() {
               onSuccess={responseGoogle}
               onFailure={responseGoogle}
               cookiePolicy={'single_host_origin'}
-              disabled={!stageotp}
-            />, 
+              disabled={stageotp}
+            />,
+            <div>{stageotp ? 
+            <div>
             <TextField
               required
               fullWidth
@@ -221,26 +239,31 @@ export default function Login() {
               autoComplete="current-password"
               onChange={(event) => {
                 event.preventDefault();
-                setPassword(event.target.value);
+                setOtp(event.target.value);
               }}
             />
             <Button
               open={stageotp}
               variant="contained"
+              fullwidth
               color="primary"
               className={classes.submit}
+              onClick = {() => onSubmitOtp()}
             >
               Submit OTP
             </Button>
             <Button
-              open={stageotp}
+              open="false"
               variant="contained"
+              fullwidth
               color="secondary"
               className={classes.submit}
               onClick = {() => onCancelOTP()}
             >
               Cancel
             </Button>
+            </div> : <div></div>}
+            </div>
 
             <Box mt={5}>
               <Copyright />

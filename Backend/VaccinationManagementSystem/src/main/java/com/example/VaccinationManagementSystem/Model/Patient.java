@@ -4,6 +4,7 @@ package com.example.VaccinationManagementSystem.Model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -14,11 +15,17 @@ import java.util.Date;
         property = "mrn")
 public class Patient {
     @Id
-    @TableGenerator(name = "mrnGenerator", initialValue = 100)
+//    @TableGenerator(name = "mrnGenerator", initialValue = 100)
+//    @GeneratedValue(
+//            strategy = GenerationType.SEQUENCE,
+//            generator = "mrnGenerator")
     @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "mrnGenerator")
-    private Integer mrn;
+            generator = "MrnGenerator.id"
+    )
+    @GenericGenerator(
+            name = "MrnGenerator.id", strategy = "com.example.VaccinationManagementSystem.Model.MrnGenerator"
+    )
+    private String mrn;
     private String emailId;
     private String fname;
     private String mname;
@@ -32,7 +39,7 @@ public class Patient {
     @Embedded
     private Address address;
 
-    public Patient(Integer mrn, String emailId, String fname, String mname, String lname, Date dob, String gender, boolean isAdmin, Address address) {
+    public Patient(String mrn, String emailId, String fname, String mname, String lname, Date dob, String gender, boolean isAdmin, Address address) {
         this.mrn = mrn;
         this.emailId = emailId;
         this.fname = fname;
@@ -48,11 +55,11 @@ public class Patient {
 
     }
 
-    public Integer getMrn() {
+    public String getMrn() {
         return mrn;
     }
 
-    public void setMrn(Integer mrn) {
+    public void setMrn(String mrn) {
         this.mrn = mrn;
     }
 
