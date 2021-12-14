@@ -6,119 +6,12 @@ import { useState } from "react";
 import swal from "sweetalert";
 import Button from "@material-ui/core/Button";
 import URL_VAL from "../utils/backend";
-import DiseasesListComponent from "../components/DiseasesListComponent";
 import Multiselect from "multiselect-react-dropdown";
 import { FormLabel } from "@material-ui/core";
 
-/*const useStyles = makeStyles((theme) => ({
-  root: {
-    height: "100vh",
-  },
-  form: {
-    width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-}));
-
-export default function VaccineComponent() {
-  const classes = useStyles();
-
-  const [errorMessage, setErrorMessage] = useState("");
-  const [name, setVaccineName] = useState("");
-  const [diseases, setDiseases] = useState("");
-  const [manufacturer, setManufacturer] = useState("");
-  const [noOfShots, setNoOfShots] = useState("");
-  const [shortInterval, setShortInterval] = useState("");
-  const [duration, setDuration] = useState("");
-
-  function clearFields(event) {
-    Array.from(event.target).forEach((e) => (e.value = ""));
-  }
-
-  const handleSubmit = async (e) => {
-    /*e.preventDefault();
-    if (diseaseName === "" || description === "") {
-      swal("Error", "Enter Details to add disease", "error", {
-        dangerMode: true,
-      });
-    } else {
-      axios.defaults.withCredentials = true;
-      var payload = {
-        "name":diseaseName,
-        "description":description
-        }
-      await axios.post(`http://localhost:8080/disease`,payload)
-        .then((response) => {
-          if (response.status === 200) {
-            swal("Success", "Disease added successfully!",{
-                dangerMode:false
-            })
-            clearFields(e);
-          } else if (response.status == 400) {
-              console.log(errorMessage)
-            setErrorMessage(response.data.message);
-            swal("Error", errorMessage, "error", {
-              dangerMode: true,
-            });
-          } else {
-            console.log(response);
-            swal("Error", errorMessage, "error", {
-              dangerMode: true,
-            });
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          swal("Disease name already exists", errorMessage, "error", {
-            dangerMode: true,
-          });
-          console.log(errorMessage);
-        });
-    }
-  };
-
-  const sendDataToParent = async (names) => { // the callback. Use a better name
-    await console.log(names);
-  };
-
-
-  return (
-    <>
-      <form className={classes.form} noValidate onSubmit={handleSubmit}>
-        <TextField
-          required
-          name="Vaccine Name"
-          label="Vaccine Name"
-          type="text"
-          id="name"
-          autoFocus
-          style={{ width: "1000px"}}
-          onChange={(event) => {
-            event.preventDefault();
-            setVaccineName(event.target.value);
-          }}
-        />
-        <div>
-        <DiseasesListComponent sendDataToParent={sendDataToParent}/>
-        </div>
-       <div>
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          style={{ width: "150px", marginTop:"20px"}}
-        >
-          Add Vaccine
-        </Button>
-        </div>
-      </form>
-    </>
-  );
+function clearFields(event) {
+  Array.from(event.target).forEach((e) => (e.value = ""));
 }
-*/
 
 class VaccineComponent extends Component {
   constructor(props) {
@@ -129,8 +22,11 @@ class VaccineComponent extends Component {
       diseaseIds: [],
       manufacturer: "",
       numOfShots: 0,
-      shotInternalVal: 0,
+      shotIntervalVal: 0,
       durationString: "",
+      duration: 0,
+      errorMessage: "",
+      selectedListVal:[]
     };
 
     this.onSelect = this.onSelect.bind(this);
@@ -139,7 +35,9 @@ class VaccineComponent extends Component {
     this.onManufacturerChange = this.onManufacturerChange.bind(this);
     this.onNumOfShotsChange = this.onNumOfShotsChange.bind(this);
     this.onShortIntervalChange = this.onShortIntervalChange.bind(this);
-    //this.onDurationChange = this.onDurationChange.bind(this);
+    this.onDurationChange = this.onDurationChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.validateSave = this.validateSave.bind(this);
   }
 
   onNameChange(e) {
@@ -151,17 +49,18 @@ class VaccineComponent extends Component {
   onSelect(selectedList, selectedItem) {
     var tempList = [];
     selectedList.forEach((element) => {
-      tempList.add(element.diseaseId);
+      tempList.push(element.diseaseId);
     });
     this.setState({
       diseaseIds: tempList,
+      selectedListVal:selectedList
     });
   }
 
   onRemove(selectedList, removedItem) {
     var tempList = [];
     selectedList.forEach((element) => {
-      tempList.add(element.diseaseId);
+      tempList.push(element.diseaseId);
     });
     this.setState({
       diseaseIds: tempList,
@@ -174,16 +73,28 @@ class VaccineComponent extends Component {
     });
   }
 
-  onNumOfShotsChange(e){
+  onNumOfShotsChange(e) {
     this.setState({
-        numOfShots: e.target.value,
-      });
+      numOfShots: e.target.value,
+    });
   }
 
-  onShortIntervalChange(e){
+  onShortIntervalChange(e) {
     this.setState({
-        shotInternalVal: e.target.value,
+      shotIntervalVal: e.target.value,
+    });
+  }
+
+  onDurationChange(e) {
+    if (e.target.value.toLowerCase() == "lifetime") {
+      this.setState({
+        duration: -1,
       });
+    } else {
+      this.setState({
+        duration: e.target.value,
+      });
+    }
   }
 
   componentDidMount() {
@@ -202,10 +113,126 @@ class VaccineComponent extends Component {
     });
   }
 
+  handleSubmit = async (e) => {
+    e.preventDefault();
+    if (this.validateSave() === true) {
+      axios.defaults.withCredentials = true;
+
+      var payload = {
+        name: this.state.name,
+        diseaseIds: this.state.diseaseIds,
+        manufacturer: this.state.manufacturer,
+        numOfShots: this.state.numOfShots,
+        shotInterval: this.state.shotIntervalVal,
+        duration: this.state.duration,
+      };
+      console.log(payload);
+
+      await axios
+        .post(`${URL_VAL}/vaccine`, payload)
+        .then((response) => {
+          if (response.status === 200) {
+            swal("Success", "Vaccine added successfully!", {
+              dangerMode: false,
+            });
+            clearFields(e);
+            this.onRemove(this.state.selectedListVal)
+          } else {
+            console.log(response);
+            swal("Error", "Some error occured", "error", {
+              dangerMode: true,
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          swal(
+            "Vaccine name already exists",
+            this.state.errorMessage,
+            "error",
+            {
+              dangerMode: true,
+            }
+          );
+          //console.log(errorMessage);
+        });
+    }
+  };
+
+  validateSave() {
+    let isValid = true;
+    const numRejex = /^[0-9]+$/;
+    if (
+      this.state.name === "" ||
+      this.state.diseaseIds.length === 0 ||
+      this.state.manufacturer === "" ||
+      this.state.numOfShots === "" ||
+      this.state.duration === ""
+    ) {
+      swal("Error", "Enter all the details to add vaccine", "error", {
+        dangerMode: true,
+      });
+      isValid = false;
+    } else if (this.state.manufacturer.length < 3) {
+      swal(
+        "Error",
+        "Manufacturer name must be more than 3 characters",
+        "error",
+        {
+          dangerMode: true,
+        }
+      );
+      isValid = false;
+    } else if (!this.state.numOfShots.match(numRejex)) {
+      swal(
+        "Error",
+        "Only numeric value is allowed for number of shots",
+        "error",
+        {
+          dangerMode: true,
+        }
+      );
+      isValid = false;
+    } else if (
+      this.state.shotIntervalVal != "" &&
+      !this.state.shotIntervalVal.match(numRejex)
+    ) {
+      swal(
+        "Error",
+        "Only numeric value is allowed for short interval",
+        "error",
+        {
+          dangerMode: true,
+        }
+      );
+      isValid = false;
+    } else if (Number(this.state.numOfShots) < 1) {
+      swal("Error", "There must be atleast 1 valid shot", "error", {
+        dangerMode: true,
+      });
+      isValid = false;
+    } else if (
+      Number(this.state.numOfShots) > 1 &&
+      this.state.shotIntervalVal == ""
+    ) {
+      swal(
+        "Error",
+        "Enter valid numeric interval if there are more than 1 shots",
+        "error",
+        {
+          dangerMode: true,
+        }
+      );
+      isValid = false;
+    }
+
+    return isValid;
+  }
+
   render() {
     return (
       <>
-        <form noValidate>
+        <form noValidate onSubmit={this.handleSubmit}>
           <TextField
             required
             name="Vaccine Name"
@@ -214,9 +241,7 @@ class VaccineComponent extends Component {
             id="name"
             autoFocus
             style={{ width: "1000px" }}
-            onChange={(event) => {
-              event.preventDefault();
-            }}
+            onChange={this.onNameChange}
           />
           <div style={{ width: "1000px", display: "flex", paddingTop: "25px" }}>
             <div style={{ paddingRight: "30px", marginTop: "5px" }}>
@@ -231,6 +256,8 @@ class VaccineComponent extends Component {
                 displayValue="name" // Property name to display in the dropdown options
                 showCheckbox="true"
                 hidePlaceholder="true"
+                showArrow="true"
+                id="dropdown"
               />
             </div>
           </div>
@@ -242,9 +269,7 @@ class VaccineComponent extends Component {
             id="manufacturer"
             autoFocus
             style={{ width: "1000px" }}
-            onChange={(event) => {
-              event.preventDefault();
-            }}
+            onChange={this.onManufacturerChange}
           />
           <TextField
             required
@@ -254,9 +279,7 @@ class VaccineComponent extends Component {
             id="numOfSlots"
             autoFocus
             style={{ width: "1000px" }}
-            onChange={(event) => {
-              event.preventDefault();
-            }}
+            onChange={this.onNumOfShotsChange}
           />
 
           <TextField
@@ -266,9 +289,7 @@ class VaccineComponent extends Component {
             id="shortInterval"
             autoFocus
             style={{ width: "1000px" }}
-            onChange={(event) => {
-              event.preventDefault();
-            }}
+            onChange={this.onShortIntervalChange}
           />
 
           <TextField
@@ -279,9 +300,7 @@ class VaccineComponent extends Component {
             id="duration"
             autoFocus
             style={{ width: "1000px" }}
-            onChange={(event) => {
-              event.preventDefault();
-            }}
+            onChange={this.onDurationChange}
           />
           <div>
             <Button
