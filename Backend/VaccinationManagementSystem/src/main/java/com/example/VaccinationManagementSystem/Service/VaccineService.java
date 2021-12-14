@@ -34,9 +34,9 @@ public class VaccineService {
 
         diseasesList = getDiseaseList(diseases);
 
-        if (manufacturer.length() < 3) {
+        /*if (manufacturer.length() < 3) {
             throw new IllegalStateException("Sorry, the manufacturer name should be at least 3 characters");
-        }
+        }*/
 
         if (numOfShots == 1) {
             shotInternalVal = 0;

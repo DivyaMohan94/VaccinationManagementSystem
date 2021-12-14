@@ -15,12 +15,12 @@ import { useNavigate, Link } from "react-router-dom";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { ListItemText } from "@mui/material";
 import SidePan from "./drawer";
-import BadgeIcon from '@mui/icons-material/Badge';
+import BadgeIcon from "@mui/icons-material/Badge";
 
 export default function Navbar() {
   const [auth, setAuth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const login = localStorage.getItem("loggedIn");  
+  const login = localStorage.getItem("loggedIn");
 
   let history = useNavigate();
   const useLogout = (e) => {
@@ -43,8 +43,9 @@ export default function Navbar() {
         <CssBaseline />
         <AppBar position="relative" style={{ backgroundColor: "Black" }}>
           <Toolbar>
-            <SidePan />
-            <CssBaseline />
+            <SidePan>
+              <CssBaseline />
+            </SidePan>
             <Typography
               variant="h6"
               component="div"
@@ -52,7 +53,7 @@ export default function Navbar() {
               paddingLeft={2}
             >
               <Link style={{ color: "White" }} component={Link} to="/">
-                Airline Reservation System
+                Vaccination Management System
               </Link>
             </Typography>
             <IconButton
@@ -88,8 +89,7 @@ export default function Navbar() {
                     <ListItemIcon>
                       <LogoutIcon />
                     </ListItemIcon>
-                    <ListItemText>Logout                    
-                    </ListItemText>
+                    <ListItemText>Logout</ListItemText>
                   </MenuItem>
                 </>
               ) : (
@@ -108,14 +108,6 @@ export default function Navbar() {
                     </ListItemIcon>
                     <ListItemText>
                       <Link to="/register">Sign-Up</Link>
-                    </ListItemText>
-                  </MenuItem>
-                  <MenuItem>
-                    <ListItemIcon>
-                      <BadgeIcon />
-                    </ListItemIcon>
-                    <ListItemText>
-                      <Link to="/employeeLogin">Employee Login</Link>
                     </ListItemText>
                   </MenuItem>
                 </>

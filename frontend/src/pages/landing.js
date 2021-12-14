@@ -8,7 +8,7 @@ import { Box } from "@material-ui/core";
 const useStyles = makeStyles((theme) => ({
   root: {
     minHeight: "100vh",
-    backgroundImage: `url(${process.env.PUBLIC_URL + "airplane.jpeg"})`,
+    backgroundImage: `url(i.jpg)`,
     backgroundSize: "cover",
     backgroundPosition: "center",
   },
