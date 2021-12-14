@@ -40,9 +40,9 @@ public class VaccineController {
             String name = (String) vaccine.get("name");
             JSONArray diseases = (JSONArray)vaccine.get("diseaseIds");
             String manufacturer = (String) vaccine.get("manufacturer");
-            Integer numOfShots = Integer.parseInt((String) vaccine.get("numOfShots")) ;
-            Integer shotInternalVal = Integer.parseInt((String) vaccine.get("shotInterval")) ;
-            Integer duration = Integer.parseInt((String) vaccine.get("duration"));
+            Integer numOfShots = Integer.parseInt(vaccine.get("numOfShots").toString()) ;
+            Integer shotInternalVal = Integer.parseInt(vaccine.get("shotInterval").toString()) ;
+            Integer duration = Integer.parseInt(vaccine.get("duration").toString());
 
             List<Integer> diseasesIds = new ArrayList<>();
             if (diseases != null) {
