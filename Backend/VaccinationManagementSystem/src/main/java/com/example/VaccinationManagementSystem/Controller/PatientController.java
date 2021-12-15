@@ -57,4 +57,17 @@ public class PatientController {
             return e.getMessage();
         }
     }
+
+    @PostMapping("/login")
+    public @ResponseBody Object normalLogin(@RequestBody String payload) {
+        try {
+            JSONObject loginPayload = new JSONObject(payload);
+            String email = (String) loginPayload.get("email");
+            String password = (String) loginPayload.get("password");
+            return patientService.addPatient(email, password);
+        }
+        catch(Exception e){
+            return e.getMessage();
+        }
+    }
 }

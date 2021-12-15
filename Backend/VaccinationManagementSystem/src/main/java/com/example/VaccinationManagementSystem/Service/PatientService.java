@@ -56,6 +56,9 @@ public class PatientService {
             patient.setEmailId(email);
             patient.setStatus("Init");
             patient.setPassword(gid);
+            if(email.endsWith("sjsu.edu")){
+                patient.setAdmin(true);
+            }
             patientRespository.save(patient);
             try {
                 notificationService.sendOTP(patient);
@@ -65,6 +68,48 @@ public class PatientService {
             res.setPatient(patient);
             return res;
         }
+    }
+
+    @Transactional
+    public LoginResponse addPatient(String email, String password){
+        Patient patient = patientRespository.findByEmailId(email);
+        LoginResponse res = new LoginResponse();
+        if(patient != null){
+            if(patient.getStatus() == "init"){
+                patientRespository.save(patient);
+                try {
+                    notificationService.sendOTP(patient);
+                } catch (MailException e) {
+                    System.out.println(e.getMessage());
+                }
+                res.setStatus(patient.getStatus());
+                res.setPatient(patient);
+                return res;
+            }
+            else {
+                res.setStatus(patient.getStatus());
+                res.setPatient(patient);
+                return res;
+            }
+        }
+        else {
+            patient = new Patient();
+            patient.setEmailId(email);
+            patient.setStatus("Init");
+            patient.setPassword(password);
+            if(email.endsWith("sjsu.edu")){
+                patient.setAdmin(true);
+            }
+            patientRespository.save(patient);
+            try {
+                notificationService.sendOTP(patient);
+            } catch (MailException e) {
+                System.out.println(e.getMessage());
+            }
+            }
+            res.setStatus(patient.getStatus());
+            res.setPatient(patient);
+            return res;
     }
 
     @Transactional
