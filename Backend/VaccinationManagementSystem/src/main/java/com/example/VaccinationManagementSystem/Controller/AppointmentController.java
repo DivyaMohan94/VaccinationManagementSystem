@@ -128,6 +128,8 @@ public class AppointmentController {
     @PostMapping(path = "/updatestatus")
     public Object changeAppointmentStatus(@RequestBody String payload) {
         try {
+            System.out.println("Hitting update Status");
+            System.out.println(payload);
             JSONObject appointment = new JSONObject(payload);
             String date = (String) appointment.get("current_date");
             Integer patient_id = (Integer) appointment.get("patient_id");
@@ -176,17 +178,18 @@ public class AppointmentController {
 
     @GetMapping(path = "/due")
     public @ResponseBody
-    Object getDueAppointments(
+    Object[] getDueAppointments(
             @RequestParam(value = "patientId") Integer patientId,
             @RequestParam(value = "currentDate") String currentDate
     ) {
         try {
             System.out.println("checking dues controller");
-            List<Object> dues = (List<Object>) appointmentService.getDueAppointments(patientId, currentDate);
+            System.out.println(patientId +""+ currentDate);
+            Object[] dues =  appointmentService.getDueAppointments(patientId, currentDate);
             System.out.println(dues);
             return dues;
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(new ErrorDetail("404", e.getMessage())));
+            return new Object [] {ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(new ErrorDetail("404", e.getMessage())))};
         }
 
     }

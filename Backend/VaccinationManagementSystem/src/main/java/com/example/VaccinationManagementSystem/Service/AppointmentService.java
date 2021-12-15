@@ -127,7 +127,7 @@ public class AppointmentService {
     }
 
     @Transactional(rollbackOn = {IOException.class, SQLException.class})
-    public Object getDueAppointments(Integer patientId, String currentDate) throws ParseException {
+    public Object[] getDueAppointments(Integer patientId, String currentDate) throws ParseException {
         //Consider 12 months duration for due vaccinations
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.US);
         Date currDate = dateFormat.parse(currentDate);
@@ -174,7 +174,7 @@ public class AppointmentService {
                 //Total number of shots taken is less than mandatory number of doses
                 if (pendingShots > 0) {
                     Date dueDate = new SimpleDateFormat("yyyy-MM-dd").parse(LocalDate.parse(lastAppt.getDate().toString().substring(0,10)).plusDays(vaccine.getDuration()).toString());
-                    vaccinationsDue.add(new VaccineDueModel(vaccineName, shotsTaken.get(vaccineName).size() + 1, dueDate));
+                    vaccinationsDue.add(new VaccineDueModel(vaccineName, shotsTaken.get(vaccineName).size() + 1, dueDate, vaccine.getVaccineId()));
                 }
 
                 //Total number of shots taken is equal to mandatory number of doses
@@ -184,26 +184,39 @@ public class AppointmentService {
                         long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
                         Date dueDate = new SimpleDateFormat("yyyy-MM-dd").parse(LocalDate.parse(lastAppt.getDate().toString().substring(0,10)).plusDays(vaccine.getDuration()).toString());
                         if (diff > vaccine.getDuration() && currDate.after(lastAppt.getDate()))
-                            vaccinationsDue.add(new VaccineDueModel(vaccineName, shotsTaken.get(vaccineName).size() + 1, dueDate));
+                            vaccinationsDue.add(new VaccineDueModel(vaccineName, shotsTaken.get(vaccineName).size() + 1, dueDate, vaccine.getVaccineId()));
                     }
                 }
             } else
-                vaccinationsDue.add(new VaccineDueModel(vaccineName, 1, new SimpleDateFormat("yyyy-MM-dd").parse(LocalDate.parse(LocalDate.now().toString()).toString())));
+                vaccinationsDue.add(new VaccineDueModel(vaccineName, 1, new SimpleDateFormat("yyyy-MM-dd").parse(LocalDate.parse(LocalDate.now().toString()).toString()), vaccine.getVaccineId()));
 
         }
 
-        return vaccinationsDue;
+        List<Appointment> futureAppointments = (List<Appointment>) getFutureAppointment(patientId, currentDate);
+
+        Object[] allDues = {vaccinationsDue, futureAppointments};
+        return allDues;
     }
 
     public class VaccineDueModel {
         String vaccineName;
         Integer shotNumber;
         Date dueDate;
+        Integer vaccineId;
 
-        public VaccineDueModel(String vaccineName, Integer shotNumber, Date dueDate) {
+        public VaccineDueModel(String vaccineName, Integer shotNumber, Date dueDate, Integer vaccineId) {
             this.vaccineName = vaccineName;
             this.shotNumber = shotNumber;
             this.dueDate = dueDate;
+            this.vaccineId = vaccineId;
+        }
+
+        public Integer getVaccineId() {
+            return vaccineId;
+        }
+
+        public void setVaccineId(Integer vaccineId) {
+            this.vaccineId = vaccineId;
         }
 
         public String getVaccineName() {
