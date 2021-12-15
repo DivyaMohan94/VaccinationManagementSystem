@@ -4,8 +4,8 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import DiseaseComponent from '../components/diseaseComponent';
-import VaccineComponent from '../components/vaccinesComponent';
+import PastAppointments from "../components/Appointment/pastAppointmentsComponent";
+import UpcomingAppointments from '../components/Appointment/futureAppointmentsComponents';
 import NewAppointmentComponent from '../components/newAppointment';
 
 function TabAppointmentPanel(props) {
@@ -49,23 +49,27 @@ export default function AppointmentsTabs() {
     };
 
     return (
-        <Box sx={{ width: '100%' }}>
-            <Box sx={{ borderBottom: 1, borderColor: 'divider'}}>
-                <Tabs value={value} onChange={handleChange} aaria-label="nav tabs example">
-                    <Tab label="Past " {...a11yProps(0)} />
-                    <Tab label="Upcoming" {...a11yProps(1)} />
-                    <Tab label="Schedule" {...a11yProps(2)} />
-                </Tabs>
-            </Box>
-            <TabAppointmentPanel value={value} index={0}>
-                <DiseaseComponent/>
-            </TabAppointmentPanel>
-            <TabAppointmentPanel value={value} index={1}>
-                <VaccineComponent/>
-            </TabAppointmentPanel>
-            <TabAppointmentPanel value={value} index={2}>
-                <NewAppointmentComponent/>
-            </TabAppointmentPanel>
+      <Box sx={{ width: "100%" }}>
+        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            aaria-label="nav tabs example"
+          >
+            <Tab label="Past " {...a11yProps(0)} />
+            <Tab label="Upcoming" {...a11yProps(1)} />
+            <Tab label="Schedule" {...a11yProps(2)} />
+          </Tabs>
         </Box>
+        <TabAppointmentPanel value={value} index={0}>
+          <PastAppointments />
+        </TabAppointmentPanel>
+        <TabAppointmentPanel value={value} index={1}>
+          <UpcomingAppointments />
+        </TabAppointmentPanel>
+        <TabAppointmentPanel value={value} index={2}>
+          <NewAppointmentComponent />
+        </TabAppointmentPanel>
+      </Box>
     );
 }

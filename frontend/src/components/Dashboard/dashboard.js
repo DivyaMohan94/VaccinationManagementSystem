@@ -73,11 +73,6 @@ class DashboardComponent extends Component {
     return d;
   };
 
-  handleCurrentDateSelection = (e) => {
-    localStorage.setItem("currentDate", e.target.value);
-    this.fetchDashboardData();
-  };
-
   fetchDashboardData = () => {
     let currentDate = localStorage.getItem("currentDate");
     //add time here to hardcoded string
@@ -128,7 +123,7 @@ class DashboardComponent extends Component {
 
   componentDidMount() {
     localStorage.setItem("id", 1);
-    localStorage.setItem("currentDate", new Date().toISOString().slice(0, 10));
+    // localStorage.setItem("currentDate", new Date().toISOString().slice(0, 10));
     console.log("inside Dashboard ComponentDiMount");
     this.fetchDashboardData();
   }
@@ -144,7 +139,7 @@ class DashboardComponent extends Component {
               <b>DASHBOARD</b>
             </h3>
           </div>
-          <div className="row d-flex mb-4" style={{ textAlign: "right" }}>
+          {/* <div className="row d-flex mb-4" style={{ textAlign: "right" }}>
             <div style={{ textAlign: "right" }}>
               <b className="mr-2">Select Current Date:</b>
               <input
@@ -152,7 +147,7 @@ class DashboardComponent extends Component {
                 onInputCapture={(e) => this.handleCurrentDateSelection(e)}
               ></input>
             </div>
-          </div>
+          </div> */}
           <br />
           <div className="row">
             <div className="col">

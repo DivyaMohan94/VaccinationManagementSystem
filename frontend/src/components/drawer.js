@@ -27,38 +27,50 @@ export default function SidePan() {
   return (
     <>
       <CssBaseline />
-      <IconButton
-        onClick={() => setOpen(true)}>
-        <MenuIcon style={{ fill: 'white' }} />
+      <IconButton onClick={() => setOpen(true)}>
+        <MenuIcon style={{ fill: "white" }} />
       </IconButton>
-      <SwipeableDrawer paddingLeft={10} className={classes.drawer}
-        open={open} anchor="left"
-        onClose={() => { setOpen(false) }}
-        onOpen={() => { }}>
+      <SwipeableDrawer
+        paddingLeft={10}
+        className={classes.drawer}
+        open={open}
+        anchor="left"
+        onClose={() => {
+          setOpen(false);
+        }}
+        onOpen={() => {}}
+      >
         <div>
           <Box textAlign="center" p={2}>
             Menus
           </Box>
           <Divider />
           <List>
-            {
-              isEmployeeLogin ?
-                <ListItem button component={Link} to="/flightManagement">
-                  Flight Management
+            {isEmployeeLogin ? (
+              <ListItem button component={Link} to="/flightManagement">
+                Flight Management
+              </ListItem>
+            ) : (
+              <>
+                <ListItem
+                  button
+                  component={Link}
+                  paddingLeft={10}
+                  to="/dashboard"
+                >
+                  Dashboard
                 </ListItem>
-                :
-                <>
-                  <ListItem button component={Link} paddingLeft={10} to="/dashboard">
-                    Dashboard
-                  </ListItem>
-                  <ListItem button component={Link} to="/admin">
-                    Admin
-                  </ListItem>
-                  <ListItem button component={Link} to="/report">
-                    Report
-                  </ListItem>
-                </>
-            }
+                <ListItem button component={Link} to="/admin">
+                  Admin
+                </ListItem>
+                <ListItem button component={Link} to="/appointment">
+                  Appointment
+                </ListItem>
+                <ListItem button component={Link} to="/report">
+                  Report
+                </ListItem>
+              </>
+            )}
           </List>
         </div>
       </SwipeableDrawer>

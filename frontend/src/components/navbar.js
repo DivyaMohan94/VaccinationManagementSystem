@@ -16,6 +16,7 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import { ListItemText } from "@mui/material";
 import SidePan from "./drawer";
 import BadgeIcon from "@mui/icons-material/Badge";
+import CurrentDateSelectorComponent from "./currentDateSelectorComponent";
 
 export default function Navbar() {
   const [auth, setAuth] = React.useState(true);
@@ -114,6 +115,7 @@ export default function Navbar() {
               )}
             </Menu>
           </Toolbar>
+          <CurrentDateSelectorComponent/>
         </AppBar>
       </Box>
     </>
