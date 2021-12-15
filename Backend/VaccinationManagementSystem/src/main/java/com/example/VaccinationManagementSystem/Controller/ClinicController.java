@@ -86,6 +86,12 @@ public class ClinicController {
         System.out.println("inside get selectedSlot---"+ selectedSlot);
         return clinicService.getAllClinicsWithSpecificSlot(selectedate, selectedSlot);
     }
+
+    @GetMapping(path="/all")
+    public @ResponseBody
+    List<Clinic> getAllClinics(){
+        return clinicService.getAllClinics();
+    }
 //    @PutMapping(path = "{clinicId}")
 //    public @ResponseBody Object updatePassenger(@PathVariable("clinicId") Integer clinicId,
 //                                                @RequestParam(value = "name", required = false) String name,

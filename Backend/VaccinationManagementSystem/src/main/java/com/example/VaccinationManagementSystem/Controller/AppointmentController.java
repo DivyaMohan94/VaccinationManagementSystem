@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.io.DataInput;
 import java.time.LocalTime;
 import java.util.*;
@@ -114,12 +115,17 @@ public class AppointmentController {
     }
 
     @GetMapping(path = "/past")
-    public Object getPastAppointments(@RequestBody String payload) {
+    public Object getPastAppointments(
+            @RequestParam(value = "patient_id", required = true) Integer patient_id,
+            @RequestParam(value = "current_date", required = true) String current_date
+    ) {
         try {
-            JSONObject appointment = new JSONObject(payload);
-            String date = (String) appointment.get("current_date");
-            Integer patient_id = (Integer) appointment.get("patient_id");
-            return appointmentService.getPastAppointment(patient_id, date);
+
+            System.out.println("Getting past appointments");
+//            JSONObject appointment = new JSONObject(payload);
+//            String date = (String) appointment.get("current_date");
+//            Integer patient_id = (Integer) appointment.get("patient_id");
+            return appointmentService.getPastAppointment(patient_id, current_date);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(new ErrorDetail("404", e.getMessage())));
         }
@@ -141,24 +147,26 @@ public class AppointmentController {
     }
 
     @GetMapping(path = "/future")
-    public Object getFutureAppointments(@RequestBody String payload) {
+    public Object getFutureAppointments( @RequestParam(value = "patient_id", required = true) Integer patient_id,
+                                         @RequestParam(value = "current_date", required = true) String current_date) {
         try {
-            JSONObject appointment = new JSONObject(payload);
-            String date = (String) appointment.get("current_date");
-            Integer patient_id = (Integer) appointment.get("patient_id");
-            return appointmentService.getFutureAppointment(patient_id, date);
+//            JSONObject appointment = new JSONObject(payload);
+//            String date = (String) appointment.get("current_date");
+//            Integer patient_id = (Integer) appointment.get("patient_id");
+            return appointmentService.getFutureAppointment(patient_id, current_date);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(new ErrorDetail("404", e.getMessage())));
         }
     }
 
     @GetMapping(path = "/checkin/eligibleAppointments")
-    public Object getCheckinAppointments(@RequestBody String payload) {
+    public Object getCheckinAppointments(@RequestParam(value = "patient_id", required = true) Integer patient_id,
+                                         @RequestParam(value = "current_date", required = true) String current_date) {
         try {
-            JSONObject appointment = new JSONObject(payload);
-            String date = (String) appointment.get("current_date");
-            Integer patient_id = (Integer) appointment.get("patient_id");
-            return appointmentService.getCheckinAppointment(patient_id, date);
+//            JSONObject appointment = new JSONObject(payload);
+//            String date = (String) appointment.get("current_date");
+//            Integer patient_id = (Integer) appointment.get("patient_id");
+            return appointmentService.getCheckinAppointment(patient_id, current_date);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(new ErrorDetail("404", e.getMessage())));
         }

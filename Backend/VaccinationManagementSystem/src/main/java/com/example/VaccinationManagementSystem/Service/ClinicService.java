@@ -119,4 +119,8 @@ public class ClinicService {
         }
         return clinicsWithSpcSlot;
     }
+
+    public List<Clinic> getAllClinics() {
+        return clinicRepository.findAll();
+    }
 }
