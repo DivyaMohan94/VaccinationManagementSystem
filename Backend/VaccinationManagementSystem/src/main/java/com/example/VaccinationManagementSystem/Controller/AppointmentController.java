@@ -131,7 +131,8 @@ public class AppointmentController {
             JSONObject appointment = new JSONObject(payload);
             String date = (String) appointment.get("current_date");
             Integer patient_id = (Integer) appointment.get("patient_id");
-            return appointmentService.markAppointmentCompleted(patient_id, date);
+            appointmentService.markAppointmentCompleted(patient_id, date);
+            return 1;
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(new ErrorDetail("404", e.getMessage())));
         }
