@@ -118,8 +118,8 @@ class DashboardComponent extends Component {
   };
 
   handleAppointmentVaccines = (vaccineList) => {
-    return <>{vaccineList.map((v) => `${v.name}, `)}</>;
-  };
+    return (<>{vaccineList.length > 0? <>{vaccineList.map((v) => `${v.name},`)}</>: <></>}</>);
+  }
 
   componentDidMount() {
     localStorage.setItem("id", 1);
@@ -201,6 +201,7 @@ class DashboardComponent extends Component {
                 {" "}
                 <div className="border-bottom row headingBackground pb-2 pt-2">
                   <div className="col-4">Vaccines Scheduled</div>
+                  <div className="col">Clinic</div>
                   <div className="col">Time Slot</div>
                   <div className="col" style={{ textAlign: "right" }}>
                     Date
@@ -213,11 +214,17 @@ class DashboardComponent extends Component {
                     <h4>
                       <div className="border-bottom row">
                         <div className="col">
-                          {this.handleAppointmentVaccines(item.vaccines)}
+                          {this.handleAppointmentVaccines(
+                              item.appointment.vaccines
+                            )
+                          }
                         </div>
-                        <div className="col">{item.slot}</div>
+                        <div className="col">{item.clinicName}</div>
+                        <div className="col">{item.appointment.slot}</div>
                         <div className="col" style={{ textAlign: "right" }}>
-                          {this.handleApptDate(item.appointment_date)}
+                          {this.handleApptDate(
+                            item.appointment.appointment_date
+                          )}
                         </div>
                       </div>
                     </h4>

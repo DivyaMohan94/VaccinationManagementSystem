@@ -76,7 +76,8 @@ class FutureAppointmentComponent extends Component {
       data: null,
       params: data,
     }).then((response) => {
-      console.log(response.status + " " + response.data);
+			console.log(response.status);
+      console.log(response.data);
       if (response.status === 200) {
         if (response.data.length > 0) {
           console.log(response.data);
@@ -102,6 +103,7 @@ class FutureAppointmentComponent extends Component {
                 {" "}
                 <div className="border-bottom row headingBackground  pb-2 pt-2">
                   <div className="col-4 ">Vaccines Scheduled</div>
+                  <div className="col">Clinic</div>
                   <div className="col ">Time Slot</div>
                   <div className="col " style={{ textAlign: "right" }}>
                     Date
@@ -117,11 +119,16 @@ class FutureAppointmentComponent extends Component {
                     <h4>
                       <div className="border-bottom row">
                         <div className="col-4">
-                          {this.handleAppointmentVaccines(item.vaccines)}
+                          {this.handleAppointmentVaccines(
+                            item.appointment.vaccines
+                          )}
                         </div>
-                        <div className="col">{item.slot}</div>
+                        <div className="col">{item.clinicName}</div>
+                        <div className="col">{item.appointment.slot}</div>
                         <div className="col" style={{ textAlign: "right" }}>
-                          {this.handleApptDate(item.appointment_date)}
+                          {this.handleApptDate(
+                            item.appointment.appointment_date
+                          )}
                         </div>
                         <div className="col">
                           <Button
@@ -130,7 +137,7 @@ class FutureAppointmentComponent extends Component {
                             color="primary"
                             style={{ width: "150px", marginTop: "10px" }}
                             onClick={() =>
-                              this.handleCheckIn(item.appointmentId)
+                              this.handleCheckIn(item.appointment.appointmentId)
                             }
                           >
                             Check-In
@@ -142,7 +149,7 @@ class FutureAppointmentComponent extends Component {
                             color="primary"
                             style={{ width: "150px", marginTop: "10px" }}
                             onClick={() =>
-                              this.handleUpdate(item.appointmentId)
+                              this.handleUpdate(item.appointment.appointmentId)
                             }
                           >
                             Update
@@ -157,7 +164,9 @@ class FutureAppointmentComponent extends Component {
                               marginTop: "10px",
                               marginBottom: "10px",
                             }}
-                            onClick={() => this.handleBlah(item.appointmentId)}
+                            onClick={() =>
+                              this.handleBlah(item.appointment.appointmentId)
+                            }
                           >
                             Blah
                           </Button>

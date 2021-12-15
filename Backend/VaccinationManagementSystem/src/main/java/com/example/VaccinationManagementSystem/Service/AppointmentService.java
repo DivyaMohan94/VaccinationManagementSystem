@@ -2,8 +2,10 @@ package com.example.VaccinationManagementSystem.Service;
 
 import com.example.VaccinationManagementSystem.Model.Appointment;
 import com.example.VaccinationManagementSystem.Model.AppointmentStatus;
+import com.example.VaccinationManagementSystem.Model.Clinic;
 import com.example.VaccinationManagementSystem.Model.Vaccine;
 import com.example.VaccinationManagementSystem.Repository.AppointmentRepository;
+import com.example.VaccinationManagementSystem.Repository.ClinicRepository;
 import com.example.VaccinationManagementSystem.Repository.VaccineRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,11 +25,13 @@ import java.util.stream.Collectors;
 public class AppointmentService {
     private final AppointmentRepository appointmentRepository;
     private final VaccineRepository vaccineRepository;
+    private final ClinicRepository clinicRepository;
 
     @Autowired
-    public AppointmentService(AppointmentRepository appointmentRepository, VaccineRepository vaccineRepository) {
+    public AppointmentService(AppointmentRepository appointmentRepository, VaccineRepository vaccineRepository, ClinicRepository clinicRepository) {
         this.appointmentRepository = appointmentRepository;
         this.vaccineRepository = vaccineRepository;
+        this.clinicRepository = clinicRepository;
     }
 
     @Transactional(rollbackOn = {IOException.class, SQLException.class})
@@ -86,6 +90,14 @@ public class AppointmentService {
         cdate = dateFormat.parse(current_date);
         List<Appointment> appointments = appointmentRepository.getPastAppointments(cdate, patient_id);
         List<Appointment> results = appointments;
+        List<Clinic> allClinics = clinicRepository.findAll();
+
+        final Map<Integer, String> clinicsById = allClinics.stream()
+                .collect(Collectors.toMap(k -> k.getClinicId(), k -> k.getName()));
+
+        final List<AppointmentClinic> pastAppts = appointments.stream().map( a ->
+                new AppointmentClinic(a, clinicsById.get(a.getClinicId()))).collect(Collectors.toList());
+
         //need to handle this in front end as setter method will change DB status.
         /*
         for(int i=0;i<appointments.size();i++){
@@ -95,7 +107,7 @@ public class AppointmentService {
                 (results.get(i)).setStatus("Completed");
             }
         } */
-        return results;
+        return pastAppts;
     }
 
     @Transactional(rollbackOn = {IOException.class, SQLException.class})
@@ -104,7 +116,15 @@ public class AppointmentService {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.US);
         cdate = dateFormat.parse(current_date);
         List<Appointment> appointments = appointmentRepository.getFutureAppointments(cdate, patient_id);
-        return appointments;
+        List<Clinic> allClinics = clinicRepository.findAll();
+
+        final Map<Integer, String> clinicsById = allClinics.stream()
+                .collect(Collectors.toMap(k -> k.getClinicId(), k -> k.getName()));
+
+        final List<AppointmentClinic> futureAppts = appointments.stream().map( a ->
+                new AppointmentClinic(a, clinicsById.get(a.getClinicId()))).collect(Collectors.toList());
+
+        return futureAppts;
     }
 
     @Transactional(rollbackOn = {IOException.class, SQLException.class})
@@ -194,9 +214,32 @@ public class AppointmentService {
 
         List<Appointment> futureAppointments = (List<Appointment>) getFutureAppointment(patientId, currentDate);
 
-        Object[] allDues = {vaccinationsDue, futureAppointments};
+        List<Clinic> allClinics = clinicRepository.findAll();
+
+        final Map<Integer, String> clinicsById = allClinics.stream()
+                .collect(Collectors.toMap(k -> k.getClinicId(), k -> k.getName()));
+
+//        final Map<Integer, Appointment> appointmentsById = new HashMap<>();
+//        for (Appointment k : futureAppointments) {
+//            if (appointmentsById.put(k.getAppointmentId(), k) != null) {
+//                throw new IllegalStateException("Duplicate key");
+//            }
+//        }
+
+        final List<AppointmentClinic> futureAppts = futureAppointments.stream().map( a ->
+            new AppointmentClinic(a, clinicsById.get(a.getClinicId()))).collect(Collectors.toList());
+
+        Object[] allDues = {vaccinationsDue, futureAppts};
         return allDues;
     }
+
+//    public Object getHistory(Integer patientId, String currentDate) throws ParseException {
+//
+//        Date cdate = null;
+//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.US);
+//        cdate = dateFormat.parse(currentDate);
+//        return appointmentRepository.getApptsTest(cdate, patientId);
+//    }
 
     public class VaccineDueModel {
         String vaccineName;
@@ -241,6 +284,32 @@ public class AppointmentService {
 
         public void setDueDate(Date dueDate) {
             this.dueDate = dueDate;
+        }
+    }
+
+    public class AppointmentClinic{
+       private Appointment appointment;
+       private String clinicName;
+
+        public AppointmentClinic(Appointment appointment, String clinicName) {
+            this.appointment = appointment;
+            this.clinicName = clinicName;
+        }
+
+        public Appointment getAppointment() {
+            return appointment;
+        }
+
+        public void setAppointment(Appointment appointment) {
+            this.appointment = appointment;
+        }
+
+        public String getClinicName() {
+            return clinicName;
+        }
+
+        public void setClinicName(String clinicName) {
+            this.clinicName = clinicName;
         }
     }
 
