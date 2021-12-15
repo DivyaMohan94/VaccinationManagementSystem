@@ -107,7 +107,7 @@ public class AppointmentController {
     public Object delete_Appointmnet(@PathVariable("id") Integer id) {
         try {
             appointmentService.cancelAppointment(id);
-            return ResponseEntity.ok().body(new SuccessResponse("200", "Appointment with id " + id + " is deleted successfully"));
+            return ResponseEntity.ok().body(new SuccessResponse("200", "Appointment with id " + id + " is canceled successfully"));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(new ErrorDetail("404", e.getMessage())));
         }
@@ -120,6 +120,18 @@ public class AppointmentController {
             String date = (String) appointment.get("current_date");
             Integer patient_id = (Integer) appointment.get("patient_id");
             return appointmentService.getPastAppointment(patient_id, date);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(new ErrorDetail("404", e.getMessage())));
+        }
+    }
+
+    @PostMapping(path = "/updatestatus")
+    public Object changeAppointmentStatus(@RequestBody String payload) {
+        try {
+            JSONObject appointment = new JSONObject(payload);
+            String date = (String) appointment.get("current_date");
+            Integer patient_id = (Integer) appointment.get("patient_id");
+            return appointmentService.markAppointmentCompleted(patient_id, date);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(new ErrorDetail("404", e.getMessage())));
         }
@@ -168,12 +180,16 @@ public class AppointmentController {
             @RequestParam(value = "currentDate") String currentDate
     ) {
         try {
-            return appointmentService.getDueAppointments(patientId, currentDate);
+            System.out.println("checking dues controller");
+            List<Object> dues = (List<Object>) appointmentService.getDueAppointments(patientId, currentDate);
+            System.out.println(dues);
+            return dues;
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(new ErrorDetail("404", e.getMessage())));
         }
 
     }
+
 }
 
 

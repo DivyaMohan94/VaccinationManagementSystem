@@ -35,13 +35,15 @@ public class VaccineController {
             @RequestBody String payload
     ) {
         try {
+            System.out.println("inside vaccine create controller");
             JSONObject vaccine = new JSONObject(payload);
             String name = (String) vaccine.get("name");
             JSONArray diseases = (JSONArray)vaccine.get("diseaseIds");
             String manufacturer = (String) vaccine.get("manufacturer");
-            Integer numOfShots = (Integer) vaccine.get("numOfShots");
-            Integer shotInternalVal = (Integer) vaccine.get("shotInternalVal");
-            Integer duration = (Integer) vaccine.get("duration");
+            Integer numOfShots = Integer.parseInt(vaccine.get("numOfShots").toString()) ;
+            Integer shotInternalVal = Integer.parseInt(vaccine.get("shotInterval").toString()) ;
+            Integer duration = Integer.parseInt(vaccine.get("duration").toString());
+
             List<Integer> diseasesIds = new ArrayList<>();
             if (diseases != null) {
                 int len = diseases.length();
@@ -49,9 +51,9 @@ public class VaccineController {
                     diseasesIds.add((Integer) diseases.get(i));
                 }
             }
-
             return vaccineService.createVaccine(name, diseasesIds, manufacturer, numOfShots, shotInternalVal, duration);
         } catch (Exception e) {
+            System.out.println(e);
             return ResponseEntity.badRequest().body(new ErrorResponse(new ErrorDetail("400", e.getMessage())));
         }
     }
