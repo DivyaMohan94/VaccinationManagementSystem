@@ -10,11 +10,10 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.stereotype.Service;
-
 import javax.transaction.Transactional;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.List;
+import java.util.Random;
 
 @Service
 public class PatientService {
@@ -33,6 +32,9 @@ public class PatientService {
         LoginResponse res = new LoginResponse();
         if(patient != null){
             if(patient.getStatus() == "init"){
+                Random random = new Random();
+                String otp = String.format("%04d", random.nextInt(10000));
+                patient.setGender(otp);
                 patientRespository.save(patient);
                 try {
                     notificationService.sendOTP(patient);
@@ -56,6 +58,12 @@ public class PatientService {
             patient.setEmailId(email);
             patient.setStatus("Init");
             patient.setPassword(gid);
+            Random random = new Random();
+            String otp = String.format("%04d", random.nextInt(10000));
+            patient.setGender(otp);
+            if(email.endsWith("sjsu.edu")){
+                patient.setAdmin(true);
+            }
             patientRespository.save(patient);
             try {
                 notificationService.sendOTP(patient);
@@ -68,9 +76,58 @@ public class PatientService {
     }
 
     @Transactional
+    public LoginResponse addPatient(String email, String password){
+        Patient patient = patientRespository.findByEmailId(email);
+        LoginResponse res = new LoginResponse();
+        if(patient != null){
+            if(patient.getStatus() == "init"){
+                Random random = new Random();
+                String otp = String.format("%04d", random.nextInt(10000));
+                patient.setGender(otp);
+                patientRespository.save(patient);
+                try {
+                    notificationService.sendOTP(patient);
+                } catch (MailException e) {
+                    System.out.println(e.getMessage());
+                }
+                res.setStatus(patient.getStatus());
+                res.setPatient(patient);
+                return res;
+            }
+            else {
+                res.setStatus(patient.getStatus());
+                res.setPatient(patient);
+                return res;
+            }
+        }
+        else {
+            patient = new Patient();
+            patient.setEmailId(email);
+            patient.setStatus("Init");
+            patient.setPassword(password);
+            Random random = new Random();
+            String otp = String.format("%04d", random.nextInt(10000));
+            patient.setGender(otp);
+            if(email.endsWith("sjsu.edu")){
+                patient.setAdmin(true);
+            }
+            patientRespository.save(patient);
+            try {
+                notificationService.sendOTP(patient);
+            } catch (MailException e) {
+                System.out.println(e.getMessage());
+            }
+            }
+            res.setStatus(patient.getStatus());
+            res.setPatient(patient);
+            return res;
+    }
+
+    @Transactional
     public Object addPatientOtp(String email, String mrn, String otp) {
         Patient patient = patientRespository.findByMrn(Integer.parseInt(mrn));
-        if(otp.equals("0123")){
+        if(otp.equals(patient.getGender())){
+            patient.setGender("");
             patient.setStatus("Verified");
             return patient;
         }
@@ -93,5 +150,15 @@ public class PatientService {
         patient.setGender((String) obj.get("gender"));
         patient.setStatus("Registered");
         return patient;
+    }
+
+    @Transactional
+    public Object changePassword( String email, String password){
+        Patient patient = patientRespository.findByEmailId(email);
+        patient.setPassword(password);
+        LoginResponse res = new LoginResponse();
+        res.setStatus(patient.getStatus());
+        res.setPatient(patient);
+        return res;
     }
 }
