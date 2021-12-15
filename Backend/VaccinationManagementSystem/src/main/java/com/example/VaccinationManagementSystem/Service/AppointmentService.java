@@ -232,7 +232,7 @@ public class AppointmentService {
     }
 
     @Transactional(rollbackOn = {IOException.class, SQLException.class})
-    public Object markAppointmentCompleted(Integer patient_id, String current_date) throws ParseException {
+    public void markAppointmentCompleted(Integer patient_id, String current_date) throws ParseException {
         List<Appointment> pastAppointments = (List<Appointment>) getPastAppointment(patient_id, current_date);
         for (int i = 0; i < pastAppointments.size(); i++) {
             if ((pastAppointments.get(i)).getStatus().equals(AppointmentStatus.BOOKED)) {
@@ -241,6 +241,6 @@ public class AppointmentService {
                 (pastAppointments.get(i)).setStatus(AppointmentStatus.COMPLETED);
             }
         }
-        return pastAppointments;
+        return ;
     }
 }
