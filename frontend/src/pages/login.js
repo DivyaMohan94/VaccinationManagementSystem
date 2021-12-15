@@ -72,7 +72,8 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-
+  const [otp, setOtp] = useState("");
+  const [stageotp, setOTP] = useState(false);
   const navigate = useNavigate();
 
   //const dispatch = useDispatch();
@@ -85,10 +86,70 @@ export default function Login() {
         lname: resp.profileObj.familyName,
         gid: resp.profileObj.googleId
       }).then((response) => {
+        console.log(response)
         if(response.status === 200){
-          console.log("ok")
+          
+          if(response.data.status === 'Init'){
+            console.log(response.data)
+            localStorage.setItem("email", response.data.patient.emailId)
+            localStorage.setItem("mrn", response.data.patient.mrn)
+            setOTP(true)
+          }
+          else if (response.data.status === "Verified"){
+            console.log(response.data)
+            localStorage.setItem("email", response.data.patient.emailId)
+            localStorage.setItem("mrn", response.data.patient.mrn)
+            navigate("/register")
+
+          }
+          else if(response.data.status === "Registered"){
+            console.log(response.data)
+            localStorage.setItem("email", response.data.patient.emailId)
+            localStorage.setItem("mrn", response.data.patient.mrn)
+            navigate("/")
+          }
+        }
+        else if (response.status === 400) {
+          setErrorMessage(response.data.message);
+          swal("Error", errorMessage, "error", {
+            dangerMode: true,
+          });
+        } else {
+          console.log(response);
+          swal("Error", errorMessage, "error", {
+            dangerMode: true,
+          });
         }
       })
+  }
+
+  const onCancelOTP = (e) => {
+    console.log("Clearing")
+    setOTP(false);
+  }
+  const onSubmitOtp = (e) => {
+    if(otp === "") {
+      swal("Eror", "Empty OTP", "error", {
+        dangerMode: true,
+    });
+    }
+    else {
+      Axios.defaults.withCredentials = true;
+      Axios.post("http://localhost:8080/user/validateOtp", {
+        email: localStorage.getItem("email"),
+        mrn: localStorage.getItem("mrn"),
+        otp: otp,
+      }).then((response) => {
+        if(response.status === 200) {
+          navigate("/register")
+        }
+        else {
+          swal("Eror", "OTP verification failed", "error", {
+            dangerMode: true,
+        });
+        }
+      })
+    }
   }
   const handleSubmit = (e) => {
     debugger;
@@ -99,23 +160,12 @@ export default function Login() {
       });
     } else {
       Axios.defaults.withCredentials = true;
-      Axios.post("http://localhost:3002/routes/users/login", {
+      Axios.post("http://localhost:8080/user/login", {
         email: email,
         password: password,
       })
         .then((response) => {
           if (response.status === 200) {
-            debugger;
-            localStorage.setItem("loggedIn", true);
-            localStorage.setItem("email", response.data.email);
-            localStorage.setItem("name", response.data.name);
-            localStorage.setItem("phone", response.data.phone);
-            localStorage.setItem("currency", response.data.currency);
-            localStorage.setItem("timezone", response.data.timezone);
-            localStorage.setItem("language", response.data.language);
-            localStorage.setItem("id", response.data._id);
-
-            
 
             navigate("/home");
           } else if (response.status === 400) {
@@ -142,6 +192,7 @@ export default function Login() {
   return (
       
       <> 
+      {console.log(stageotp)}
       <Navbar/>
     <Grid container component="main" className={classes.root}>
       <CssBaseline />
@@ -191,17 +242,57 @@ export default function Login() {
               variant="contained"
               color="primary"
               className={classes.submit}
+              disabled={stageotp}
             >
               Sign In
             </Button>
             <GoogleLogin
               clientId="664857607032-ok389vi4jghphm7t69trrq8vc0hdeagj.apps.googleusercontent.com"
+              fullWidth
               buttonText="Login"
               onSuccess={responseGoogle}
               onFailure={responseGoogle}
               cookiePolicy={'single_host_origin'}
-            />, 
-            
+              disabled={stageotp}
+            />,
+            <div>{stageotp ? 
+            <div>
+            <TextField
+              required
+              fullWidth
+              open={stageotp}
+              name="otp"
+              label="otp"
+              type="otp"
+              id="otp"
+              autoComplete="current-password"
+              onChange={(event) => {
+                event.preventDefault();
+                setOtp(event.target.value);
+              }}
+            />
+            <Button
+              open={stageotp}
+              variant="contained"
+              fullwidth
+              color="primary"
+              className={classes.submit}
+              onClick = {() => onSubmitOtp()}
+            >
+              Submit OTP
+            </Button>
+            <Button
+              open="false"
+              variant="contained"
+              fullwidth
+              color="secondary"
+              className={classes.submit}
+              onClick = {() => onCancelOTP()}
+            >
+              Cancel
+            </Button>
+            </div> : <div></div>}
+            </div>
 
             <Box mt={5}>
               <Copyright />

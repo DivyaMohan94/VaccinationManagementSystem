@@ -16,6 +16,11 @@ import Axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import swal from "sweetalert";
 import Navbar from "../components/navbar";
+import DatePicker from 'react-date-picker';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import { FormLabel,FormControl, InputLabel,Select, MenuItem } from "@material-ui/core";
+
 
 function Copyright() {
   return (
@@ -62,26 +67,43 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Login() {
   const classes = useStyles();
-
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const stateList = [ 'AL','AK','AS','AZ','AR','CA','CO','CT','DE','DC','FM','FL','GA',
+ 'GU','HI','ID','IL','IN','IA','KS','KY','LA','ME','MH','MD','MA','MI','MN',
+ 'MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','MP','OH','OK','OR',
+'PW','PA','PR','RI','SC','SD','TN','TX','UT','VT','VI','VA','WA','WV','WI','WY']
+  const [fname, setFname] = useState("");
+  const [mname, setMname] = useState("");
+  const [lname, setLname] = useState("");
+  const [street, setStreet] = useState("");
+  const [state, setStates] = useState(0);
+  const [zip, setZip] = useState("");
+  const [dob, setDob] = useState(new Date());
+  const [city, setCity] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [name, setName] = useState("");
+  const [gender, setGender] = useState("");
 
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (password === "" || email === "") {
+    if (fname === ""||lname===""||state === ""||city===""||gender ==="") {
       swal("Error", "Enter Details to SignUp", "error", {
         dangerMode: true,
       });
     } else {
       Axios.defaults.withCredentials = true;         
-      await Axios.post("/users/register", {
-        name: name,
-        email: email,
-        password: password,
+      await Axios.post("/user/register", {
+        mrn: localStorage.getItem('mrn'),
+        fname: fname,
+        mname: mname,
+        lname: lname,
+        street: street,
+        city:city,
+        state: stateList[state],
+        zip: zip,
+        dob: dob.getDate() + "/" + dob.getMonth() + "/" +dob.getFullYear(),
+        gender: gender,
+
       })
         .then((response) => {
           if (response.status === 200) {
@@ -109,7 +131,7 @@ export default function Login() {
           }
         })
         .catch((err) => {
-          swal("Check your ID or Password", errorMessage, "error", {
+          swal("Server Not Responding", errorMessage, "error", {
             dangerMode: true,
           });
           console.log(err);
@@ -135,47 +157,99 @@ export default function Login() {
               <TextField
                 required
                 fullWidth
-                name="Name"
-                label="Name"
+                name="fName"
+                label="First Name"
                 type="text"
-                id="Name"
+                id="fName"
                 autoFocus
-                autoComplete="current-Name"
                 onChange={(event) => {
                   event.preventDefault();
-                  setName(event.target.value);
+                  setFname(event.target.value);
                 }}
               />
               <TextField
-                required
                 fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"                
+                id="mName"
+                label="Middle Name"
+                name="mName"
+                autoComplete="mName"                
                 onChange={(event) => {
                   event.preventDefault();
-                  setEmail(event.target.value);
+                  setMname(event.target.value);
                 }}
               />
+              
               <TextField
                 required
                 fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
+                name="lName"
+                label="Last Name"
+                id="lName"
+                autoComplete="lName" 
                 onChange={(event) => {
                   event.preventDefault();
-                  setPassword(event.target.value);
+                  setLname(event.target.value);
                 }}
-              />              
-
-              <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
-              />
+              /> 
+              <TextField
+                fullWidth
+                name="street"
+                label="Street Name and Number"
+                id="street"
+                onChange={(event) => {
+                  event.preventDefault();
+                  setStreet(event.target.value);
+                }}
+              /> 
+              <TextField
+                halfWidth
+                name="city"
+                label="city"
+                id="city"
+                onChange={(event) => {
+                  event.preventDefault();
+                  setCity(event.target.value);
+                }}
+              /> 
+              <TextField
+                  halfWidth
+                  name="zip"
+                  label="zipcode"
+                  id="zip"
+                  onChange={(event) => {
+                    event.preventDefault();
+                    setZip(event.target.value);
+                  }}
+                /> 
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">states</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={stateList[state]}
+                  label="States"
+                  onChange={(event) => setStates(event.target.value)}
+                    >
+                    {stateList.map((st,i) => <MenuItem value={10}>{st}</MenuItem> )}
+                    </Select>
+                  </FormControl>
+                
+              <FormLabel>DOB:</FormLabel>          
+              <DatePicker
+              onChange={setDob}
+              value={dob}
+            />
+        <FormControl fullWidth component="fieldset">
+            <FormLabel component="legend">Gender</FormLabel>
+            <RadioGroup row aria-label="gender" name="row-radio-buttons-group"
+            value = {gender}
+            onChange = {(event) => {setGender(event.target.value)}}
+            >
+              <FormControlLabel value="female" control={<Radio />} label="Female" />
+              <FormControlLabel value="male" control={<Radio />} label="Male" />
+              <FormControlLabel value="other" control={<Radio />} label="Other" />
+            </RadioGroup>
+        </FormControl>
               <Button
                 type="submit"
                 fullWidth

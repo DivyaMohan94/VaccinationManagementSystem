@@ -4,6 +4,7 @@ package com.example.VaccinationManagementSystem.Model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -18,6 +19,12 @@ public class Patient {
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
             generator = "mrnGenerator")
+//    @GeneratedValue(
+//            generator = "MrnGenerator.id"
+//    )
+//    @GenericGenerator(
+//            name = "MrnGenerator.id", strategy = "com.example.VaccinationManagementSystem.Model.MrnGenerator"
+//    )
     private Integer mrn;
     private String emailId;
     private String fname;
@@ -26,6 +33,8 @@ public class Patient {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd-HH", timezone = "PST")
     private Date dob;
     private String gender;
+    private String status;
+    private String password;
     private boolean isAdmin;
     @Embedded
     private Address address;
@@ -116,5 +125,21 @@ public class Patient {
 
     public void setAddress(Address address) {
         this.address = address;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
