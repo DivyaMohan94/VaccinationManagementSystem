@@ -12,7 +12,6 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import GoogleLogin from "react-google-login";
-//import image from "./splitwise.png";
 import { useState } from "react";
 
 import Axios from "axios";
@@ -88,24 +87,17 @@ export default function Login() {
       }).then((response) => {
         console.log(response)
         if(response.status === 200){
-          
+          localStorage.setItem("email", response.data.patient.emailId)
+          localStorage.setItem("mrn", response.data.patient.mrn)
+          localStorage.setItem("admin", response.data.patient.admin)
           if(response.data.status === 'Init'){
-            console.log(response.data)
-            localStorage.setItem("email", response.data.patient.emailId)
-            localStorage.setItem("mrn", response.data.patient.mrn)
             setOTP(true)
           }
           else if (response.data.status === "Verified"){
-            console.log(response.data)
-            localStorage.setItem("email", response.data.patient.emailId)
-            localStorage.setItem("mrn", response.data.patient.mrn)
             navigate("/register")
 
           }
           else if(response.data.status === "Registered"){
-            console.log(response.data)
-            localStorage.setItem("email", response.data.patient.emailId)
-            localStorage.setItem("mrn", response.data.patient.mrn)
             navigate("/")
           }
         }
@@ -168,23 +160,17 @@ export default function Login() {
       })
         .then((response) => {
           if (response.status === 200) {
+            localStorage.setItem("email", response.data.patient.emailId)
+            localStorage.setItem("mrn", response.data.patient.mrn)
+            localStorage.setItem("admin", response.data.patient.admin)
             if(response.data.status === 'Init'){
-              console.log(response.data)
-              localStorage.setItem("email", response.data.patient.emailId)
-              localStorage.setItem("mrn", response.data.patient.mrn)
               setOTP(true)
             }
             else if (response.data.status === "Verified"){
-              console.log(response.data)
-              localStorage.setItem("email", response.data.patient.emailId)
-              localStorage.setItem("mrn", response.data.patient.mrn)
               navigate("/register")
   
             }
             else if(response.data.status === "Registered"){
-              console.log(response.data)
-              localStorage.setItem("email", response.data.patient.emailId)
-              localStorage.setItem("mrn", response.data.patient.mrn)
               navigate("/")
             }
           } 
