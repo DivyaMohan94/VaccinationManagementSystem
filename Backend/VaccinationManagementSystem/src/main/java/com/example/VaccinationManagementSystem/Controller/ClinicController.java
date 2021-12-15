@@ -35,25 +35,25 @@ public class ClinicController {
 
             Address add = new Address(
                     (String) address.get("street"),
-                    (Integer) address.get("number"),
+                    Integer.parseInt(address.get("number").toString()),
                     (String) address.get("city"),
                     (String) address.get("state"),
                     (String) address.get("zipcode"));
 
             LocalTime start = LocalTime.of(
-                    (int) startTime.get("hour"),
-                    (int) startTime.get("minute"),
-                    (int) startTime.get("second"));
+                    Integer.parseInt(startTime.get("hour").toString()),
+                    Integer.parseInt(startTime.get("minute").toString()),
+                    Integer.parseInt(startTime.get("second").toString()));
             LocalTime end = LocalTime.of(
-                    (int) endTime.get("hour"),
-                    (int) endTime.get("minute"),
-                    (int) endTime.get("second"));
+                    Integer.parseInt(endTime.get("hour").toString()),
+                    Integer.parseInt(endTime.get("minute").toString()),
+                    Integer.parseInt(endTime.get("second").toString()));
 
             return clinicService.createClinic(
                     (String) clinic.get("name"),
                     add,
                     //(String) clinic.get("businessHours"),
-                    (Integer) clinic.get("numberOfPhysicians"),
+                    Integer.parseInt(clinic.get("numberOfPhysicians").toString()),
                     start,
                     end);
 
