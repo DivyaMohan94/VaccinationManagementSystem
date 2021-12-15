@@ -91,6 +91,7 @@ class PastAppointmentComponent extends Component {
                 {" "}
                 <div className="border-bottom row headingBackground  pb-2 pt-2">
                   <div className="col-4 ">Vaccines Scheduled</div>
+                  <div className="col">Clinic</div>
                   <div className="col ">Time Slot</div>
                   <div className="col " style={{ textAlign: "right" }}>
                     Date
@@ -103,11 +104,16 @@ class PastAppointmentComponent extends Component {
                     <h4>
                       <div className="border-bottom row">
                         <div className="col-4">
-                          {this.handleAppointmentVaccines(item.vaccines)}
+                          {this.handleAppointmentVaccines(
+                            item.appointment.vaccines
+                          )}
                         </div>
-                        <div className="col">{item.slot}</div>
+                        <div className="col">{item.clinicName}</div>
+                        <div className="col">{item.appointment.slot}</div>
                         <div className="col" style={{ textAlign: "right" }}>
-                          {this.handleApptDate(item.appointment_date)}
+                          {this.handleApptDate(
+                            item.appointment.appointment_date
+                          )}
                         </div>
                       </div>
                     </h4>

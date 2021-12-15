@@ -197,10 +197,26 @@ public class AppointmentController {
             System.out.println(dues);
             return dues;
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return new Object [] {ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(new ErrorDetail("404", e.getMessage())))};
         }
 
     }
+
+//    @GetMapping(path = "/history")
+//    public @ResponseBody
+//    Object getDueApptHistory(
+//            @RequestParam(value = "patientId") Integer patientId,
+//            @RequestParam(value = "currentDate") String currentDate
+//    ) {
+//        try {
+//            List<Object> historyObjs = (List<Object>)  appointmentService.getHistory(patientId, currentDate);
+//            return historyObjs;
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(new ErrorDetail("404", e.getMessage())));
+//        }
+//
+//    }
 
 }
 

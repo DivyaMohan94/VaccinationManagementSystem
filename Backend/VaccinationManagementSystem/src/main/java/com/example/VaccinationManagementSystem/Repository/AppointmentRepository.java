@@ -1,16 +1,19 @@
 package com.example.VaccinationManagementSystem.Repository;
 
 import com.example.VaccinationManagementSystem.Model.Appointment;
+import com.example.VaccinationManagementSystem.Model.AppointmentStatus;
+import com.example.VaccinationManagementSystem.Model.Vaccine;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.ManyToMany;
 import javax.persistence.criteria.CriteriaBuilder;
 import java.time.LocalTime;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Repository
 public interface AppointmentRepository  extends JpaRepository<Appointment, Integer>{
