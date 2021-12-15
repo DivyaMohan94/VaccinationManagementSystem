@@ -121,7 +121,7 @@ public class AppointmentController {
     ) {
         try {
 
-//            System.out.println(payload);
+            System.out.println("Getting past appointments");
 //            JSONObject appointment = new JSONObject(payload);
 //            String date = (String) appointment.get("current_date");
 //            Integer patient_id = (Integer) appointment.get("patient_id");
