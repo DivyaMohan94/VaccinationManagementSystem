@@ -75,7 +75,7 @@ export default function Login() {
   const [mname, setMname] = useState("");
   const [lname, setLname] = useState("");
   const [street, setStreet] = useState("");
-  const [state, setStates] = useState("");
+  const [state, setStates] = useState(0);
   const [zip, setZip] = useState("");
   const [dob, setDob] = useState(new Date());
   const [city, setCity] = useState("");
@@ -86,7 +86,7 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (fname === "" || mname === ""||lname===""||state === ""||city===""||gender ==="") {
+    if (fname === ""||lname===""||state === ""||city===""||gender ==="") {
       swal("Error", "Enter Details to SignUp", "error", {
         dangerMode: true,
       });
@@ -99,9 +99,9 @@ export default function Login() {
         lname: lname,
         street: street,
         city:city,
-        state: state,
+        state: stateList[state],
         zip: zip,
-        dob: dob.getDate + "/" + dob.getMonth + "/" +dob.getFullYear,
+        dob: dob.getDate() + "/" + dob.getMonth() + "/" +dob.getFullYear(),
         gender: gender,
 
       })
@@ -131,7 +131,7 @@ export default function Login() {
           }
         })
         .catch((err) => {
-          swal("Check your ID or Password", errorMessage, "error", {
+          swal("Server Not Responding", errorMessage, "error", {
             dangerMode: true,
           });
           console.log(err);
@@ -226,7 +226,7 @@ export default function Login() {
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
-                  value={state}
+                  value={stateList[state]}
                   label="States"
                   onChange={(event) => setStates(event.target.value)}
                     >

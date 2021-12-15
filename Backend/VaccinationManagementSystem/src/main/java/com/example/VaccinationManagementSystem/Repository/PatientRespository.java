@@ -10,5 +10,5 @@ import java.util.List;
 @Repository
 public interface PatientRespository extends JpaRepository<Patient, Integer> {
     Patient findByEmailId(String emailId);
-    Patient findByMrn(String mrn);
+    Patient findByMrn(Integer mrn);
 }

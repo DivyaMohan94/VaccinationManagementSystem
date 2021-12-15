@@ -5,16 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-@Service
+@Component
 public class NotificationService {
-    private JavaMailSender javaMailSender;
-
     @Autowired
-    public NotificationService(JavaMailSender javaMailSender){
-        this.javaMailSender = javaMailSender;
-    }
+    private JavaMailSender javaMailSender;
 
     public void sendOTP(Patient patient) throws MailException {
         SimpleMailMessage mail = new SimpleMailMessage();
@@ -23,6 +20,5 @@ public class NotificationService {
         mail.setSubject("OTP for Registration");
         mail.setText("The otp for your registration to vaccine service is 0123");
         javaMailSender.send(mail);
-
     }
 }

@@ -86,10 +86,39 @@ export default function Login() {
         lname: resp.profileObj.familyName,
         gid: resp.profileObj.googleId
       }).then((response) => {
+        console.log(response)
         if(response.status === 200){
-          localStorage.setItem("email", response.data.emailId)
-          localStorage.setItem("mrn", response.data.mrn)
-          setOTP(true)
+          
+          if(response.data.status === 'Init'){
+            console.log(response.data)
+            localStorage.setItem("email", response.data.patient.emailId)
+            localStorage.setItem("mrn", response.data.patient.mrn)
+            setOTP(true)
+          }
+          else if (response.data.status === "Verified"){
+            console.log(response.data)
+            localStorage.setItem("email", response.data.patient.emailId)
+            localStorage.setItem("mrn", response.data.patient.mrn)
+            navigate("/register")
+
+          }
+          else if(response.data.status === "Registered"){
+            console.log(response.data)
+            localStorage.setItem("email", response.data.patient.emailId)
+            localStorage.setItem("mrn", response.data.patient.mrn)
+            navigate("/")
+          }
+        }
+        else if (response.status === 400) {
+          setErrorMessage(response.data.message);
+          swal("Error", errorMessage, "error", {
+            dangerMode: true,
+          });
+        } else {
+          console.log(response);
+          swal("Error", errorMessage, "error", {
+            dangerMode: true,
+          });
         }
       })
   }

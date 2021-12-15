@@ -48,7 +48,7 @@ public class PatientController {
     }
 
     @PostMapping("/register")
-    public @ResponseBody Object reagisterUser(@RequestBody String payload){
+    public @ResponseBody Object registerUser(@RequestBody String payload){
         try{
             JSONObject registerPayload = new JSONObject(payload);
             return patientService.addPatientDetails(registerPayload);

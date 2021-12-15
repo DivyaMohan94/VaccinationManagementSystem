@@ -15,17 +15,17 @@ import java.util.Date;
         property = "mrn")
 public class Patient {
     @Id
-//    @TableGenerator(name = "mrnGenerator", initialValue = 100)
-//    @GeneratedValue(
-//            strategy = GenerationType.SEQUENCE,
-//            generator = "mrnGenerator")
+    @TableGenerator(name = "mrnGenerator", initialValue = 100)
     @GeneratedValue(
-            generator = "MrnGenerator.id"
-    )
-    @GenericGenerator(
-            name = "MrnGenerator.id", strategy = "com.example.VaccinationManagementSystem.Model.MrnGenerator"
-    )
-    private String mrn;
+            strategy = GenerationType.SEQUENCE,
+            generator = "mrnGenerator")
+//    @GeneratedValue(
+//            generator = "MrnGenerator.id"
+//    )
+//    @GenericGenerator(
+//            name = "MrnGenerator.id", strategy = "com.example.VaccinationManagementSystem.Model.MrnGenerator"
+//    )
+    private Integer mrn;
     private String emailId;
     private String fname;
     private String mname;
@@ -39,7 +39,7 @@ public class Patient {
     @Embedded
     private Address address;
 
-    public Patient(String mrn, String emailId, String fname, String mname, String lname, Date dob, String gender, boolean isAdmin, Address address) {
+    public Patient(Integer mrn, String emailId, String fname, String mname, String lname, Date dob, String gender, boolean isAdmin, Address address) {
         this.mrn = mrn;
         this.emailId = emailId;
         this.fname = fname;
@@ -55,11 +55,11 @@ public class Patient {
 
     }
 
-    public String getMrn() {
+    public Integer getMrn() {
         return mrn;
     }
 
-    public void setMrn(String mrn) {
+    public void setMrn(Integer mrn) {
         this.mrn = mrn;
     }
 

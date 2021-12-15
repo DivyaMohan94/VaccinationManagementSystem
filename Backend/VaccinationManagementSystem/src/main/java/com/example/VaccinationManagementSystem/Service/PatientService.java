@@ -2,6 +2,7 @@ package com.example.VaccinationManagementSystem.Service;
 
 import com.example.VaccinationManagementSystem.Mail.NotificationService;
 import com.example.VaccinationManagementSystem.Model.Address;
+import com.example.VaccinationManagementSystem.Model.LoginResponse;
 import com.example.VaccinationManagementSystem.Model.Patient;
 import com.example.VaccinationManagementSystem.Repository.AppointmentRepository;
 import com.example.VaccinationManagementSystem.Repository.PatientRespository;
@@ -27,19 +28,25 @@ public class PatientService {
     }
 
     @Transactional
-    public Patient addPatientGoogle(String email, String gid, String fname, String lname){
+    public LoginResponse addPatientGoogle(String email, String gid, String fname, String lname){
         Patient patient = patientRespository.findByEmailId(email);
+        LoginResponse res = new LoginResponse();
         if(patient != null){
             if(patient.getStatus() == "init"){
                 patientRespository.save(patient);
                 try {
                     notificationService.sendOTP(patient);
                 } catch (MailException e) {
+                    System.out.println(e.getMessage());
                 }
-                return patient;
+                res.setStatus(patient.getStatus());
+                res.setPatient(patient);
+                return res;
             }
             else {
-                return patient;
+                res.setStatus(patient.getStatus());
+                res.setPatient(patient);
+                return res;
             }
         }
         else {
@@ -54,13 +61,15 @@ public class PatientService {
                 notificationService.sendOTP(patient);
             } catch (MailException e) {
             }
-            return patient;
+            res.setStatus(patient.getStatus());
+            res.setPatient(patient);
+            return res;
         }
     }
 
     @Transactional
     public Object addPatientOtp(String email, String mrn, String otp) {
-        Patient patient = patientRespository.findByMrn(mrn);
+        Patient patient = patientRespository.findByMrn(Integer.parseInt(mrn));
         if(otp.equals("0123")){
             patient.setStatus("Verified");
             return patient;
@@ -70,7 +79,7 @@ public class PatientService {
 
     @Transactional
     public Object addPatientDetails(JSONObject obj) throws ParseException {
-        Patient patient = patientRespository.findByMrn(obj.getString("mrn"));
+        Patient patient = patientRespository.findByMrn(Integer.parseInt(obj.getString("mrn")));
         Address address = new Address();
         address.setStreet(obj.getString("street"));
         address.setCity(obj.getString("city"));
