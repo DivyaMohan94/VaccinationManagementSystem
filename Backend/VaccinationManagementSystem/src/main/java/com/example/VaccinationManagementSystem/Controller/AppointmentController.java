@@ -197,6 +197,7 @@ public class AppointmentController {
             System.out.println(dues);
             return dues;
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return new Object [] {ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(new ErrorDetail("404", e.getMessage())))};
         }
 

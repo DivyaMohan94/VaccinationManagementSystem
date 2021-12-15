@@ -116,12 +116,16 @@ public class AppointmentService {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.US);
         cdate = dateFormat.parse(current_date);
         List<Appointment> appointments = appointmentRepository.getFutureAppointments(cdate, patient_id);
+
+        List<Appointment> futureNotCancelledAppointments = appointments.stream()
+                .filter(app -> app.getStatus() != AppointmentStatus.CANCELLED).collect(Collectors.toList());
+
         List<Clinic> allClinics = clinicRepository.findAll();
 
         final Map<Integer, String> clinicsById = allClinics.stream()
                 .collect(Collectors.toMap(k -> k.getClinicId(), k -> k.getName()));
 
-        final List<AppointmentClinic> futureAppts = appointments.stream().map( a ->
+        final List<AppointmentClinic> futureAppts = futureNotCancelledAppointments.stream().map( a ->
                 new AppointmentClinic(a, clinicsById.get(a.getClinicId()))).collect(Collectors.toList());
 
         return futureAppts;
@@ -157,7 +161,9 @@ public class AppointmentService {
         List<Appointment> pastAppointments = appointmentRepository.getPastAppointments(currDate, patientId);
 
         List<Appointment> pastCompletedAppointments = pastAppointments.stream()
-                .filter(app -> app.getStatus().equals("Checked In")).collect(Collectors.toList());
+                .filter(app -> app.getStatus() == AppointmentStatus.CHECKED_IN).collect(Collectors.toList());
+
+        System.out.println("size"+pastAppointments.size());
 
         System.out.println(pastAppointments);
         System.out.println("****");
@@ -212,7 +218,9 @@ public class AppointmentService {
 
         }
 
-        List<Appointment> futureAppointments = (List<Appointment>) getFutureAppointment(patientId, currentDate);
+        List<Appointment> futureAppointments =  appointmentRepository.getFutureAppointments(currDate, patientId);
+
+        System.out.println("future size:" + futureAppointments.size());
 
         List<Clinic> allClinics = clinicRepository.findAll();
 
@@ -226,7 +234,7 @@ public class AppointmentService {
 //            }
 //        }
 
-        final List<AppointmentClinic> futureAppts = futureAppointments.stream().map( a ->
+         List<AppointmentClinic> futureAppts = futureAppointments.stream().map( a ->
             new AppointmentClinic(a, clinicsById.get(a.getClinicId()))).collect(Collectors.toList());
 
         Object[] allDues = {vaccinationsDue, futureAppts};
@@ -288,8 +296,8 @@ public class AppointmentService {
     }
 
     public class AppointmentClinic{
-       private Appointment appointment;
-       private String clinicName;
+       Appointment appointment;
+       String clinicName;
 
         public AppointmentClinic(Appointment appointment, String clinicName) {
             this.appointment = appointment;
@@ -316,12 +324,17 @@ public class AppointmentService {
     @Transactional(rollbackOn = {IOException.class, SQLException.class})
     public void markAppointmentCompleted(Integer patient_id, String current_date) throws ParseException {
         List<Appointment> pastAppointments = (List<Appointment>) getPastAppointment(patient_id, current_date);
-        for (int i = 0; i < pastAppointments.size(); i++) {
-            if ((pastAppointments.get(i)).getStatus().equals(AppointmentStatus.BOOKED)) {
-                (pastAppointments.get(i)).setStatus(AppointmentStatus.NO_SHOW);
-            } else if ((pastAppointments.get(i)).getStatus().equals(AppointmentStatus.CHECKED_IN)) {
-                (pastAppointments.get(i)).setStatus(AppointmentStatus.COMPLETED);
+        System.out.println("pastSize"+ pastAppointments.size());
+        try{
+            for (int i = 0; i < pastAppointments.size(); i++) {
+                if ((pastAppointments.get(i)).getStatus().equals(AppointmentStatus.BOOKED)) {
+                    (pastAppointments.get(i)).setStatus(AppointmentStatus.NO_SHOW);
+                } else if ((pastAppointments.get(i)).getStatus().equals(AppointmentStatus.CHECKED_IN)) {
+                    (pastAppointments.get(i)).setStatus(AppointmentStatus.COMPLETED);
+                }
             }
+        } catch(Exception e){
+            System.out.println(e.getMessage());
         }
         return ;
     }
