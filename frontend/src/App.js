@@ -6,6 +6,7 @@ import Login from "./pages/login";
 import Admin from "./pages/Admin";
 import Report from "./pages/Report";
 import Dashboard from "./components/Dashboard/dashboard";
+import FutureAppointmentComponent from "./components/Appointment/futureAppointmentsComponents";
 
 function App() {
   return (
@@ -32,6 +33,9 @@ function App() {
           </Route>
           <Route path="/dashboard" exact>
             <Route exact path="/dashboard" element={<Dashboard />} />
+          </Route>
+          <Route path="/futureappts" exact>
+            <Route exact path="/futureappts" element={<FutureAppointmentComponent />} />
           </Route>
         </Routes>
       </Router>
