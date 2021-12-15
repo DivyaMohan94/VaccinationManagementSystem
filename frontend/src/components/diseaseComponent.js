@@ -66,7 +66,8 @@ export default function DiseaseComponent() {
         })
         .catch((err) => {
           console.log(err);
-          swal("Disease name already exists", errorMessage, "error", {
+          var errObj = err.response.data;
+          swal("Error",  errObj.badRequest.msg, "error", {
             dangerMode: true,
           });
           console.log(errorMessage);

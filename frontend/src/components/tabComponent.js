@@ -6,6 +6,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import DiseaseComponent from '../components/diseaseComponent';
 import VaccineComponent from '../components/vaccinesComponent';
+import ClinicComponent from '../components/clinicsComponent';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -63,7 +64,7 @@ export default function BasicTabs() {
         <VaccineComponent/>
       </TabPanel>
       <TabPanel value={value} index={2}>
-        Clinics
+        <ClinicComponent/>
       </TabPanel>
     </Box>
   );

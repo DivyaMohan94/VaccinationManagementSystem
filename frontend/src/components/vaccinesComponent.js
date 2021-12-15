@@ -146,9 +146,10 @@ class VaccineComponent extends Component {
         })
         .catch((err) => {
           console.log(err);
+          var errObj = err.response.data;
           swal(
-            "Vaccine name already exists",
-            this.state.errorMessage,
+            "Error",
+            errObj.badRequest.msg,
             "error",
             {
               dangerMode: true,
