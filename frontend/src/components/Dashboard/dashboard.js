@@ -122,7 +122,7 @@ class DashboardComponent extends Component {
   }
 
   componentDidMount() {
-    localStorage.setItem("mrn", 1);
+    // localStorage.setItem("mrn", 1);
     // localStorage.setItem("currentDate", new Date().toISOString().slice(0, 10));
     console.log("inside Dashboard ComponentDiMount");
     this.fetchDashboardData();
@@ -182,7 +182,7 @@ class DashboardComponent extends Component {
                   </>
                 ))
               ) : (
-                <div className="orangeFont m-5 centerAlign">
+                <div className=" m-5 centerAlign">
                   {" "}
                   <b>No Vaccinations Due</b>
                 </div>
