@@ -14,8 +14,8 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "Appointment")
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "appointmentId")
+//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
+//        property = "appointmentId")
 public class Appointment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

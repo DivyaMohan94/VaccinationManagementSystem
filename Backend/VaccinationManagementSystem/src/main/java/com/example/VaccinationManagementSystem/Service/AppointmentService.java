@@ -123,9 +123,12 @@ public class AppointmentService {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.US);
         cdate = dateFormat.parse(current_date);
         List<Appointment> appointments = appointmentRepository.getFutureAppointments(cdate, patient_id);
+        System.out.println("All appts"+appointments.size());
 
         List<Appointment> futureNotCancelledAppointments = appointments.stream()
                 .filter(app -> app.getStatus() != AppointmentStatus.CANCELLED).collect(Collectors.toList());
+
+        System.out.println("Cancelled"+futureNotCancelledAppointments.size());
 
         List<Clinic> allClinics = clinicRepository.findAll();
 
@@ -134,6 +137,8 @@ public class AppointmentService {
 
         final List<AppointmentClinic> futureAppts = futureNotCancelledAppointments.stream().map( a ->
                 new AppointmentClinic(a, clinicsById.get(a.getClinicId()))).collect(Collectors.toList());
+
+        System.out.println("futureAppts"+futureAppts.size());
 
         return futureAppts;
     }
