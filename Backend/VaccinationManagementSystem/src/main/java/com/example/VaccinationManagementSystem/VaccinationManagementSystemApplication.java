@@ -30,7 +30,7 @@ public class VaccinationManagementSystemApplication {
                 new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOrigin("http://54.183.99.51:3000/");
+        config.addAllowedOrigin("http://204.236.141.230:3000/");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         source.registerCorsConfiguration("/**", config);
