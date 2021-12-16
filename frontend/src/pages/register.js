@@ -21,29 +21,10 @@ import RadioGroup from '@mui/material/RadioGroup';
 import { FormLabel,FormControl, InputLabel,Select, MenuItem } from "@material-ui/core";
 
 
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {"Copyright © ArrayIndexOutOfBounds    "}
-
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
 
 const useStyles = makeStyles((theme) => ({
   root: {
     height: "100vh",
-  },
-  image: {
-    backgroundImage: `url(${process.env.PUBLIC_URL + 'aeroplane1.jpeg'})`,
-    backgroundColor:
-      theme.palette.type === "light"
-        ? theme.palette.grey[50]
-        : theme.palette.grey[900],
-    backgroundSize: "cover",
-    backgroundPosition: "center",
   },
   paper: {
     margin: theme.spacing(8, 4),
@@ -85,7 +66,7 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (fname === ""||lname===""||state === ""||city===""||gender ==="") {
+    if (fname === ""||lname===""||state === ""||city===""||gender ==="" || dob === "" || zip === "") {
       swal("Error", "Enter Details to SignUp", "error", {
         dangerMode: true,
       });
@@ -107,9 +88,10 @@ export default function Login() {
         .then((response) => {
           if (response.status === 200) {
             //debugger;
+              console.log("----",response.data);
             localStorage.setItem("loggedIn", true);
-            localStorage.setItem("email", response.data.email);
-            localStorage.setItem("name", response.data.name);
+            localStorage.setItem("email", response.data.emailId);
+            localStorage.setItem("name", response.data.fname);
             localStorage.setItem("phone", response.data.phone);
             localStorage.setItem("currency", response.data.currency);
             localStorage.setItem("timezone", response.data.timezone);
@@ -130,7 +112,7 @@ export default function Login() {
           }
         })
         .catch((err) => {
-          swal("Server Not Responding", errorMessage, "error", {
+          swal("Server Not Responding", err.response.data.badRequest.msg, "error", {
             dangerMode: true,
           });
           console.log(err);
@@ -259,9 +241,6 @@ export default function Login() {
                 Sign Up
               </Button>
 
-              <Box mt={5}>
-                <Copyright />
-              </Box>
             </form>
           </div>
         </Grid>
