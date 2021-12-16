@@ -7,6 +7,7 @@ import Multiselect from "multiselect-react-dropdown";
 import { FormLabel } from "@material-ui/core";
 import Navbar from "../navbar";
 import '../../utils/colorSchema.css';
+import { computeCurrentDateTime } from '../../utils/utilities';
 
 class DashboardComponent extends Component {
   constructor(props) {
@@ -75,12 +76,11 @@ class DashboardComponent extends Component {
 
   fetchDashboardData = () => {
     let currentDate = localStorage.getItem("currentDate");
-    //add time here to hardcoded string
-    let formatString = "-00-00-00";
-    currentDate += formatString;
+    currentDate = computeCurrentDateTime(currentDate);
+    console.log("returned date" + currentDate);
 
     const data = {
-      patient_id: parseInt(localStorage.getItem("id")),
+      patient_id: parseInt(localStorage.getItem("mrn")),
       current_date: currentDate,
     };
 
@@ -95,7 +95,7 @@ class DashboardComponent extends Component {
             url: `${URL_VAL}/appointment/due`,
             method: "get",
             params: {
-              patientId: localStorage.getItem("id"),
+              patientId: localStorage.getItem("mrn"),
               currentDate,
             },
           }).then((r) => {
@@ -122,7 +122,7 @@ class DashboardComponent extends Component {
   }
 
   componentDidMount() {
-    localStorage.setItem("id", 1);
+    localStorage.setItem("mrn", 1);
     // localStorage.setItem("currentDate", new Date().toISOString().slice(0, 10));
     console.log("inside Dashboard ComponentDiMount");
     this.fetchDashboardData();

@@ -20,5 +20,21 @@ const isLoggedOut = () =>{
     return !isLoggedIn();
 }
 
+const computeCurrentDateTime = (dateString) => {
+    let currentDate = dateString;
+    const realDatenow = new Date();
+    let minutes = realDatenow.getMinutes();
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+    let hours = realDatenow.getHours();
+    hours = hours < 10 ? "0" + hours : hours;
+    let seconds = realDatenow.getSeconds();
+    seconds = seconds < 10 ? "0" + seconds : seconds;
+    // console.log(minutes + "" + seconds + "" + hours);
+    //add time here to hardcoded string
+    let formatString = `-${hours}-${minutes}-${seconds}`;
+    currentDate += formatString;
+    return currentDate;
+}
 
-export {setLocalStorage, isLoggedIn, isLoggedOut};
+
+export { setLocalStorage, isLoggedIn, isLoggedOut, computeCurrentDateTime };

@@ -60,7 +60,7 @@ class SystemReport extends Component {
   fetchReport = () => {
     if (this.validate() === true) {
       const data = {
-        patientId: localStorage.getItem("id"),
+        patientId: localStorage.getItem("mrn"),
         fromDate: moment(this.state.fromDate).format("YYYY-MM-DD-HH"),
         toDate: moment(this.state.toDate).format("YYYY-MM-DD-HH"),
       };
