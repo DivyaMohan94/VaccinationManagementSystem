@@ -14,6 +14,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import GoogleLogin from "react-google-login";
 import { useState } from "react";
 import URL_VAL from '../utils/backend';
+import Modal from '@mui/material/Modal';
 
 import Axios from "axios";
 
@@ -23,16 +24,17 @@ import  {useNavigate, Link}  from "react-router-dom";
 import swal from "sweetalert";
 import Navbar from "../components/navbar";
 
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {"Copyright © ArrayIndexOutOfBounds    "}
-
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -68,12 +70,16 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Login() {
   const classes = useStyles();
-
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [newpassword, setnewPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [otp, setOtp] = useState("");
   const [stageotp, setOTP] = useState(false);
+  const [isValid, setisValid] = useState(true);
   const navigate = useNavigate();
 
   //const dispatch = useDispatch();
@@ -113,7 +119,11 @@ export default function Login() {
           dangerMode: true,
         });
       }
-    });
+    }).catch((err) => {
+      swal("Error", err.response.data.badRequest.msg, "error", {
+        dangerMode: true,
+      });
+    })
   }
 
   const onCancelOTP = (e) => {
@@ -140,19 +150,28 @@ export default function Login() {
             dangerMode: true,
           });
         }
-      });
+      }).catch((err) => {
+        swal("Error", err.response.data.badRequest.msg, "error", {
+          dangerMode: true,
+        });
+      })
     }
   }
   const handleSubmit = (e) => {
-    debugger;
     e.preventDefault();
     console.log(password)
     console.log(email)
-    if (password === "" || email === "") {
+    console.log("isValid--",isValid)
+
+   if (password === "" || email === "") {
       swal("Error", "Enter Details to Login", "error", {
         dangerMode: true,
       });
-    } else {
+    } else if( validateEmail() === false){
+      swal("Error", "Enter Valid email address", "error", {
+        dangerMode: true,
+      });
+    }else {
       Axios.defaults.withCredentials = true;
       Axios.post(`${URL_VAL}/user/login`, {
         email: email,
@@ -160,6 +179,7 @@ export default function Login() {
       })
         .then((response) => {
           if (response.status === 200) {
+            localStorage.setItem("loggedIn", true);
             localStorage.setItem("email", response.data.patient.emailId);
             localStorage.setItem("mrn", response.data.patient.mrn);
             localStorage.setItem("admin", response.data.patient.admin);
@@ -172,7 +192,7 @@ export default function Login() {
             } else if (response.data.status === "Verified") {
               navigate("/register");
             } else if (response.data.status === "Registered") {
-              navigate("/");
+              navigate("/dashboard");
             }
           } else if (response.status === 400) {
             setErrorMessage(response.data.message);
@@ -187,13 +207,54 @@ export default function Login() {
           }
         })
         .catch((err) => {
-          swal("Check your ID or Password", errorMessage, "error", {
+          swal("Error", err.response.data.badRequest.msg, "error", {
             dangerMode: true,
           });
           console.log(err);
         });
     }
   };
+
+  const validateEmail = () => {
+    const mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if((email).match(mailformat)){
+      return true
+    } else {
+      return false
+    }
+  }
+  const changePwd = () => {
+    const data = {
+      email: email,
+      password: newpassword
+    }
+    Axios.defaults.withCredentials = true;
+    Axios.post(`${URL_VAL}/user/passchange`, {
+      email: email,
+      password: newpassword
+    }).then((response) => {
+      if (response.status === 200) {
+        localStorage.setItem("loggedIn", true);
+        localStorage.setItem("email", response.data.patient.emailId);
+        localStorage.setItem("mrn", response.data.patient.mrn);
+        localStorage.setItem("admin", response.data.patient.admin);
+        localStorage.setItem(
+            "currentDate",
+            new Date().toISOString().slice(0, 10)
+        );
+        navigate("/dashboard");
+      } else {
+        swal("Error", "Please register to change password", "error", {
+          dangerMode: true,
+        });
+      }
+    }).catch((err) => {
+      swal("Error", err.response.data.badRequest.msg, "error", {
+        dangerMode: true,
+      });
+    })
+    handleClose()
+  }
 
   return (
       
@@ -222,7 +283,7 @@ export default function Login() {
               autoFocus
               onChange={(event) => {
                 event.preventDefault();
-                setEmail(event.target.value);
+                setEmail(event.target.value)
               }}
             />
             <TextField
@@ -238,10 +299,39 @@ export default function Login() {
                 setPassword(event.target.value);
               }}
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
+            <Button onClick={handleOpen}>Change Password</Button>
+            <Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+              <Box sx={style}>
+                <TextField
+                    required
+                    fullWidth
+                    name="password"
+                    label="Password"
+                    type="password"
+                    id="password"
+                    autoComplete="current-password"
+                    onChange={(event) => {
+                      event.preventDefault();
+                      setnewPassword(event.target.value);
+                    }}
+                />
+                <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    className={classes.submit}
+                    onClick={changePwd}
+                >
+                  Confirm Password
+                </Button>
+              </Box>
+            </Modal>
             <Button
               type="submit"
               fullWidth
@@ -300,9 +390,6 @@ export default function Login() {
             </div> : <div></div>}
             </div>
 
-            <Box mt={5}>
-              <Copyright />
-            </Box>
           </form>
         </div>
       </Grid>

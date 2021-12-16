@@ -80,24 +80,28 @@ public class PatientService {
         Patient patient = patientRespository.findByEmailId(email);
         LoginResponse res = new LoginResponse();
         if(patient != null){
-            if(patient.getStatus() == "init"){
-                Random random = new Random();
-                String otp = String.format("%04d", random.nextInt(10000));
-                patient.setGender(otp);
-                patientRespository.save(patient);
-                try {
-                    notificationService.sendOTP(patient);
-                } catch (MailException e) {
-                    System.out.println(e.getMessage());
+            if(password.equals(patient.getPassword())){
+                if(patient.getStatus() == "init"){
+                    Random random = new Random();
+                    String otp = String.format("%04d", random.nextInt(10000));
+                    patient.setGender(otp);
+                    patientRespository.save(patient);
+                    try {
+                        notificationService.sendOTP(patient);
+                    } catch (MailException e) {
+                        System.out.println(e.getMessage());
+                    }
+                    res.setStatus(patient.getStatus());
+                    res.setPatient(patient);
+                    return res;
                 }
-                res.setStatus(patient.getStatus());
-                res.setPatient(patient);
-                return res;
-            }
-            else {
-                res.setStatus(patient.getStatus());
-                res.setPatient(patient);
-                return res;
+                else {
+                    res.setStatus(patient.getStatus());
+                    res.setPatient(patient);
+                    return res;
+                }
+            } else{
+                throw new IllegalArgumentException("Please enter valid credential");
             }
         }
         else {
@@ -155,10 +159,18 @@ public class PatientService {
     @Transactional
     public Object changePassword( String email, String password){
         Patient patient = patientRespository.findByEmailId(email);
-        patient.setPassword(password);
+        if(patient == null){
+            throw new IllegalArgumentException("Entered email address not found");
+        }
+        if(patient.getStatus().equals("Registered")) {
+            patient.setPassword(password);
+        } else{
+            throw new IllegalArgumentException("Please register to change password");
+        }
         LoginResponse res = new LoginResponse();
         res.setStatus(patient.getStatus());
         res.setPatient(patient);
         return res;
+
     }
 }
