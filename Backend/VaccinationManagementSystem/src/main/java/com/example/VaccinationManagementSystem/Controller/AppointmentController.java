@@ -77,7 +77,6 @@ public class AppointmentController {
             //@RequestParam(value = "vaccines") List<Integer> vaccines
     ) {
         try {
-            System.out.println("Inside update Appointment Controller");
             JSONObject appointment = new JSONObject(payload);
             Integer appointmentId = (Integer) appointment.get("appointment_id");
             Integer clinic_id = (Integer) appointment.get("clinic_id");
@@ -99,7 +98,6 @@ public class AppointmentController {
             return appointmentService.updateAppointment(appointmentId, clinic_id, date, slot, vaccineIds);
 
         } catch (Exception e) {
-            System.out.println("is it coming here at all");
             return ResponseEntity.badRequest().body(new ErrorResponse(new ErrorDetail("400", e.getMessage())));
         }
     }
