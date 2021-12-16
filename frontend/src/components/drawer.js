@@ -11,93 +11,64 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { Divider } from "@mui/material";
 
 const useStyles = makeStyles((theme) => ({
-  drawer: {
-    width: 100,
-  },
-  drawerPaper: {
-    width: 240,
-  },
+    drawer: {
+        width: 100,
+    },
+    drawerPaper: {
+        width: 240,
+    },
 }));
 
 export default function SidePan() {
-  const classes = useStyles();
-  const [open, setOpen] = useState(false);
+    const classes = useStyles();
+    const [open, setOpen] = useState(false);
 
-  return (
-    <>
-      <CssBaseline />
-      <IconButton onClick={() => setOpen(true)}>
-        <MenuIcon style={{ fill: "white" }} />
-      </IconButton>
-      <SwipeableDrawer
-        paddingLeft={10}
-        className={classes.drawer}
-        open={open}
-        anchor="left"
-        onClose={() => {
-          setOpen(false);
-        }}
-        onOpen={() => {}}
-      >
-        <div>
-          <Box textAlign="center" p={2}>
-            Menus
-          </Box>
-          <Divider />
-          <List>
-            {localStorage.getItem("loggedIn") === "true" ? (
-              <ListItem
-                button
-                component={Link}
-                paddingLeft={10}
-                to="/dashboard"
-              >
-                Dashboard
-              </ListItem>
-            ) : (
-              <ListItem button component={Link} paddingLeft={10} to="/login">
-                Dashboard
-              </ListItem>
-            )}
-
-            {localStorage.getItem("admin") === "true" ? (
-              <>
-                {localStorage.getItem("loggedIn") === "true" ? (
-                  <ListItem button component={Link} to="/admin">
-                    Admin
-                  </ListItem>
-                ) : (
-                  <ListItem button component={Link} to="/login">
-                    Admin
-                  </ListItem>
-                )}
-              </>
-            ) : (
-              <></>
-            )}
-
-            {localStorage.getItem("loggedIn") === "true" ? (
-              <ListItem button component={Link} to="/appointment">
-                Appointment
-              </ListItem>
-            ) : (
-              <ListItem button component={Link} to="/login">
-                Appointment
-              </ListItem>
-            )}
-
-            {localStorage.getItem("loggedIn") === "true" ? (
-              <ListItem button component={Link} to="/report">
-                Report
-              </ListItem>
-            ) : (
-              <ListItem button component={Link} to="/login">
-                Report
-              </ListItem>
-            )}
-          </List>
-        </div>
-      </SwipeableDrawer>
-    </>
-  );
+    return (
+        <>
+            {localStorage.getItem('loggedIn') ? (
+                <>
+                    <CssBaseline />
+                    <IconButton onClick={() => setOpen(true)}>
+                        <MenuIcon style={{ fill: "white" }} />
+                    </IconButton>
+                    <SwipeableDrawer
+                        paddingLeft={10}
+                        className={classes.drawer}
+                        open={open}
+                        anchor="left"
+                        onClose={() => {
+                            setOpen(false);
+                        }}
+                        onOpen={() => {}}
+                    >
+                        <div>
+                            <Box textAlign="center" p={2}>
+                                Menus
+                            </Box>
+                            <Divider />
+                            <List>
+                                <ListItem button component={Link} paddingLeft={10} to="/dashboard">
+                                    Dashboard
+                                </ListItem>
+                                {localStorage.getItem("admin") === "true" ? (
+                                    <>
+                                        <ListItem button component={Link} to="/admin">
+                                            Admin
+                                        </ListItem>
+                                    </>
+                                ) : (
+                                    <></>
+                                )}
+                                <ListItem button component={Link} to="/appointment">
+                                    Appointment
+                                </ListItem>
+                                <ListItem button component={Link} to="/report">
+                                    Report
+                                </ListItem>
+                            </List>
+                        </div>
+                    </SwipeableDrawer>
+                </> ) : (<></>)}
+        </>
+    );
 }

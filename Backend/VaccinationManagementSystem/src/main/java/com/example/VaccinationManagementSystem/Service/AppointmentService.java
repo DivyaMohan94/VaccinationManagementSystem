@@ -76,6 +76,7 @@ public class AppointmentService {
             vaccines1.add(vaccineRepository.findById(vaccines.get(i)).get());
         }
         appointment.setVaccines(vaccines1);
+        notificationService.sendUpdatedAppointment(appointment);
         return appointment;
     }
 
@@ -86,6 +87,8 @@ public class AppointmentService {
             throw new IllegalStateException("Appointment with " + appointmentId + " does not exist.");
         }
         appointmentRepository.findById(appointmentId).get().setStatus(AppointmentStatus.CANCELLED);
+        Appointment appointment = appointmentRepository.findById(appointmentId).get();
+        notificationService.sendCancelAppointment(appointment);
     }
 
     @Transactional(rollbackOn = {IOException.class, SQLException.class})
@@ -156,6 +159,7 @@ public class AppointmentService {
     public Object makeCheckinAppointment(Integer patient_id, Integer appointment_id) throws ParseException {
         Appointment appointment = appointmentRepository.findById(appointment_id).get();
         appointment.setStatus(AppointmentStatus.CHECKED_IN);
+        notificationService.sendCheckinAppointment(appointment);
         return appointment;
     }
 
