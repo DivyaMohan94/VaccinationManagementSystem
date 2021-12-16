@@ -73,17 +73,17 @@ public class ClinicController {
     List<Clinic> getAllClinicsWithSpecificSlot(
             @RequestParam(value = "selectedDate") String selectedDate,
             @RequestParam("specificSlot") String specificSlot) throws ParseException {
-        System.out.println("inside get---"+ selectedDate);
+
         Date selectedate = null;
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         selectedate = dateFormat.parse(selectedDate);
-        System.out.println("inside get---"+ specificSlot);
+
         String[] slotDetails = specificSlot.split(":");
         LocalTime selectedSlot = LocalTime.of(
                 Integer.valueOf(slotDetails[0]),
                 Integer.valueOf(slotDetails[1]),
                 Integer.valueOf(slotDetails[2]));
-        System.out.println("inside get selectedSlot---"+ selectedSlot);
+
         return clinicService.getAllClinicsWithSpecificSlot(selectedate, selectedSlot);
     }
 

@@ -7,7 +7,10 @@ import swal from "sweetalert";
 import Button from "@material-ui/core/Button";
 import URL_VAL from "../utils/backend";
 import Multiselect from "multiselect-react-dropdown";
-import { FormLabel } from "@material-ui/core";
+import { FormLabel, FormControl } from "@material-ui/core";
+import Select from "rc-time-picker/lib/Select";
+import MenuItem from "@mui/material/MenuItem";
+import { DropdownButton, Dropdown, Form} from 'react-bootstrap';
 
 function clearFields(event) {
     Array.from(event.target).forEach((e) => (e.value = ""));
@@ -18,23 +21,33 @@ class NewAppointmentComponent extends Component {
         super(props);
         this.state = {
             appointment_date: null,
+            allslots:[],
             slot:null,
+            allClinics: [],
             clinic_id: null,
             vaccines: [],
-            selectedListVal:[]
+            selectedListVal:[],
+            vaccinesDue: []
 
         };
     }
 
     onDateChange(e) {
+        console.log("hitting this date",e)
         this.setState({
             appointment_date: e.target.value,
         });
     }
-    onSlotChange(e) {
-        this.setState({
-            slot: e.target.value,
+    async onSlotChange(e) {
+        console.log("hitting this",e)
+        await this.setState({
+            slot: e.target.value
         });
+        const data = {
+            selectedDate: this.state.appointment_date,
+            specificSlot: this.state.slot
+        };
+        await this.fetchClinics(data);
     }
     onClinicChange(e) {
         this.setState({
@@ -42,7 +55,7 @@ class NewAppointmentComponent extends Component {
         });
     }
 
-    onVaccineChange(selectedList, selectedItem) {
+    onSelect(selectedList, selectedItem) {
         var tempList = [];
         selectedList.forEach((element) => {
             tempList.push(element.vaccineId);
@@ -52,47 +65,105 @@ class NewAppointmentComponent extends Component {
             selectedListVal:selectedList
         });
     }
+    onRemove(selectedList, removedItem) {
+        var tempList = [];
+        this.setState({
+            vaccines: tempList
+        });
+    }
 
-    componentDidMount() {
+    async componentDidMount() {
         console.log("inside did");
-        axios.get(`http://localhost:8080/clinic/slots`).then((response) => {
+        await axios.get(`${URL_VAL}/clinic/slots`).then((response) => {
             console.log("Status Code : ", response.status);
             console.log("Status Code : ", response.data);
             if (response.status === 200) {
                 console.log(response.data);
                 if (response.data.length > 0) {
                     this.setState({
-                        slots: response.data,
+                        allslots: response.data,
+                    });
+                }
+                console.log("slots are there : ", this.state.allslots);
+            }
+        });
+        let currentDate = localStorage.getItem("currentDate");
+        //add time here to hardcoded string
+        let formatString = "-00-00-00";
+        currentDate += formatString;
+        await axios({
+            url: `${URL_VAL}/appointment/due`,
+            method: "get",
+            params: {
+                patientId: localStorage.getItem("id"),
+                currentDate,
+            },
+        }).then((r) => {
+            console.log("vaccines  due----");
+            console.log(r.status + " " + r.data[0]);
+            if (r.status === 200) {
+                if (r.data.length > 0) {
+                    console.log(r.data);
+                    this.setState({
+                        vaccinesDue: r.data[0],
                     });
                 }
             }
+
         });
+
     }
+
+    fetchClinics = (data) => {
+        axios({
+            url: `${URL_VAL}/clinic/appointments`,
+            method: "get",
+            data: null,
+            params: data,
+        }).then((response) => {
+            console.log(response.status);
+            console.log(response.data);
+            if (response.status === 200) {
+                console.log("inside 200 of fetch clinics",response.data);
+                this.setState(
+                    {allClinics: response.data}
+                )
+            }
+        });
+    };
 
     handleSubmit = async (e) => {
         e.preventDefault();
-        if (this.validateSave() === true) {
-            axios.defaults.withCredentials = true;
+        if (this.validateSave() === true){
+            let currentDate = localStorage.getItem("currentDate");
+            //add time here to hardcoded string
+            let formatString = "-00-00-00";
+            currentDate += formatString;
+            let temp_slot = this.state.slot.split(":");
+            let slot = {"hour":parseInt(temp_slot[0]), "minute":parseInt(temp_slot[1]),
+                "second":parseInt(temp_slot[2])}
+            const data = {
 
-            var payload = {
-                name: this.state.name,
-                diseaseIds: this.state.diseaseIds,
-                manufacturer: this.state.manufacturer,
-                numOfShots: this.state.numOfShots,
-                shotInterval: this.state.shotIntervalVal,
-                duration: this.state.duration,
+                patient_id: parseInt(localStorage.getItem("id")),
+                clinic_id: parseInt(this.state.clinic_id),
+                appointment_date : this.state.appointment_date,
+                current_date: currentDate,
+                vaccineIDs: this.state.vaccines,
+                slot: slot
+
             };
-            console.log(payload);
-
+            console.log("is make appointmnet data fine", data);
             await axios
-                .post(`${URL_VAL}/vaccine`, payload)
+                .post(`${URL_VAL}/appointment`, data)
                 .then((response) => {
                     if (response.status === 200) {
-                        swal("Success", "Vaccine added successfully!", {
+                        swal("Success", "Appointment scheduled successfully!", {
                             dangerMode: false,
                         });
                         clearFields(e);
-                        this.onRemove(this.state.selectedListVal)
+                        console.log("this.state.selectedListVal----",this.state.selectedListVal)
+                        window.location.reload(false);
+                        //this.onRemove(this.state.selectedListVal)
                     } else {
                         console.log(response);
                         swal("Error", "Some error occured", "error", {
@@ -102,9 +173,10 @@ class NewAppointmentComponent extends Component {
                 })
                 .catch((err) => {
                     console.log(err);
+                    var errObj = err.response.data;
                     swal(
-                        "Vaccine name already exists",
-                        this.state.errorMessage,
+                        "Error",
+                        errObj.badRequest.msg,
                         "error",
                         {
                             dangerMode: true,
@@ -113,72 +185,23 @@ class NewAppointmentComponent extends Component {
                     //console.log(errorMessage);
                 });
         }
+
+
     };
 
     validateSave() {
         let isValid = true;
-        const numRejex = /^[0-9]+$/;
         if (
-            this.state.name === "" ||
-            this.state.diseaseIds.length === 0 ||
-            this.state.manufacturer === "" ||
-            this.state.numOfShots === "" ||
-            this.state.duration === ""
+            this.state.appointment_date === null ||
+            this.state.vaccines.length === 0||
+            this.state.clinic_id === "Select" ||
+            this.state.clinic_id === null||
+            this.state.slot === "Select" ||
+            this.state.slot === null
         ) {
-            swal("Error", "Enter all the details to add vaccine", "error", {
+            swal("Error", "Enter all the details to make appointment", "error", {
                 dangerMode: true,
             });
-            isValid = false;
-        } else if (this.state.manufacturer.length < 3) {
-            swal(
-                "Error",
-                "Manufacturer name must be more than 3 characters",
-                "error",
-                {
-                    dangerMode: true,
-                }
-            );
-            isValid = false;
-        } else if (!this.state.numOfShots.match(numRejex)) {
-            swal(
-                "Error",
-                "Only numeric value is allowed for number of shots",
-                "error",
-                {
-                    dangerMode: true,
-                }
-            );
-            isValid = false;
-        } else if (
-            this.state.shotIntervalVal != "" &&
-            !this.state.shotIntervalVal.match(numRejex)
-        ) {
-            swal(
-                "Error",
-                "Only numeric value is allowed for short interval",
-                "error",
-                {
-                    dangerMode: true,
-                }
-            );
-            isValid = false;
-        } else if (Number(this.state.numOfShots) < 1) {
-            swal("Error", "There must be atleast 1 valid shot", "error", {
-                dangerMode: true,
-            });
-            isValid = false;
-        } else if (
-            Number(this.state.numOfShots) > 1 &&
-            this.state.shotIntervalVal == ""
-        ) {
-            swal(
-                "Error",
-                "Enter valid numeric interval if there are more than 1 shots",
-                "error",
-                {
-                    dangerMode: true,
-                }
-            );
             isValid = false;
         }
 
@@ -189,75 +212,64 @@ class NewAppointmentComponent extends Component {
         return (
             <>
                 <form noValidate onSubmit={this.handleSubmit}>
-                    <TextField
-                        required
-                        name="Vaccine Name"
-                        label="Vaccine Name"
-                        type="text"
-                        id="name"
-                        autoFocus
-                        style={{ width: "1000px" }}
-                        onChange={this.onNameChange}
-                    />
                     <div style={{ width: "1000px", display: "flex", paddingTop: "25px" }}>
                         <div style={{ paddingRight: "30px", marginTop: "5px" }}>
-                            <FormLabel>Diseases*</FormLabel>
+                            <FormLabel>Select Appointment Date*</FormLabel>
+                        </div>
+                        <div style={{ width: "1000px" }}>
+                            <input
+                                type="date"
+                                onInputCapture={(e) => this.onDateChange(e)}
+                            ></input>
+                        </div>
+                    </div>
+                    <div style={{ width: "1000px", display: "flex", paddingTop: "25px" }}>
+                        <div style={{ paddingRight: "30px", marginTop: "5px" }}>
+                            <FormLabel>Select Appointment Time*</FormLabel>
+                        </div>
+                        <div style={{ width: "1000px" }}>
+                            <select className="form-select" data-width="fit" onChange={(e) => this.onSlotChange(e)}>
+                                <option selected value = "Select">Select</option>
+                                {Object.values(this.state.allslots).map((allslot) => (
+                                    <option value = {allslot}>{allslot}</option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+                    <div style={{ width: "1000px", display: "flex", paddingTop: "25px" }}>
+                        <div style={{ paddingRight: "30px", marginTop: "5px" }}>
+                            <FormLabel>Select Clinic*</FormLabel>
+                        </div>
+                        <div style={{ width: "1000px" }}>
+                            <select className="form-select" data-width="fit" onChange={(e) => this.onClinicChange(e)}>
+                                <option selected value = "Select">Select</option>
+                                {Object.values(this.state.allClinics).map((i) => (
+                                    <option value = {i.clinicId}>{i.name}</option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+                    <div style={{ width: "1000px", display: "flex", paddingTop: "25px" }}>
+                        <div style={{ paddingRight: "30px", marginTop: "5px" }}>
+                            <FormLabel>Select Vaccines(upto 4)*</FormLabel>
                         </div>
                         <div style={{ width: "1000px" }}>
                             <Multiselect
-                                options={this.state.diseases} // Options to display in the dropdown
-                                selectedValues={this.state.selectedValue} // Preselected value to persist in dropdown
-                                onSelect={this.onSelect} // Function will trigger on select event
-                                onRemove={this.onRemove} // Function will trigger on remove event
-                                displayValue="name" // Property name to display in the dropdown options
+                                options={this.state.vaccinesDue} // Options to display in the dropdown
+                                onSelect={(e) => this.onSelect(e)} // Function will trigger on select event
+                                onRemove={(e) => this.onRemove(e)} // Function will trigger on remove event
+                                displayValue="vaccineName" // Property name to display in the dropdown options
                                 showCheckbox="true"
                                 hidePlaceholder="true"
                                 showArrow="true"
                                 id="dropdown"
+                                selectionLimit = "4"
                             />
                         </div>
                     </div>
-                    <TextField
-                        required
-                        name="Manufacturer"
-                        label="Manufacturer"
-                        type="text"
-                        id="manufacturer"
-                        autoFocus
-                        style={{ width: "1000px" }}
-                        onChange={this.onManufacturerChange}
-                    />
-                    <TextField
-                        required
-                        name="Number of slots"
-                        label="Number of slots"
-                        type="text"
-                        id="numOfSlots"
-                        autoFocus
-                        style={{ width: "1000px" }}
-                        onChange={this.onNumOfShotsChange}
-                    />
 
-                    <TextField
-                        name="Short Interval"
-                        label="Short Interval"
-                        type="text"
-                        id="shortInterval"
-                        autoFocus
-                        style={{ width: "1000px" }}
-                        onChange={this.onShortIntervalChange}
-                    />
 
-                    <TextField
-                        required
-                        name="Duration"
-                        label="Duration"
-                        type="text"
-                        id="duration"
-                        autoFocus
-                        style={{ width: "1000px" }}
-                        onChange={this.onDurationChange}
-                    />
+
                     <div>
                         <Button
                             type="submit"
@@ -265,7 +277,7 @@ class NewAppointmentComponent extends Component {
                             color="primary"
                             style={{ width: "150px", marginTop: "20px" }}
                         >
-                            Add Vaccine
+                            Make Appointment
                         </Button>
                     </div>
                 </form>

@@ -38,7 +38,7 @@ public class ClinicService {
     public Object createClinic(String name, Address address,
                                //String businessHours,
                                Integer numberOfPhysicians, LocalTime startTime, LocalTime endTime) {
-        System.out.println("Inside service");
+        
         // Name validator to ensure unique name for the clinic
         if(nameValidator(name)) throw new IllegalArgumentException("Clinic with name " + name + " already exists.");
         Clinic clinic = new Clinic(name, address,
@@ -105,7 +105,7 @@ public class ClinicService {
     }
 
     public List<Clinic> getAllClinicsWithSpecificSlot(Date selecteddate, LocalTime selectedSlot) {
-        System.out.println("inside get clinic service---");
+
         List<Clinic> clinicsWithSpcSlot = new LinkedList<>();
         List<Clinic> allClinics = clinicRepository.findAll();
         for(Clinic c : allClinics){
