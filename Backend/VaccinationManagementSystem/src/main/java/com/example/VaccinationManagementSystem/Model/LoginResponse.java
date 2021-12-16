@@ -13,5 +13,4 @@ public class LoginResponse {
     String status;
     String token;
     Patient patient;
-
 }

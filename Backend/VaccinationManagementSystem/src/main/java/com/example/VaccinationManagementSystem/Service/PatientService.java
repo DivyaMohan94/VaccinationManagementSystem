@@ -25,7 +25,6 @@ public class PatientService {
         this.patientRespository = patientRespository;
         this.notificationService = notificationService;
     }
-
     @Transactional
     public LoginResponse addPatientGoogle(String email, String gid, String fname, String lname){
         Patient patient = patientRespository.findByEmailId(email);
@@ -74,7 +73,6 @@ public class PatientService {
             return res;
         }
     }
-
     @Transactional
     public LoginResponse addPatient(String email, String password){
         Patient patient = patientRespository.findByEmailId(email);
@@ -126,7 +124,6 @@ public class PatientService {
             res.setPatient(patient);
             return res;
     }
-
     @Transactional
     public Object addPatientOtp(String email, String mrn, String otp) {
         Patient patient = patientRespository.findByMrn(Integer.parseInt(mrn));
@@ -137,7 +134,6 @@ public class PatientService {
         }
         throw new IllegalStateException("Invalid OTP");
     }
-
     @Transactional
     public Object addPatientDetails(JSONObject obj) throws ParseException {
         Patient patient = patientRespository.findByMrn(Integer.parseInt(obj.getString("mrn")));
@@ -155,7 +151,6 @@ public class PatientService {
         patient.setStatus("Registered");
         return patient;
     }
-
     @Transactional
     public Object changePassword( String email, String password){
         Patient patient = patientRespository.findByEmailId(email);
@@ -171,6 +166,5 @@ public class PatientService {
         res.setStatus(patient.getStatus());
         res.setPatient(patient);
         return res;
-
     }
 }

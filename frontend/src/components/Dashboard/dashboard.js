@@ -9,68 +9,23 @@ class DashboardComponent extends Component {
     super(props);
     this.state = {
       vaccinationsDue: [],
-      //   [
-      //   {
-      //     vaccineName: "CovidVaccine",
-      //     shotNumber: 3,
-      //     dueDate: "2022-05-04T18:30:00.000+00:00",
-      //     vaccineId: 1,
-      //   },
-      //   {
-      //     vaccineName: "DPTVaccine",
-      //     shotNumber: 1,
-      //     dueDate: "2021-12-13T18:30:00.000+00:00",
-      //     vaccineId: 2,
-      //   },
-      //   {
-      //     vaccineName: "DPTVaccinte",
-      //     shotNumber: 1,
-      //     dueDate: "2021-12-13T18:30:00.000+00:00",
-      //     vaccineId: 3,
-      //   },
-      // ],
       futureAppointments: [],
-      // [
-      // {
-      //   apptSlot: "9:10",
-      //   apptDate: "2021-03-01",
-      //   apptVaccines: ["a", "b", "c"],
-      //   apptId: 2,
-      // },
-      // {
-      //   apptSlot: "10:15",
-      //   apptDate: "2021-03-01",
-      //   apptVaccines: ["a"],
-      //   apptId: 1,
-      // },
-      // {
-      //   apptSlot: "01:20",
-      //   apptDate: "2021-03-01",
-      //   apptVaccines: ["a", "b"],
-      //   apptId: 3,
-      // },
-      // ]
     };
   }
 
   handleVaccineDate = (dateString) => {
     return moment(dateString).format("DD-MM-YYYY");
   };
-
   handleApptDate = (dateString) => {
     return moment(dateString.slice(0,10)).format("DD-MM-YYYY");
   };
-
   fetchDashboardData = () => {
     let currentDate = localStorage.getItem("currentDate");
     currentDate = computeCurrentDateTime(currentDate);
-    console.log("returned date" + currentDate);
-
     const data = {
       patient_id: parseInt(localStorage.getItem("mrn")),
       current_date: currentDate,
     };
-
     axios({
       url: `${URL_VAL}/appointment/updatestatus`,
       method: "post",
@@ -86,10 +41,8 @@ class DashboardComponent extends Component {
               currentDate,
             },
           }).then((r) => {
-            console.log(r.status + " " + r.data[0]);
             if (r.status === 200) {
               if (r.data.length > 0) {
-                console.log(r.data);
                 this.setState({
                   vaccinationsDue: r.data[0],
                   futureAppointments: r.data[1],
@@ -109,9 +62,6 @@ class DashboardComponent extends Component {
   }
 
   componentDidMount() {
-    // localStorage.setItem("mrn", 1);
-    // localStorage.setItem("currentDate", new Date().toISOString().slice(0, 10));
-    console.log("inside Dashboard ComponentDiMount");
     this.fetchDashboardData();
   }
 
@@ -125,15 +75,6 @@ class DashboardComponent extends Component {
               <b>DASHBOARD</b>
             </h3>
           </div>
-          {/* <div className="row d-flex mb-4" style={{ textAlign: "right" }}>
-            <div style={{ textAlign: "right" }}>
-              <b className="mr-2">Select Current Date:</b>
-              <input
-                type="date"
-                onInputCapture={(e) => this.handleCurrentDateSelection(e)}
-              ></input>
-            </div>
-          </div> */}
           <br />
           <div className="row">
             <div className="col">

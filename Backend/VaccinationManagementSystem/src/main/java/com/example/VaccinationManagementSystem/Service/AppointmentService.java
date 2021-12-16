@@ -104,16 +104,6 @@ public class AppointmentService {
 
         final List<AppointmentClinic> pastAppts = appointments.stream().map( a ->
                 new AppointmentClinic(a, clinicsById.get(a.getClinicId()))).collect(Collectors.toList());
-
-        //need to handle this in front end as setter method will change DB status.
-        /*
-        for(int i=0;i<appointments.size();i++){
-            if((appointments.get(i)).getStatus().equals("booked")){
-                (results.get(i)).setStatus("No Show");
-            } else if ((appointments.get(i)).getStatus().equals("Checked-In")){
-                (results.get(i)).setStatus("Completed");
-            }
-        } */
         return pastAppts;
     }
 
@@ -128,8 +118,6 @@ public class AppointmentService {
         List<Appointment> futureNotCancelledAppointments = appointments.stream()
                 .filter(app -> app.getStatus() != AppointmentStatus.CANCELLED).collect(Collectors.toList());
 
-        System.out.println("Cancelled"+futureNotCancelledAppointments.size());
-
         List<Clinic> allClinics = clinicRepository.findAll();
 
         final Map<Integer, String> clinicsById = allClinics.stream()
@@ -137,8 +125,6 @@ public class AppointmentService {
 
         final List<AppointmentClinic> futureAppts = futureNotCancelledAppointments.stream().map( a ->
                 new AppointmentClinic(a, clinicsById.get(a.getClinicId()))).collect(Collectors.toList());
-
-        System.out.println("futureAppts"+futureAppts.size());
 
         return futureAppts;
     }
@@ -178,8 +164,7 @@ public class AppointmentService {
         List<Appointment> pastAppointments = appointmentRepository.getPastAppointments(currDate, patientId);
 
         List<Appointment> pastCompletedAppointments = pastAppointments.stream()
-                .filter(app -> app.getStatus() == AppointmentStatus.CHECKED_IN).collect(Collectors.toList());
-
+                .filter(app -> app.getStatus() == AppointmentStatus.COMPLETED).collect(Collectors.toList());
 
         HashMap<String, List<Appointment>> shotsTaken = new HashMap<>();
 
@@ -191,24 +176,19 @@ public class AppointmentService {
             }
         }
 
-
         List<Vaccine> allVaccines = vaccineRepository.findAll();
 
         for (Vaccine vaccine : allVaccines) {
             //Patient has taken this vaccine before
             String vaccineName = vaccine.getName();
-            System.out.println(vaccineName);
             Integer vaccineShots = vaccine.getNumOfShots();
-            System.out.println(vaccineShots);
             if (shotsTaken.containsKey(vaccineName)) {
                 Integer pendingShots = vaccineShots - shotsTaken.get(vaccineName).size();
-                System.out.println(pendingShots);
                 Appointment lastAppt = shotsTaken.get(vaccineName).get(shotsTaken.get(vaccineName).size() - 1);
-                System.out.println(lastAppt);
 
                 //Total number of shots taken is less than mandatory number of doses
                 if (pendingShots > 0) {
-                    Date dueDate = new SimpleDateFormat("yyyy-MM-dd").parse(LocalDate.parse(lastAppt.getDate().toString().substring(0,10)).plusDays(vaccine.getDuration()).toString());
+                    Date dueDate = new SimpleDateFormat("yyyy-MM-dd").parse(LocalDate.parse(lastAppt.getDate().toString().substring(0,10)).plusDays(vaccine.getShotInternalVal()).toString());
                     vaccinationsDue.add(new VaccineDueModel(vaccineName, shotsTaken.get(vaccineName).size() + 1, dueDate, vaccine.getVaccineId()));
                 }
 
@@ -224,28 +204,13 @@ public class AppointmentService {
                 }
             } else
                 vaccinationsDue.add(new VaccineDueModel(vaccineName, 1, new SimpleDateFormat("yyyy-MM-dd").parse(LocalDate.parse(LocalDate.now().toString()).toString()), vaccine.getVaccineId()));
-
         }
-
         List<Appointment> futureAppointments =  appointmentRepository.getFutureAppointments(currDate, patientId);
-
-        //System.out.println("future size:" + futureAppointments.size());
-
         List<Clinic> allClinics = clinicRepository.findAll();
-
         final Map<Integer, String> clinicsById = allClinics.stream()
                 .collect(Collectors.toMap(k -> k.getClinicId(), k -> k.getName()));
-
-//        final Map<Integer, Appointment> appointmentsById = new HashMap<>();
-//        for (Appointment k : futureAppointments) {
-//            if (appointmentsById.put(k.getAppointmentId(), k) != null) {
-//                throw new IllegalStateException("Duplicate key");
-//            }
-//        }
-
          List<AppointmentClinic> futureAppts = futureAppointments.stream().map( a ->
             new AppointmentClinic(a, clinicsById.get(a.getClinicId()))).collect(Collectors.toList());
-
         Object[] allDues = {vaccinationsDue, futureAppts};
         return allDues;
     }
@@ -254,13 +219,9 @@ public class AppointmentService {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.US);
         Date currDate = dateFormat.parse(currentDate);
         List<Appointment> pastAppointments = appointmentRepository.getPastAppointments(currDate, patientId);
-        //System.out.println("pastAppts:"+pastAppointments.size());
-
         //completed means administered
         List<Appointment> pastCompletedAppointments = pastAppointments.stream()
                 .filter(app -> app.getStatus() == AppointmentStatus.COMPLETED).collect(Collectors.toList());
-
-        //System.out.println("size completed:"+pastCompletedAppointments.size());
 
         List<Clinic> allClinics = clinicRepository.findAll();
 
@@ -271,7 +232,6 @@ public class AppointmentService {
                 new AppointmentClinic(a, clinicsById.get(a.getClinicId()))).collect(Collectors.toList());
 
         HashMap<String, List<AppointmentClinic>> vaccinationHistory = new HashMap<>();
-        //System.out.println("hashmap size"+vaccinationHistory.size());
 
         for(AppointmentClinic ac : pastAppts){
             List<Vaccine> vaccinations = ac.getAppointment().getVaccines();
@@ -281,17 +241,8 @@ public class AppointmentService {
                 vaccinationHistory.putIfAbsent(vaccineName, new LinkedList<>(Arrays.asList(ac)));
             }
         }
-
         return vaccinationHistory;
     }
-
-//    public Object getHistory(Integer patientId, String currentDate) throws ParseException {
-//
-//        Date cdate = null;
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.US);
-//        cdate = dateFormat.parse(currentDate);
-//        return appointmentRepository.getApptsTest(cdate, patientId);
-//    }
 
     public class VaccineDueModel {
         String vaccineName;
@@ -368,7 +319,6 @@ public class AppointmentService {
     @Transactional(rollbackOn = {IOException.class, SQLException.class})
     public void markAppointmentCompleted(Integer patient_id, String current_date) throws ParseException {
         List<Appointment> pastAppointments = (List<Appointment>) getPastAppointment(patient_id, current_date);
-        //System.out.println("pastSize"+ pastAppointments.size());
         try{
             for (int i = 0; i < pastAppointments.size(); i++) {
                 if ((pastAppointments.get(i)).getStatus().equals(AppointmentStatus.BOOKED)) {

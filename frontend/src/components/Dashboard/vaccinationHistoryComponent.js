@@ -12,15 +12,12 @@ class VaccinationHistoryComponent extends Component {
       historyRecords: {},
     };
   }
-
   handleApptDate = (dateString) => {
     return moment(dateString.slice(0,10)).format("DD-MM-YYYY");
   };
-
   fetchVaccinationHistory = () => {
     let currentDate = localStorage.getItem("currentDate");
     currentDate = computeCurrentDateTime(currentDate);
-
     axios({
       url: `${URL_VAL}/appointment/history`,
       method: "get",
@@ -30,10 +27,8 @@ class VaccinationHistoryComponent extends Component {
       },
     })
       .then((r) => {
-        console.log(r.status + " " + r.data);
         if (r.status === 200) {
           if (r.data !== undefined) {
-            console.log(r.data);
             this.setState({
               historyRecords: r.data,
             });
@@ -43,9 +38,6 @@ class VaccinationHistoryComponent extends Component {
   };
 
     componentDidMount() {
-      // localStorage.setItem("id", 1);
-      // localStorage.setItem("currentDate", new Date().toISOString().slice(0, 10));
-      console.log("inside Dashboard vacc history ComponentDiMount");
       this.fetchVaccinationHistory();
     }
 
@@ -57,16 +49,9 @@ class VaccinationHistoryComponent extends Component {
           vaccine,
           appointmentsCount: appointmentList.length,
           appointments: appointmentList
-          //  <div className="col">{app.appointment_date}</div>
-          //                     <div className="col">{app.slot}</div>
-          //                     <div className="col">{app.clinicName}</div>
         };
         history = [...history, h]
       }
-    
-      console.log(history);
-
-
       return (
         <div>
           <div className="container mt-4 textFont" style={{ width: "900px" }}>

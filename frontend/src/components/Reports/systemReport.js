@@ -40,34 +40,28 @@ class SystemReport extends Component {
   }
 
   onClinicChange(e) {
-    console.log(e);
     this.setState({
-      // clinicId: e.target.value,
       clinicName: e.target.value,
     });
   }
 
   onFromDateChange(e) {
-    console.log(e);
     this.setState({
       fromDate: e,
     });
   }
 
   onToDateChange(e) {
-    console.log(e);
     this.setState({
       toDate: e,
     });
   }
 
   componentDidMount() {
-    console.log("inside did");
     axios.get(`${URL_VAL}/clinic/all`).then((response) => {
       console.log("Status Code : ", response.status);
       console.log("Status Code : ", response.data);
       if (response.status === 200) {
-        console.log(response.data);
         if (response.data.length > 0) {
           this.setState({
             clinicList: response.data,
@@ -84,15 +78,12 @@ class SystemReport extends Component {
         fromDate: moment(this.state.fromDate).format("YYYY-MM-DD-HH"),
         toDate: moment(this.state.toDate).format("YYYY-MM-DD-HH"),
       };
-      console.log(data);
       axios({
         url: `${URL_VAL}/reports/systemReport`,
         method: "get",
         data: null,
         params: data,
       }).then((response) => {
-        console.log(response.status);
-        console.log(response.data);
         if (response.status === 200) {
           if (response.data.length > 0) {
             console.log(response.data);
@@ -117,21 +108,13 @@ class SystemReport extends Component {
       });
       isValid = false;
     }
-
     return isValid;
   }
 
   render() {
     var myd = moment(localStorage.getItem("currentDate"));
-
     var date = localStorage.getItem("currentDate");
     var max = myd.add(12, "months");
-
-    console.log(max._d);
-
-    console.log(this.state.reportData);
-
-    console.log(myd.format("YYYY-MM-DD-HH"));
 
     return (
       <>
