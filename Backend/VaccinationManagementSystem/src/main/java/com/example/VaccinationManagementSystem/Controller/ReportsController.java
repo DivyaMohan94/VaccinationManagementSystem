@@ -3,6 +3,7 @@ package com.example.VaccinationManagementSystem.Controller;
 import com.example.VaccinationManagementSystem.Model.ErrorDetail;
 import com.example.VaccinationManagementSystem.Model.ErrorResponse;
 import com.example.VaccinationManagementSystem.Service.ReportsService;
+import com.sun.tools.jconsole.JConsoleContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,6 +45,7 @@ public class ReportsController {
             return reportsService.getSystemReport(clinicId,fromDate,toDate);
 
         } catch (Exception e) {
+            System.out.println(e);
             return ResponseEntity.badRequest().body(new ErrorResponse(new ErrorDetail("400", e.getMessage())));
         }
     }

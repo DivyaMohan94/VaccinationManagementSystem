@@ -1,34 +1,44 @@
-import React from 'react';
+import React, { Component } from "react";
+import { Redirect } from "react-router";
+import axios from "axios";
+import propTypes from "prop-types";
 import { makeStyles } from '@material-ui/core/styles';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import Container from '@mui/material/Container';
+import Navbar from '../components/navbar';
+import ReportsTab from '../components/Reports/ReportsTab';
+
+const theme = createTheme();
 
 const useStyles = makeStyles((theme) => ({
     root: {
         display: 'flex',
-        justifyContent: 'center',      
+        justifyContent: 'center',
         height: '80vh',
         fontFamily: 'Nunito',
     },
     container: {
-        textAlign: 'center',       
+        textAlign: 'center',
     },
     colorText: {
         color: '#614E42',
-    },    
-    // title: {
-    //     color: '#DD8042',
-    //     fontSize: '2.5rem'              
-    // },
+    },
 }));
-export default function LandingComponent() {
-    const classes = useStyles();
-    
-    return (
-        <div className={classes.root} id="header">
-            <div className={classes.container}>
-                <h1 className={classes.colorText}>
-                    <span>Report</span>
-                </h1>
-            </div>
-        </div>
-    );
+
+class Report extends Component {
+    render() {
+        return (
+            <>
+                <Navbar />
+                <ThemeProvider theme={theme}>
+                    <CssBaseline />
+                    <ReportsTab />
+                </ThemeProvider>
+            </>
+        );
+    }
 }
+
+
+export default Report

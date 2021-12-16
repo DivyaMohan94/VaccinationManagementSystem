@@ -49,12 +49,19 @@ public class ReportsService {
         if (allAppointments.size() != 0) {
 
             noShowAppointments = allAppointments.stream().filter(a -> a.getStatus().equals(AppointmentStatus.NO_SHOW)).collect(Collectors.toList());
-            noShowRate = (double) noShowAppointments.size() / allAppointments.size();
-        }
+            if(noShowAppointments.size()!=0){
+                noShowRate = (double) noShowAppointments.size() / allAppointments.size();
+            }else{
+                return new List[]{Collections.singletonList(allAppointments.size()), Collections.singletonList(0), Collections.singletonList(0)};
+            }
+
+        }else{
+        return new List[]{Collections.singletonList(0), Collections.singletonList(0), Collections.singletonList(0)};
+    }
 
         //return noShowRate;
 
-        return new List[]{allAppointments,noShowAppointments, Collections.singletonList(noShowRate)};
+        return new List[]{Collections.singletonList(allAppointments.size()), Collections.singletonList(noShowAppointments.size()), Collections.singletonList(noShowRate)};
 
     }
 
@@ -78,12 +85,19 @@ public class ReportsService {
         if (allAppointments.size() != 0) {
 
             noShowAppointments = allAppointments.stream().filter(a -> a.getStatus().equals(AppointmentStatus.NO_SHOW)).collect(Collectors.toList());
-            noShowRate = (double) noShowAppointments.size() / allAppointments.size();
+            if(noShowAppointments.size() !=0){
+                noShowRate = (double) noShowAppointments.size() / allAppointments.size();
+            }else{
+                return new List[]{Collections.singletonList(allAppointments.size()), Collections.singletonList(0), Collections.singletonList(0)};
+            }
+
+        }else{
+            return new List[]{Collections.singletonList(0), Collections.singletonList(0), Collections.singletonList(0)};
         }
 
         //return noShowRate;
 
-        return new List[]{allAppointments,noShowAppointments, Collections.singletonList(noShowRate)};
+        return new List[]{Collections.singletonList(allAppointments.size()), Collections.singletonList(noShowAppointments.size()), Collections.singletonList(noShowRate)};
 
     }
 }
