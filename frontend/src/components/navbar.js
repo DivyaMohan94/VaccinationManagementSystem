@@ -15,12 +15,10 @@ import { useNavigate, Link } from "react-router-dom";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { ListItemText } from "@mui/material";
 import SidePan from "./drawer";
-import BadgeIcon from "@mui/icons-material/Badge";
 import CurrentDateSelectorComponent from "./currentDateSelectorComponent";
 import moment from "moment";
 
 export default function Navbar() {
-  const [auth, setAuth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const login = localStorage.getItem("loggedIn");
 
@@ -38,10 +36,6 @@ export default function Navbar() {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
-  const calculateCurrentSelectedTime = () => {
-    const currSelectedTime =new Date(localStorage.getItem("currentDate")).toDateString;
-  }
 
   return (
     <>

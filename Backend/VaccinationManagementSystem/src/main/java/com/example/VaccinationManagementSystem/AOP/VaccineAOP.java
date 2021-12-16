@@ -17,7 +17,7 @@ public class VaccineAOP {
     @Before("execution(public * com.example.VaccinationManagementSystem.Service.VaccineService.createVaccine(..))")
     public void vaccineManufacturer(JoinPoint joinPoint) throws ParseException {
         Object[] obj = joinPoint.getArgs();
-        if(joinPoint.getArgs()[2].toString().length() <=3 ) throw new IllegalArgumentException("Manufacturer name must be at least 3 characters long.");
+        if(joinPoint.getArgs()[2].toString().length() < 3 ) throw new IllegalArgumentException("Manufacturer name must be at least 3 characters long.");
    }
 }
 

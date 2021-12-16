@@ -1,16 +1,10 @@
 import React, { Component } from "react";
 import axios from "axios";
-import TextField from "@material-ui/core/TextField";
-import { makeStyles } from "@material-ui/core/styles";
-import { useState } from "react";
 import swal from "sweetalert";
 import Button from "@material-ui/core/Button";
 import URL_VAL from "../utils/backend";
 import Multiselect from "multiselect-react-dropdown";
-import { FormLabel, FormControl } from "@material-ui/core";
-import Select from "rc-time-picker/lib/Select";
-import MenuItem from "@mui/material/MenuItem";
-import { DropdownButton, Dropdown, Form } from "react-bootstrap";
+import { FormLabel } from "@material-ui/core";
 import { computeCurrentDateTime } from '../utils/utilities'
 
 function clearFields(event) {
@@ -201,8 +195,8 @@ class NewAppointmentComponent extends Component {
 
   render() {
     let nextYear = new Date(localStorage.getItem('currentDate'));
-    const dd = nextYear.getDate();
-    const mm = nextYear.getMonth() + 1;
+    let dd = nextYear.getDate();
+    let mm = nextYear.getMonth() + 1;
     const yyyy = nextYear.getUTCFullYear() + 1;
     if (dd < 10) {
       dd = "0" + dd;

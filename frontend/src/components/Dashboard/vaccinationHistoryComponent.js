@@ -1,20 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
-import swal from "sweetalert";
-import Button from "@material-ui/core/Button";
 import URL_VAL from "../../utils/backend";
-import Multiselect from "multiselect-react-dropdown";
-import { FormLabel } from "@material-ui/core";
-import Navbar from "../navbar";
 import "../../utils/colorSchema.css";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import '../../utils/colorSchema.css';
 import moment from "moment";
 
 class VaccinationHistoryComponent extends Component {
@@ -36,11 +23,6 @@ class VaccinationHistoryComponent extends Component {
     //add time here to hardcoded string
     let formatString = "-00-00-00";
     currentDate += formatString;
-
-    const data = {
-      patientId: parseInt(localStorage.getItem("mrn")),
-      currentDate: currentDate,
-    }
 
     axios({
       url: `${URL_VAL}/appointment/history`,

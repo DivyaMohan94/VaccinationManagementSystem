@@ -1,10 +1,4 @@
 import React, { Component } from "react";
-import axios from "axios";
-import swal from "sweetalert";
-import Button from "@material-ui/core/Button";
-import Multiselect from "multiselect-react-dropdown";
-import { FormLabel } from "@material-ui/core";
-import moment from "moment";
 
 class CurrentDateSelectorComponent extends Component {
   constructor(props) {
@@ -18,8 +12,8 @@ class CurrentDateSelectorComponent extends Component {
 
   render() {
     let nextYear = new Date();
-    const dd = nextYear.getDate();
-    const mm = nextYear.getMonth() + 1;
+    let dd = nextYear.getDate();
+    let mm = nextYear.getMonth() + 1;
     const yyyy = nextYear.getUTCFullYear() + 1;
     if (dd < 10) {
       dd = "0" + dd;
