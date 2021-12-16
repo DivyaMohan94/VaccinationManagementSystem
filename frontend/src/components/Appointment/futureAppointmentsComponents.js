@@ -47,6 +47,7 @@ class FutureAppointmentComponent extends Component {
       appointment_date: e.target.value,
     });
   }
+
   async onSlotChange(e) {
     console.log("hitting this", e);
     await this.setState({
@@ -58,6 +59,7 @@ class FutureAppointmentComponent extends Component {
     };
     await this.fetchClinics(data);
   }
+
   onClinicChange(e) {
     this.setState({
       clinic_id: e.target.value,

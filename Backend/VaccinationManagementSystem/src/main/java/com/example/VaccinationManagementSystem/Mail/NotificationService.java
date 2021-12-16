@@ -43,7 +43,58 @@ public class NotificationService {
             String emailId= patientRespository.getById(appointment.getPatientId()).getEmailId();
             messageHelper.setTo(emailId);
             messageHelper.setSubject("Appointment has been Scheduled");
-            messageHelper.setText("Appointment to vaccine service is Scheduled on" + appointment.getDate());
+            messageHelper.setText("Appointment for vaccine service is Scheduled for "+appointment.getSlot()+" on" + appointment.getDate());
+        };
+        try{
+            javaMailSender.send(messagePreparator);
+        }
+        catch (MailException e){
+            throw new IllegalStateException(e.getMessage());
+        }
+    }
+
+    public void sendCheckinAppointment(Appointment appointment) throws MailException {
+        MimeMessagePreparator messagePreparator = mimeMessage -> {
+            MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
+            messageHelper.setFrom("cmpe275fall21@gmail.com");
+            String emailId= patientRespository.getById(appointment.getPatientId()).getEmailId();
+            messageHelper.setTo(emailId);
+            messageHelper.setSubject("Appointment has been checked-In");
+            messageHelper.setText("Appointment for vaccine service is succesfully checked-in. Your appointment is scheduled  for "+appointment.getSlot()+" on" + appointment.getDate());
+        };
+        try{
+            javaMailSender.send(messagePreparator);
+        }
+        catch (MailException e){
+            throw new IllegalStateException(e.getMessage());
+        }
+    }
+
+    public void sendUpdatedAppointment(Appointment appointment) throws MailException {
+        MimeMessagePreparator messagePreparator = mimeMessage -> {
+            MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
+            messageHelper.setFrom("cmpe275fall21@gmail.com");
+            String emailId= patientRespository.getById(appointment.getPatientId()).getEmailId();
+            messageHelper.setTo(emailId);
+            messageHelper.setSubject("Appointment with id " + appointment.getAppointmentId() + "has been Updated");
+            messageHelper.setText("Appointment for vaccine service is Updated. Your appointment is scheduled  for "+appointment.getSlot()+" on" + appointment.getDate());
+        };
+        try{
+            javaMailSender.send(messagePreparator);
+        }
+        catch (MailException e){
+            throw new IllegalStateException(e.getMessage());
+        }
+    }
+
+    public void sendCancelAppointment(Appointment appointment) throws MailException {
+        MimeMessagePreparator messagePreparator = mimeMessage -> {
+            MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
+            messageHelper.setFrom("cmpe275fall21@gmail.com");
+            String emailId= patientRespository.getById(appointment.getPatientId()).getEmailId();
+            messageHelper.setTo(emailId);
+            messageHelper.setSubject("Appointment with id " + appointment.getAppointmentId() + "has been canceled");
+            messageHelper.setText("Appointment for vaccine service Scheduled on" + appointment.getDate() +" is cancelled");
         };
         try{
             javaMailSender.send(messagePreparator);

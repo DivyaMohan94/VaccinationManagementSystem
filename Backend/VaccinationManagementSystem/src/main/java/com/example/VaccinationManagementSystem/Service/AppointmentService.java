@@ -44,7 +44,6 @@ public class AppointmentService {
 
         Date appointmentDate = null;
         Date currentDate = null;
-        System.out.println("Inside Appointment service");
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH:mm", Locale.US);
         String datetime = date + "-" + slot.toString();
         appointmentDate = dateFormat.parse(datetime);
@@ -76,6 +75,7 @@ public class AppointmentService {
             vaccines1.add(vaccineRepository.findById(vaccines.get(i)).get());
         }
         appointment.setVaccines(vaccines1);
+        notificationService.sendUpdatedAppointment(appointment);
         return appointment;
     }
 
@@ -86,6 +86,8 @@ public class AppointmentService {
             throw new IllegalStateException("Appointment with " + appointmentId + " does not exist.");
         }
         appointmentRepository.findById(appointmentId).get().setStatus(AppointmentStatus.CANCELLED);
+        Appointment appointment = appointmentRepository.findById(appointmentId).get();
+        notificationService.sendCancelAppointment(appointment);
     }
 
     @Transactional(rollbackOn = {IOException.class, SQLException.class})
@@ -156,6 +158,7 @@ public class AppointmentService {
     public Object makeCheckinAppointment(Integer patient_id, Integer appointment_id) throws ParseException {
         Appointment appointment = appointmentRepository.findById(appointment_id).get();
         appointment.setStatus(AppointmentStatus.CHECKED_IN);
+        notificationService.sendCheckinAppointment(appointment);
         return appointment;
     }
 
@@ -172,11 +175,6 @@ public class AppointmentService {
         List<Appointment> pastCompletedAppointments = pastAppointments.stream()
                 .filter(app -> app.getStatus() == AppointmentStatus.CHECKED_IN).collect(Collectors.toList());
 
-        System.out.println("size"+pastAppointments.size());
-
-        System.out.println(pastAppointments);
-        System.out.println("****");
-        System.out.println(pastCompletedAppointments);
 
         HashMap<String, List<Appointment>> shotsTaken = new HashMap<>();
 
@@ -188,11 +186,8 @@ public class AppointmentService {
             }
         }
 
-        System.out.println("All shots taken" + shotsTaken);
 
         List<Vaccine> allVaccines = vaccineRepository.findAll();
-
-        System.out.println(allVaccines);
 
         for (Vaccine vaccine : allVaccines) {
             //Patient has taken this vaccine before
@@ -229,7 +224,7 @@ public class AppointmentService {
 
         List<Appointment> futureAppointments =  appointmentRepository.getFutureAppointments(currDate, patientId);
 
-        System.out.println("future size:" + futureAppointments.size());
+        //System.out.println("future size:" + futureAppointments.size());
 
         List<Clinic> allClinics = clinicRepository.findAll();
 
@@ -254,13 +249,13 @@ public class AppointmentService {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.US);
         Date currDate = dateFormat.parse(currentDate);
         List<Appointment> pastAppointments = appointmentRepository.getPastAppointments(currDate, patientId);
-        System.out.println("pastAppts:"+pastAppointments.size());
+        //System.out.println("pastAppts:"+pastAppointments.size());
 
         //completed means administered
         List<Appointment> pastCompletedAppointments = pastAppointments.stream()
                 .filter(app -> app.getStatus() == AppointmentStatus.COMPLETED).collect(Collectors.toList());
 
-        System.out.println("size completed:"+pastCompletedAppointments.size());
+        //System.out.println("size completed:"+pastCompletedAppointments.size());
 
         List<Clinic> allClinics = clinicRepository.findAll();
 
@@ -271,7 +266,7 @@ public class AppointmentService {
                 new AppointmentClinic(a, clinicsById.get(a.getClinicId()))).collect(Collectors.toList());
 
         HashMap<String, List<AppointmentClinic>> vaccinationHistory = new HashMap<>();
-        System.out.println("hashmap size"+vaccinationHistory.size());
+        //System.out.println("hashmap size"+vaccinationHistory.size());
 
         for(AppointmentClinic ac : pastAppts){
             List<Vaccine> vaccinations = ac.getAppointment().getVaccines();
@@ -368,7 +363,7 @@ public class AppointmentService {
     @Transactional(rollbackOn = {IOException.class, SQLException.class})
     public void markAppointmentCompleted(Integer patient_id, String current_date) throws ParseException {
         List<Appointment> pastAppointments = (List<Appointment>) getPastAppointment(patient_id, current_date);
-        System.out.println("pastSize"+ pastAppointments.size());
+        //System.out.println("pastSize"+ pastAppointments.size());
         try{
             for (int i = 0; i < pastAppointments.size(); i++) {
                 if ((pastAppointments.get(i)).getStatus().equals(AppointmentStatus.BOOKED)) {
