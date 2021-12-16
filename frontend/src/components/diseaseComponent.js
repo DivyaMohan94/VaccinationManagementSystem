@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import axios from "axios";
 import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
@@ -51,7 +51,7 @@ export default function DiseaseComponent() {
                 dangerMode:false
             })
             clearFields(e);
-          } else if (response.status == 400) {
+          } else if (response.status === 400) {
               console.log(errorMessage)
             setErrorMessage(response.data.message);
             swal("Error", errorMessage, "error", {

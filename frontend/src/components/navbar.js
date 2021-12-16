@@ -122,13 +122,20 @@ export default function Navbar() {
               justifyContent: "end",
             }}
           >
-            {`Current Real Date: ${new Date().toLocaleDateString()}`}
-            <br />
-            {`Current Real Time: ${new Date().toLocaleTimeString()}`}
-            <br />
-            {`Selected Current Date: ${moment(localStorage.getItem("currentDate")).format(
-              "MM/DD/YYYY"
-            )}`}
+            {localStorage.getItem("loggedIn") ? (
+              <>
+                ({`Current Real Date: ${new Date().toLocaleDateString()}`}
+                <br />
+                {`Current Real Time: ${new Date().toLocaleTimeString()}`}
+                <br />
+                {`Selected Current Date: ${moment(
+                  localStorage.getItem("currentDate")
+                ).format("MM/DD/YYYY")}`}
+                <CurrentDateSelectorComponent />
+              </>
+            ) : (
+              <></>
+            )}
           </div>
           {/* <div
             class="row"
@@ -136,7 +143,6 @@ export default function Navbar() {
           >
             {`Current Real Time: ${new Date().toISOString()}`}
           </div> */}
-          <CurrentDateSelectorComponent />
         </AppBar>
       </Box>
     </>

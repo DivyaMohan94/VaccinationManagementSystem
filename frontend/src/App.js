@@ -6,7 +6,6 @@ import Login from "./pages/login";
 import Admin from "./pages/Admin";
 import Report from "./pages/Report";
 import Dashboard from "./pages/Dashboard";
-// import FutureAppointmentComponent from "./components/Appointment/futureAppointmentsComponents";
 import AppointmentComponent from './pages/Appointment'
 
 function App() {

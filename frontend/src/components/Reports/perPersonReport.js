@@ -14,15 +14,8 @@ import {
 } from "@material-ui/core";
 import moment from "moment";
 import Box from "@mui/material/Box";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import DesktopDatePicker from "@mui/lab/DesktopDatePicker";
 
-function clearFields(event) {
-  Array.from(event.target).forEach((e) => (e.value = ""));
-}
+import DesktopDatePicker from "@mui/lab/DesktopDatePicker";
 
 class SystemReport extends Component {
   constructor(props) {
