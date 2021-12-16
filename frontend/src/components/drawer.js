@@ -5,7 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { Box } from "@mui/system";
-import { useState } from 'react';
+import { useState } from "react";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Divider } from "@mui/material";
@@ -22,7 +22,6 @@ const useStyles = makeStyles((theme) => ({
 export default function SidePan() {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
-  const isEmployeeLogin = localStorage.getItem("isEmployee");
 
   return (
     <>
@@ -46,33 +45,55 @@ export default function SidePan() {
           </Box>
           <Divider />
           <List>
-            {isEmployeeLogin ? (
-              <ListItem button component={Link} to="/flightManagement">
-                Flight Management
+            {localStorage.getItem("loggedIn") === "true" ? (
+              <ListItem
+                button
+                component={Link}
+                paddingLeft={10}
+                to="/dashboard"
+              >
+                Dashboard
               </ListItem>
             ) : (
+              <ListItem button component={Link} paddingLeft={10} to="/login">
+                Dashboard
+              </ListItem>
+            )}
+
+            {localStorage.getItem("admin") === "true" ? (
               <>
-                <ListItem
-                  button
-                  component={Link}
-                  paddingLeft={10}
-                  to="/dashboard"
-                >
-                  Dashboard
+                {localStorage.getItem("loggedIn") === "true" ? (
+                  <ListItem button component={Link} to="/admin">
+                    Admin
                   </ListItem>
-                  {localStorage.getItem('admin') === "true" ? (<>
-                    <ListItem button component={Link} to="/admin">
-                      Admin
-                    </ListItem>
-                    </>):(<></>)
-                  }
-                <ListItem button component={Link} to="/appointment">
-                  Appointment
-                </ListItem>
-                <ListItem button component={Link} to="/report">
-                  Report
-                </ListItem>
+                ) : (
+                  <ListItem button component={Link} to="/login">
+                    Admin
+                  </ListItem>
+                )}
               </>
+            ) : (
+              <></>
+            )}
+
+            {localStorage.getItem("loggedIn") === "true" ? (
+              <ListItem button component={Link} to="/appointment">
+                Appointment
+              </ListItem>
+            ) : (
+              <ListItem button component={Link} to="/login">
+                Appointment
+              </ListItem>
+            )}
+
+            {localStorage.getItem("loggedIn") === "true" ? (
+              <ListItem button component={Link} to="/report">
+                Report
+              </ListItem>
+            ) : (
+              <ListItem button component={Link} to="/login">
+                Report
+              </ListItem>
             )}
           </List>
         </div>

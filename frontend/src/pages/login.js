@@ -94,6 +94,7 @@ export default function Login() {
     }).then((response) => {
       console.log(response);
       if (response.status === 200) {
+        localStorage.setItem("loggedIn",true);
         localStorage.setItem("email", response.data.patient.emailId);
         localStorage.setItem("mrn", response.data.patient.mrn);
         localStorage.setItem("admin", response.data.patient.admin);

@@ -102,14 +102,14 @@ export default function Navbar() {
                       <Link to="/login">Login</Link>
                     </ListItemText>
                   </MenuItem>
-                  <MenuItem>
+                  {/*<MenuItem>
                     <ListItemIcon>
                       <HowToRegIcon />
                     </ListItemIcon>
                     <ListItemText>
                       <Link to="/register">Sign-Up</Link>
                     </ListItemText>
-                  </MenuItem>
+                 </MenuItem>*/}
                 </>
               )}
             </Menu>
