@@ -15,12 +15,16 @@ import Axios from "axios";
 import { useNavigate } from "react-router-dom";
 import swal from "sweetalert";
 import Navbar from "../components/navbar";
-import DatePicker from 'react-date-picker';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import { FormLabel,FormControl, InputLabel,Select, MenuItem } from "@material-ui/core";
-
-
+import DatePicker from "react-date-picker";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import {
+  FormLabel,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -47,15 +51,72 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Login() {
   const classes = useStyles();
-  const stateList = [ 'AL','AK','AS','AZ','AR','CA','CO','CT','DE','DC','FM','FL','GA',
- 'GU','HI','ID','IL','IN','IA','KS','KY','LA','ME','MH','MD','MA','MI','MN',
- 'MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','MP','OH','OK','OR',
-'PW','PA','PR','RI','SC','SD','TN','TX','UT','VT','VI','VA','WA','WV','WI','WY']
+  const stateList = [
+    "AL",
+    "AK",
+    "AS",
+    "AZ",
+    "AR",
+    "CA",
+    "CO",
+    "CT",
+    "DE",
+    "DC",
+    "FM",
+    "FL",
+    "GA",
+    "GU",
+    "HI",
+    "ID",
+    "IL",
+    "IN",
+    "IA",
+    "KS",
+    "KY",
+    "LA",
+    "ME",
+    "MH",
+    "MD",
+    "MA",
+    "MI",
+    "MN",
+    "MS",
+    "MO",
+    "MT",
+    "NE",
+    "NV",
+    "NH",
+    "NJ",
+    "NM",
+    "NY",
+    "NC",
+    "ND",
+    "MP",
+    "OH",
+    "OK",
+    "OR",
+    "PW",
+    "PA",
+    "PR",
+    "RI",
+    "SC",
+    "SD",
+    "TN",
+    "TX",
+    "UT",
+    "VT",
+    "VI",
+    "VA",
+    "WA",
+    "WV",
+    "WI",
+    "WY",
+  ];
   const [fname, setFname] = useState("");
   const [mname, setMname] = useState("");
   const [lname, setLname] = useState("");
   const [street, setStreet] = useState("");
-  const [state, setStates] = useState(0);
+  const [state, setStates] = useState("");
   const [zip, setZip] = useState("");
   const [dob, setDob] = useState(new Date());
   const [city, setCity] = useState("");
@@ -66,29 +127,36 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (fname === ""||lname===""||state === ""||city===""||gender ==="" || dob === "" || zip === "") {
+    if (
+      fname === "" ||
+      lname === "" ||
+      state === "" ||
+      city === "" ||
+      gender === "" ||
+      dob === "" ||
+      zip === ""
+    ) {
       swal("Error", "Enter Details to SignUp", "error", {
         dangerMode: true,
       });
     } else {
-      Axios.defaults.withCredentials = true;         
+      Axios.defaults.withCredentials = true;
       await Axios.post("/user/register", {
-        mrn: localStorage.getItem('mrn'),
+        mrn: localStorage.getItem("mrn"),
         fname: fname,
         mname: mname,
         lname: lname,
         street: street,
-        city:city,
-        state: stateList[state],
+        city: city,
+        state: state,
         zip: zip,
-        dob: dob.getDate() + "/" + dob.getMonth() + "/" +dob.getFullYear(),
+        dob: dob.getDate() + "/" + dob.getMonth() + "/" + dob.getFullYear(),
         gender: gender,
-
       })
         .then((response) => {
           if (response.status === 200) {
             //debugger;
-              console.log("----",response.data);
+            console.log("----", response.data);
             localStorage.setItem("loggedIn", true);
             localStorage.setItem("email", response.data.emailId);
             localStorage.setItem("name", response.data.fname);
@@ -112,9 +180,14 @@ export default function Login() {
           }
         })
         .catch((err) => {
-          swal("Server Not Responding", err.response.data.badRequest.msg, "error", {
-            dangerMode: true,
-          });
+          swal(
+            "Server Not Responding",
+            err.response.data.badRequest.msg,
+            "error",
+            {
+              dangerMode: true,
+            }
+          );
           console.log(err);
         });
     }
@@ -153,25 +226,25 @@ export default function Login() {
                 id="mName"
                 label="Middle Name"
                 name="mName"
-                autoComplete="mName"                
+                autoComplete="mName"
                 onChange={(event) => {
                   event.preventDefault();
                   setMname(event.target.value);
                 }}
               />
-              
+
               <TextField
                 required
                 fullWidth
                 name="lName"
                 label="Last Name"
                 id="lName"
-                autoComplete="lName" 
+                autoComplete="lName"
                 onChange={(event) => {
                   event.preventDefault();
                   setLname(event.target.value);
                 }}
-              /> 
+              />
               <TextField
                 fullWidth
                 name="street"
@@ -181,7 +254,7 @@ export default function Login() {
                   event.preventDefault();
                   setStreet(event.target.value);
                 }}
-              /> 
+              />
               <TextField
                 halfWidth
                 name="city"
@@ -191,18 +264,18 @@ export default function Login() {
                   event.preventDefault();
                   setCity(event.target.value);
                 }}
-              /> 
+              />
               <TextField
-                  halfWidth
-                  name="zip"
-                  label="zipcode"
-                  id="zip"
-                  onChange={(event) => {
-                    event.preventDefault();
-                    setZip(event.target.value);
-                  }}
-                /> 
-              <FormControl fullWidth>
+                halfWidth
+                name="zip"
+                label="zipcode"
+                id="zip"
+                onChange={(event) => {
+                  event.preventDefault();
+                  setZip(event.target.value);
+                }}
+              />
+              {/*<FormControl fullWidth>
                 <InputLabel id="demo-simple-select-label">states</InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
@@ -213,24 +286,60 @@ export default function Login() {
                     >
                     {stateList.map((st,i) => <MenuItem value={10}>{st}</MenuItem> )}
                     </Select>
-                  </FormControl>
-                
-              <FormLabel>DOB:</FormLabel>          
-              <DatePicker
-              onChange={setDob}
-              value={dob}
-            />
-        <FormControl fullWidth component="fieldset">
-            <FormLabel component="legend">Gender</FormLabel>
-            <RadioGroup row aria-label="gender" name="row-radio-buttons-group"
-            value = {gender}
-            onChange = {(event) => {setGender(event.target.value)}}
-            >
-              <FormControlLabel value="female" control={<Radio />} label="Female" />
-              <FormControlLabel value="male" control={<Radio />} label="Male" />
-              <FormControlLabel value="other" control={<Radio />} label="Other" />
-            </RadioGroup>
-        </FormControl>
+                  </FormControl>*/}
+
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">States</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={state}
+                  label="States"
+                  onChange={(event) => {
+                    event.preventDefault();
+                    setStates(event.target.value);
+                  }}
+                >
+                  {Object.values(stateList).map((state) => (
+                    <MenuItem
+                      value={state}
+                    >
+                      {state}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              <FormLabel>DOB:</FormLabel>
+              <DatePicker onChange={setDob} value={dob} />
+              <FormControl fullWidth component="fieldset">
+                <FormLabel component="legend">Gender</FormLabel>
+                <RadioGroup
+                  row
+                  aria-label="gender"
+                  name="row-radio-buttons-group"
+                  value={gender}
+                  onChange={(event) => {
+                    setGender(event.target.value);
+                  }}
+                >
+                  <FormControlLabel
+                    value="female"
+                    control={<Radio />}
+                    label="Female"
+                  />
+                  <FormControlLabel
+                    value="male"
+                    control={<Radio />}
+                    label="Male"
+                  />
+                  <FormControlLabel
+                    value="other"
+                    control={<Radio />}
+                    label="Other"
+                  />
+                </RadioGroup>
+              </FormControl>
               <Button
                 type="submit"
                 fullWidth
@@ -240,7 +349,6 @@ export default function Login() {
               >
                 Sign Up
               </Button>
-
             </form>
           </div>
         </Grid>
