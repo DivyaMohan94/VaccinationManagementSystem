@@ -6,6 +6,7 @@ import URL_VAL from "../../utils/backend";
 import Multiselect from "multiselect-react-dropdown";
 import { FormLabel } from "@material-ui/core";
 import "../../utils/colorSchema.css";
+import { computeCurrentDateTime } from "../../utils/utilities";
 
 class FutureAppointmentComponent extends Component {
   constructor(props) {
@@ -65,7 +66,7 @@ class FutureAppointmentComponent extends Component {
 
   handleCheckIn = (apptId) => {
     const data = {
-      patient_id: parseInt(localStorage.getItem("id")),
+      patient_id: parseInt(localStorage.getItem("mrn")),
       appointment_id: apptId,
     };
     console.log("handling checkin for " + apptId);
@@ -110,12 +111,11 @@ class FutureAppointmentComponent extends Component {
 
   componentDidMount() {
     let currentDate = localStorage.getItem("currentDate");
-    //add time here to hardcoded string
-    let formatString = "-00-00-00";
-    currentDate += formatString;
+    currentDate = computeCurrentDateTime(currentDate);
+    console.log("returned date" + currentDate);
 
     const data = {
-      patient_id: parseInt(localStorage.getItem("id")),
+      patient_id: parseInt(localStorage.getItem("mrn")),
       current_date: currentDate,
     };
 

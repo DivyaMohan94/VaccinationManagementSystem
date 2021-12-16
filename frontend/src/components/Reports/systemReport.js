@@ -67,7 +67,7 @@ class SystemReport extends Component {
 
   componentDidMount() {
     console.log("inside did");
-    axios.get(`http://localhost:8080/clinic/all`).then((response) => {
+    axios.get(`${URL_VAL}/clinic/all`).then((response) => {
       console.log("Status Code : ", response.status);
       console.log("Status Code : ", response.data);
       if (response.status === 200) {

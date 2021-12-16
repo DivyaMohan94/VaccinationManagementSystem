@@ -36,7 +36,7 @@ class VaccinationHistoryComponent extends Component {
     currentDate += formatString;
 
     const data = {
-      patientId: parseInt(localStorage.getItem("id")),
+      patientId: parseInt(localStorage.getItem("mrn")),
       currentDate: currentDate,
     }
 
@@ -44,7 +44,7 @@ class VaccinationHistoryComponent extends Component {
       url: `${URL_VAL}/appointment/history`,
       method: "get",
       params: {
-        patientId: localStorage.getItem("id"),
+        patientId: localStorage.getItem("mrn"),
         currentDate,
       },
     })

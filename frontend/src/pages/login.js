@@ -13,6 +13,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import GoogleLogin from "react-google-login";
 import { useState } from "react";
+import URL_VAL from '../utils/backend';
 
 import Axios from "axios";
 
@@ -79,40 +80,40 @@ export default function Login() {
   const responseGoogle = async (resp) => {
     console.log(resp);
     Axios.defaults.withCredentials = true;
-    Axios.post("http://localhost:8080/user/getGoogle", {
-        email: resp.profileObj.email,
-        fname: resp.profileObj.givenName,
-        lname: resp.profileObj.familyName,
-        gid: resp.profileObj.googleId
-      }).then((response) => {
-        console.log(response)
-        if(response.status === 200){
-          localStorage.setItem("email", response.data.patient.emailId)
-          localStorage.setItem("mrn", response.data.patient.mrn)
-          localStorage.setItem("admin", response.data.patient.admin)
-          if(response.data.status === 'Init'){
-            setOTP(true)
-          }
-          else if (response.data.status === "Verified"){
-            navigate("/register")
-
-          }
-          else if(response.data.status === "Registered"){
-            navigate("/")
-          }
+    Axios.post(`${URL_VAL}/user/getGoogle`, {
+      email: resp.profileObj.email,
+      fname: resp.profileObj.givenName,
+      lname: resp.profileObj.familyName,
+      gid: resp.profileObj.googleId,
+    }).then((response) => {
+      console.log(response);
+      if (response.status === 200) {
+        localStorage.setItem("email", response.data.patient.emailId);
+        localStorage.setItem("mrn", response.data.patient.mrn);
+        localStorage.setItem("admin", response.data.patient.admin);
+        localStorage.setItem(
+          "currentDate",
+          new Date().toISOString().slice(0, 10)
+        );
+        if (response.data.status === "Init") {
+          setOTP(true);
+        } else if (response.data.status === "Verified") {
+          navigate("/register");
+        } else if (response.data.status === "Registered") {
+          navigate("/");
         }
-        else if (response.status === 400) {
-          setErrorMessage(response.data.message);
-          swal("Error", errorMessage, "error", {
-            dangerMode: true,
-          });
-        } else {
-          console.log(response);
-          swal("Error", errorMessage, "error", {
-            dangerMode: true,
-          });
-        }
-      })
+      } else if (response.status === 400) {
+        setErrorMessage(response.data.message);
+        swal("Error", errorMessage, "error", {
+          dangerMode: true,
+        });
+      } else {
+        console.log(response);
+        swal("Error", errorMessage, "error", {
+          dangerMode: true,
+        });
+      }
+    });
   }
 
   const onCancelOTP = (e) => {
@@ -127,20 +128,19 @@ export default function Login() {
     }
     else {
       Axios.defaults.withCredentials = true;
-      Axios.post("http://localhost:8080/user/validateOtp", {
+      Axios.post(`${URL_VAL}/user/validateOtp`, {
         email: localStorage.getItem("email"),
         mrn: localStorage.getItem("mrn"),
         otp: otp,
       }).then((response) => {
-        if(response.status === 200) {
-          navigate("/register")
-        }
-        else {
+        if (response.status === 200) {
+          navigate("/register");
+        } else {
           swal("Eror", "OTP verification failed", "error", {
             dangerMode: true,
-        });
+          });
         }
-      })
+      });
     }
   }
   const handleSubmit = (e) => {
@@ -154,33 +154,32 @@ export default function Login() {
       });
     } else {
       Axios.defaults.withCredentials = true;
-      Axios.post("http://localhost:8080/user/login", {
+      Axios.post(`${URL_VAL}/user/login`, {
         email: email,
         password: password,
       })
         .then((response) => {
           if (response.status === 200) {
-            localStorage.setItem("email", response.data.patient.emailId)
-            localStorage.setItem("mrn", response.data.patient.mrn)
-            localStorage.setItem("admin", response.data.patient.admin)
-            if(response.data.status === 'Init'){
-              setOTP(true)
+            localStorage.setItem("email", response.data.patient.emailId);
+            localStorage.setItem("mrn", response.data.patient.mrn);
+            localStorage.setItem("admin", response.data.patient.admin);
+            localStorage.setItem(
+              "currentDate",
+              new Date().toISOString().slice(0, 10)
+            );
+            if (response.data.status === "Init") {
+              setOTP(true);
+            } else if (response.data.status === "Verified") {
+              navigate("/register");
+            } else if (response.data.status === "Registered") {
+              navigate("/");
             }
-            else if (response.data.status === "Verified"){
-              navigate("/register")
-  
-            }
-            else if(response.data.status === "Registered"){
-              navigate("/")
-            }
-          } 
-          else if (response.status === 400) {
+          } else if (response.status === 400) {
             setErrorMessage(response.data.message);
             swal("Error", errorMessage, "error", {
               dangerMode: true,
             });
-          } 
-          else {
+          } else {
             console.log(response);
             swal("Error", errorMessage, "error", {
               dangerMode: true,
