@@ -1,20 +1,24 @@
 package com.example.VaccinationManagementSystem.Mail;
 
+import com.example.VaccinationManagementSystem.Model.Appointment;
 import com.example.VaccinationManagementSystem.Model.Patient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
-import org.springframework.stereotype.Component;
+import com.example.VaccinationManagementSystem.Repository.PatientRespository;
 import org.springframework.stereotype.Service;
 
 @Service
 public class NotificationService {
     @Autowired
     private JavaMailSender javaMailSender;
+    private final PatientRespository patientRespository;
 
+    public NotificationService(PatientRespository patientRespository) {
+        this.patientRespository = patientRespository;
+    }
 
     public void sendOTP(Patient patient) throws MailException {
         MimeMessagePreparator messagePreparator = mimeMessage -> {
@@ -23,6 +27,23 @@ public class NotificationService {
             messageHelper.setTo(patient.getEmailId());
             messageHelper.setSubject("OTP for Registration");
             messageHelper.setText("The otp for your registration to vaccine service is " + patient.getGender());
+        };
+        try{
+            javaMailSender.send(messagePreparator);
+        }
+        catch (MailException e){
+            throw new IllegalStateException(e.getMessage());
+        }
+    }
+
+    public void sendMakeAppointment(Appointment appointment) throws MailException {
+        MimeMessagePreparator messagePreparator = mimeMessage -> {
+            MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
+            messageHelper.setFrom("cmpe275fall21@gmail.com");
+            String emailId= patientRespository.getById(appointment.getPatientId()).getEmailId();
+            messageHelper.setTo(emailId);
+            messageHelper.setSubject("Appointment has been Scheduled");
+            messageHelper.setText("Appointment to vaccine service is Scheduled on" + appointment.getDate());
         };
         try{
             javaMailSender.send(messagePreparator);

@@ -1,5 +1,6 @@
 package com.example.VaccinationManagementSystem.Service;
 
+import com.example.VaccinationManagementSystem.Mail.NotificationService;
 import com.example.VaccinationManagementSystem.Model.Appointment;
 import com.example.VaccinationManagementSystem.Model.AppointmentStatus;
 import com.example.VaccinationManagementSystem.Model.Clinic;
@@ -26,12 +27,14 @@ public class AppointmentService {
     private final AppointmentRepository appointmentRepository;
     private final VaccineRepository vaccineRepository;
     private final ClinicRepository clinicRepository;
+    private final NotificationService notificationService;
 
     @Autowired
-    public AppointmentService(AppointmentRepository appointmentRepository, VaccineRepository vaccineRepository, ClinicRepository clinicRepository) {
+    public AppointmentService(AppointmentRepository appointmentRepository, VaccineRepository vaccineRepository, ClinicRepository clinicRepository, NotificationService notificationService) {
         this.appointmentRepository = appointmentRepository;
         this.vaccineRepository = vaccineRepository;
         this.clinicRepository = clinicRepository;
+        this.notificationService = notificationService;
     }
 
     @Transactional(rollbackOn = {IOException.class, SQLException.class})
@@ -53,6 +56,7 @@ public class AppointmentService {
         }
         Appointment appointment = new Appointment(patient_id, clinic_id, appointmentDate, slot, AppointmentStatus.BOOKED, vaccines1, currentDate);
         appointmentRepository.save(appointment);
+        notificationService.sendMakeAppointment(appointment);
         return appointment;
     }
 
