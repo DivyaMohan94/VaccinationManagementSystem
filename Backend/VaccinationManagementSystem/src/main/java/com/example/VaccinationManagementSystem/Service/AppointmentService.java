@@ -241,6 +241,41 @@ public class AppointmentService {
         return allDues;
     }
 
+    public Object getHistory(Integer patientId, String currentDate) throws ParseException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.US);
+        Date currDate = dateFormat.parse(currentDate);
+        List<Appointment> pastAppointments = appointmentRepository.getPastAppointments(currDate, patientId);
+        System.out.println("pastAppts:"+pastAppointments.size());
+
+        //completed means administered
+        List<Appointment> pastCompletedAppointments = pastAppointments.stream()
+                .filter(app -> app.getStatus() == AppointmentStatus.COMPLETED).collect(Collectors.toList());
+
+        System.out.println("size completed:"+pastCompletedAppointments.size());
+
+        List<Clinic> allClinics = clinicRepository.findAll();
+
+        final Map<Integer, String> clinicsById = allClinics.stream()
+                .collect(Collectors.toMap(k -> k.getClinicId(), k -> k.getName()));
+
+        List<AppointmentClinic> pastAppts = pastCompletedAppointments.stream().map( a ->
+                new AppointmentClinic(a, clinicsById.get(a.getClinicId()))).collect(Collectors.toList());
+
+        HashMap<String, List<AppointmentClinic>> vaccinationHistory = new HashMap<>();
+        System.out.println("hashmap size"+vaccinationHistory.size());
+
+        for(AppointmentClinic ac : pastAppts){
+            List<Vaccine> vaccinations = ac.getAppointment().getVaccines();
+            for(Vaccine vaccine : vaccinations){
+                String vaccineName = vaccine.getName();
+                if (vaccinationHistory.containsKey(vaccineName)) vaccinationHistory.get(vaccineName).add(ac);
+                vaccinationHistory.putIfAbsent(vaccineName, new LinkedList<>(Arrays.asList(ac)));
+            }
+        }
+
+        return vaccinationHistory;
+    }
+
 //    public Object getHistory(Integer patientId, String currentDate) throws ParseException {
 //
 //        Date cdate = null;
