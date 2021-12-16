@@ -10,10 +10,8 @@ import DialogTitle from "@mui/material/DialogTitle";
 import MenuItem from "@mui/material/MenuItem";
 import Axios from "axios";
 import swal from "sweetalert";
-import { useNavigate } from "react-router";
 
 export default function UpdateModal(props) {
-  const navigate = useNavigate();
   const [row, setRow] = React.useState();
   const [col, setCol] = React.useState();
   console.log(props.reservationId);

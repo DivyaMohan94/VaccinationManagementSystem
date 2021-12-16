@@ -46,7 +46,7 @@ class VaccinationHistoryComponent extends Component {
   };
 
     componentDidMount() {
-      localStorage.setItem("id", 1);
+      // localStorage.setItem("id", 1);
       // localStorage.setItem("currentDate", new Date().toISOString().slice(0, 10));
       console.log("inside Dashboard vacc history ComponentDiMount");
       this.fetchVaccinationHistory();

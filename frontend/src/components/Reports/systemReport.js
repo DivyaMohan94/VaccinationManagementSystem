@@ -20,10 +20,6 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import DesktopDatePicker from "@mui/lab/DesktopDatePicker";
 
-function clearFields(event) {
-  Array.from(event.target).forEach((e) => (e.value = ""));
-}
-
 class SystemReport extends Component {
   constructor(props) {
     super(props);

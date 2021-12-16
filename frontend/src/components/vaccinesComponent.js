@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
 import TextField from "@material-ui/core/TextField";
-import { makeStyles } from "@material-ui/core/styles";
-import { useState } from "react";
 import swal from "sweetalert";
 import Button from "@material-ui/core/Button";
 import URL_VAL from "../utils/backend";
@@ -86,7 +84,7 @@ class VaccineComponent extends Component {
   }
 
   onDurationChange(e) {
-    if (e.target.value.toLowerCase() == "lifetime") {
+    if (e.target.value.toLowerCase() === "lifetime") {
       this.setState({
         duration: -1,
       });
@@ -195,7 +193,7 @@ class VaccineComponent extends Component {
       );
       isValid = false;
     } else if (
-      this.state.shotIntervalVal != "" &&
+      this.state.shotIntervalVal !== "" &&
       !this.state.shotIntervalVal.match(numRejex)
     ) {
       swal(
@@ -214,7 +212,7 @@ class VaccineComponent extends Component {
       isValid = false;
     } else if (
       Number(this.state.numOfShots) > 1 &&
-      this.state.shotIntervalVal == ""
+      this.state.shotIntervalVal === ""
     ) {
       swal(
         "Error",

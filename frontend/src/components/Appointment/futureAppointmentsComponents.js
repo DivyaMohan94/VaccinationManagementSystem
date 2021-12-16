@@ -3,8 +3,6 @@ import axios from "axios";
 import swal from "sweetalert";
 import Button from "@material-ui/core/Button";
 import URL_VAL from "../../utils/backend";
-import Multiselect from "multiselect-react-dropdown";
-import { FormLabel } from "@material-ui/core";
 import "../../utils/colorSchema.css";
 import { computeCurrentDateTime } from "../../utils/utilities";
 
