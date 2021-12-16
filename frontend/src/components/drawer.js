@@ -60,7 +60,7 @@ export default function SidePan() {
                 >
                   Dashboard
                   </ListItem>
-                  {localStorage.getItem('admin') == "true" ? (<>
+                  {localStorage.getItem('admin') === "true" ? (<>
                     <ListItem button component={Link} to="/admin">
                       Admin
                     </ListItem>
