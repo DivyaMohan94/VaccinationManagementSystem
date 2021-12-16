@@ -13,8 +13,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "Vaccine")
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "vaccineId")
+//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
+//        property = "vaccineId")
 public class Vaccine {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

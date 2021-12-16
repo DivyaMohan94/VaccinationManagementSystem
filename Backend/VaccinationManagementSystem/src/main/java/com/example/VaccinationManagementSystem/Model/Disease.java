@@ -7,8 +7,8 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "Disease")
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "diseaseId")
+//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
+//        property = "diseaseId")
 public class Disease {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

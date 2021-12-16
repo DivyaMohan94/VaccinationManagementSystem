@@ -11,8 +11,8 @@ import java.util.Date;
 
 @Entity
 @Table
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "mrn")
+//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
+//        property = "mrn")
 public class Patient {
     @Id
     @TableGenerator(name = "mrnGenerator", initialValue = 100)

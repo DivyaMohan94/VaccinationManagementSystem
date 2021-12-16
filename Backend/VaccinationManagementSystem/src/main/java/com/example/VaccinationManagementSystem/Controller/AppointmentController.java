@@ -38,7 +38,6 @@ public class AppointmentController {
     public @ResponseBody
     Object make_appointment(
             @RequestBody String payload
-            //@RequestParam(value = "vaccines") List<Integer> vaccines
     ) {
         try {
             System.out.println("Inside Appointment Controller");
@@ -62,7 +61,6 @@ public class AppointmentController {
                     vaccineIds.add((Integer) vaccines.get(i));
                 }
             }
-            //List<String> vaccines = (List<String>) appointment.get("vaccine");
             return appointmentService.makeAppointment(patient_id, clinic_id, date, slot, current_date, vaccineIds);
 
         } catch (Exception e) {
@@ -74,7 +72,6 @@ public class AppointmentController {
     public @ResponseBody
     Object update_Appointment(
             @RequestBody String payload
-            //@RequestParam(value = "vaccines") List<Integer> vaccines
     ) {
         try {
             JSONObject appointment = new JSONObject(payload);
@@ -118,11 +115,6 @@ public class AppointmentController {
             @RequestParam(value = "current_date", required = true) String current_date
     ) {
         try {
-
-            System.out.println("Getting past appointments");
-//            JSONObject appointment = new JSONObject(payload);
-//            String date = (String) appointment.get("current_date");
-//            Integer patient_id = (Integer) appointment.get("patient_id");
             return appointmentService.getPastAppointment(patient_id, current_date);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(new ErrorDetail("404", e.getMessage())));
@@ -148,9 +140,6 @@ public class AppointmentController {
     public Object getFutureAppointments( @RequestParam(value = "patient_id", required = true) Integer patient_id,
                                          @RequestParam(value = "current_date", required = true) String current_date) {
         try {
-//            JSONObject appointment = new JSONObject(payload);
-//            String date = (String) appointment.get("current_date");
-//            Integer patient_id = (Integer) appointment.get("patient_id");
             return appointmentService.getFutureAppointment(patient_id, current_date);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(new ErrorDetail("404", e.getMessage())));
@@ -161,9 +150,6 @@ public class AppointmentController {
     public Object getCheckinAppointments(@RequestParam(value = "patient_id", required = true) Integer patient_id,
                                          @RequestParam(value = "current_date", required = true) String current_date) {
         try {
-//            JSONObject appointment = new JSONObject(payload);
-//            String date = (String) appointment.get("current_date");
-//            Integer patient_id = (Integer) appointment.get("patient_id");
             return appointmentService.getCheckinAppointment(patient_id, current_date);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(new ErrorDetail("404", e.getMessage())));

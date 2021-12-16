@@ -10,8 +10,8 @@ import java.util.Date;
 
 @Entity
 @Table(name = "Clinic")
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "clinicId")
+//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
+//        property = "clinicId")
 public class Clinic {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
