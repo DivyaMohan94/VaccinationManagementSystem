@@ -5,7 +5,7 @@ import Landing from "./pages/landing";
 import Login from "./pages/login";
 import Admin from "./pages/Admin";
 import Report from "./pages/Report";
-import Dashboard from "./components/Dashboard/dashboard";
+import Dashboard from "./pages/Dashboard";
 import FutureAppointmentComponent from "./components/Appointment/futureAppointmentsComponents";
 import AppointmentComponent from './pages/Appointment'
 
