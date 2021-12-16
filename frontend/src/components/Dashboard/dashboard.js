@@ -3,7 +3,7 @@ import axios from "axios";
 import URL_VAL from "../../utils/backend";
 import '../../utils/colorSchema.css';
 import { computeCurrentDateTime } from '../../utils/utilities';
-
+import moment from "moment";
 class DashboardComponent extends Component {
   constructor(props) {
     super(props);
@@ -54,19 +54,11 @@ class DashboardComponent extends Component {
   }
 
   handleVaccineDate = (dateString) => {
-    const dt = new Date(dateString).toDateString();
-    const d = `${`${dt.split(" ")[1]} ${dt.split(" ")[2]}, ${
-      dt.split(" ")[3]
-    }`}`;
-    return d;
+    return moment(dateString).format("DD-MM-YYYY");
   };
 
   handleApptDate = (dateString) => {
-    const dt = new Date(dateString.slice(0,10)).toDateString();
-    const d = `${`${dt.split(" ")[1]} ${dt.split(" ")[2]}, ${
-      dt.split(" ")[3]
-    }`}`;
-    return d;
+    return moment(dateString.slice(0,10)).format("DD-MM-YYYY");
   };
 
   fetchDashboardData = () => {

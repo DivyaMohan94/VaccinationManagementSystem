@@ -96,11 +96,25 @@ public class ClinicService {
 
     public List<LocalTime> getAllSlots() {
         List<LocalTime> totalSlotList = new LinkedList<>();
-        LocalTime temp = Clinic.getEarliestStartTime();
-        while(temp.isBefore(Clinic.getLatestEndTime())){
-            totalSlotList.add(temp);
-            temp = temp.plusMinutes(15L);
+        List<Clinic> allclinics = clinicRepository.findAll();
+
+        if(allclinics.size() > 0) {
+            Clinic.setEarliestStartTime(allclinics.get(0).getStartTime());
+            Clinic.setLatestEndTime(allclinics.get(0).getEndTime());
+
+            for (Clinic c : allclinics) {
+                if (c.getStartTime().isBefore(Clinic.getEarliestStartTime()))
+                    Clinic.setEarliestStartTime(c.getStartTime());
+                if (c.getEndTime().isAfter(Clinic.getLatestEndTime())) Clinic.setLatestEndTime(c.getEndTime());
+            }
+
+            LocalTime temp = Clinic.getEarliestStartTime();
+            while (temp.isBefore(Clinic.getLatestEndTime())) {
+                totalSlotList.add(temp);
+                temp = temp.plusMinutes(15L);
+            }
         }
+
         return totalSlotList;
     }
 

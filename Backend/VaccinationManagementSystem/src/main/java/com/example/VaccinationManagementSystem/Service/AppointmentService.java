@@ -66,15 +66,16 @@ public class AppointmentService {
         Appointment appointment = appointmentRepository.findById(appointmentId).get();
         if (!clinic_id.equals(appointment.getClinicId())) appointment.setClinicId(clinic_id);
         Date appointmentDate = null;
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss", Locale.US);
-        appointmentDate = dateFormat.parse(date);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH:mm", Locale.US);
+        String datetime = date + "-" + slot.toString();
+        appointmentDate = dateFormat.parse(datetime);
         if (!appointmentDate.equals(appointment.getDate())) appointment.setDate(appointmentDate);
         if (!slot.equals(appointment.getSlot())) appointment.setSlot(slot);
         List<Vaccine> vaccines1 = new ArrayList<>();
         for (int i = 0; i < vaccines.size(); i++) {
             vaccines1.add(vaccineRepository.findById(vaccines.get(i)).get());
         }
-        System.out.println("Inside update Appointment service+++++" + appointment);
+        appointment.setVaccines(vaccines1);
         return appointment;
     }
 
@@ -138,13 +139,17 @@ public class AppointmentService {
     @Transactional(rollbackOn = {IOException.class, SQLException.class})
     public Object getCheckinAppointment(Integer patient_id, String current_date) throws ParseException {
         Date cdate = null;
+        List<Integer> eligibleAppointments = new ArrayList<>();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyy-MM-dd-HH-mm-ss", Locale.US);
         cdate = dateFormat.parse(current_date);
         Calendar cal = Calendar.getInstance(); // creates calendar
         cal.setTime(cdate);               // sets calendar time/date
         cal.add(Calendar.HOUR_OF_DAY, 24);      // adds 24 hour
         List<Appointment> appointments = appointmentRepository.getCheckinAppointments(cdate, cal.getTime(), patient_id);
-        return appointments;
+        for(Appointment a : appointments){
+            eligibleAppointments.add(a.getAppointmentId());
+        }
+        return eligibleAppointments;
     }
 
     @Transactional(rollbackOn = {IOException.class, SQLException.class})

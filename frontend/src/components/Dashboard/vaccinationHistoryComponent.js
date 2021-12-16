@@ -3,6 +3,7 @@ import axios from "axios";
 import URL_VAL from "../../utils/backend";
 import "../../utils/colorSchema.css";
 import moment from "moment";
+import {computeCurrentDateTime} from "../../utils/utilities";
 
 class VaccinationHistoryComponent extends Component {
   constructor(props) {
@@ -13,16 +14,12 @@ class VaccinationHistoryComponent extends Component {
   }
 
   handleApptDate = (dateString) => {
-    const dt = new Date(dateString.slice(0, 10)).toDateString();
-    const d = `${dt.split(" ")[1]} ${dt.split(" ")[2]}, ${dt.split(" ")[3]}`;
-    return d;
+    return moment(dateString.slice(0,10)).format("DD-MM-YYYY");
   };
 
   fetchVaccinationHistory = () => {
     let currentDate = localStorage.getItem("currentDate");
-    //add time here to hardcoded string
-    let formatString = "-00-00-00";
-    currentDate += formatString;
+    currentDate = computeCurrentDateTime(currentDate);
 
     axios({
       url: `${URL_VAL}/appointment/history`,
