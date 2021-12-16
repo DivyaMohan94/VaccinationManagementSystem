@@ -32,7 +32,7 @@ class DashboardComponent extends Component {
       //     dueDate: "2021-12-13T18:30:00.000+00:00",
       //     vaccineId: 3,
       //   },
-      // ]
+      // ],
       futureAppointments: [],
       // [
       // {
@@ -132,7 +132,6 @@ class DashboardComponent extends Component {
     const { vaccinationsDue, futureAppointments } = this.state;
     return (
       <>
-        <Navbar />
         <div className="container mt-4 textFont" style={{ width: "900px" }}>
           <div className="row d-flex justify-content-center  mb-4">
             <h3 className="headingPadding">
