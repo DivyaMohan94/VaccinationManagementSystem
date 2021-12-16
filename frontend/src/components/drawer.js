@@ -59,10 +59,13 @@ export default function SidePan() {
                   to="/dashboard"
                 >
                   Dashboard
-                </ListItem>
-                <ListItem button component={Link} to="/admin">
-                  Admin
-                </ListItem>
+                  </ListItem>
+                  {localStorage.getItem('admin') == "true" ? (<>
+                    <ListItem button component={Link} to="/admin">
+                      Admin
+                    </ListItem>
+                    </>):(<></>)
+                  }
                 <ListItem button component={Link} to="/appointment">
                   Appointment
                 </ListItem>

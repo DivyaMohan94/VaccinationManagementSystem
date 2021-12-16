@@ -14,6 +14,8 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import '../../utils/colorSchema.css';
+import moment from "moment";
 
 class VaccinationHistoryComponent extends Component {
   constructor(props) {
@@ -94,30 +96,58 @@ class VaccinationHistoryComponent extends Component {
                 <b>VACCINATION HISTORY</b>
               </h3>
             </div>
-            <div className="row d-flex justify-content-center">
-              <div className="col">Vaccine</div>
-              <div className="col">Number of Shots</div>
-              <div className="col">Appointment Details</div>
-            </div>
-            {history.map((v) => (
-              <div className="row d-flex justify-content-center">
-                <div className="col">{v.vaccine}</div>
-                <div className="col">{v.appointmentsCount}</div>
-                <div className="col">
-                  {v.appointments.map((app) => (
-                    <>
-                      <div className="row">
-                        <div className="col-4">
-                          {app.appointment.appointment_date}
-                        </div>
-                        <div className="col">{app.appointment.slot}</div>
-                        <div className="col">{app.clinicName}</div>
-                      </div>
-                    </>
-                  ))}
+            <h4>
+              <div className="row d-flex justify-content-center headingBackground pb-2 pt-2">
+                <div className="col-2 pb-2 border-right">Vaccine</div>
+                <div className="col-3 pb-2 border-right">Number of Shots</div>
+                <div className="col ">
+                  <div
+                    className="row pb-2"
+                    style={{ justifyContent: "center" }}
+                  >
+                    Appointment Details
+                  </div>
+                  <div className="row">
+                    <div className="col">Date</div>
+                    <div className="col">Slot</div>
+                    <div className="col">Clinic Name</div>
+                  </div>
                 </div>
               </div>
-            ))}
+              {history.length ? (
+                history.map((v) => (
+                  <>
+                    <div className="row d-flex justify-content-center">
+                      <div className="col-2">{v.vaccine}</div>
+                      <div className="col-3">{v.appointmentsCount}</div>
+                      <div className="col">
+                        {v.appointments.map((app) => (
+                          <>
+                            <div className="row">
+                              <div className="col-4">
+                                {moment(
+                                  app.appointment.appointment_date.slice(0, 10)
+                                ).format("DD/MM/YYYY")}
+                              </div>
+                              <div className="col">{app.appointment.slot}</div>
+                              <div className="col">{app.clinicName}</div>
+                            </div>
+                          </>
+                        ))}
+                      </div>
+                    </div>
+                    <br />
+                  </>
+                ))
+              ) : (
+                <>
+                  <div className="m-5 centerAlign">
+                    {" "}
+                    <b>No Vaccination History Available.</b>
+                  </div>
+                </>
+              )}
+            </h4>
             <br />
             <div />
           </div>

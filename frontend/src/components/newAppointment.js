@@ -11,7 +11,7 @@ import { FormLabel, FormControl } from "@material-ui/core";
 import Select from "rc-time-picker/lib/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { DropdownButton, Dropdown, Form } from "react-bootstrap";
-import { computeCurrentDateTime } from '../utils/utilities';
+import { computeCurrentDateTime } from '../utils/utilities'
 
 function clearFields(event) {
   Array.from(event.target).forEach((e) => (e.value = ""));
@@ -200,6 +200,18 @@ class NewAppointmentComponent extends Component {
   }
 
   render() {
+    let nextYear = new Date(localStorage.getItem('currentDate'));
+    const dd = nextYear.getDate();
+    const mm = nextYear.getMonth() + 1;
+    const yyyy = nextYear.getUTCFullYear() + 1;
+    if (dd < 10) {
+      dd = "0" + dd;
+    }
+    if (mm < 10) {
+      mm = "0" + mm;
+    }
+    const today = nextYear.getUTCFullYear() + "-" + mm + "-" + dd;
+    nextYear = yyyy + "-" + mm + "-" + dd;
     return (
       <>
         <form noValidate onSubmit={this.handleSubmit}>
@@ -209,6 +221,8 @@ class NewAppointmentComponent extends Component {
             </div>
             <div style={{ width: "1000px" }}>
               <input
+                max={nextYear}
+                min={today}
                 type="date"
                 onInputCapture={(e) => this.onDateChange(e)}
               ></input>

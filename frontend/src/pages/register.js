@@ -117,7 +117,7 @@ export default function Login() {
             localStorage.setItem("language", response.data.language);
             localStorage.setItem("id", response.data._id);
 
-            navigate("/home");
+            navigate("/dashboard");
           } else if (response.status === 400) {
             setErrorMessage(response.data.message);
             swal("Error", errorMessage, "error", {

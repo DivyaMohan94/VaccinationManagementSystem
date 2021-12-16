@@ -17,6 +17,7 @@ import { ListItemText } from "@mui/material";
 import SidePan from "./drawer";
 import BadgeIcon from "@mui/icons-material/Badge";
 import CurrentDateSelectorComponent from "./currentDateSelectorComponent";
+import moment from "moment";
 
 export default function Navbar() {
   const [auth, setAuth] = React.useState(true);
@@ -37,6 +38,10 @@ export default function Navbar() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const calculateCurrentSelectedTime = () => {
+    const currSelectedTime =new Date(localStorage.getItem("currentDate")).toDateString;
+  }
 
   return (
     <>
@@ -115,7 +120,29 @@ export default function Navbar() {
               )}
             </Menu>
           </Toolbar>
-          <CurrentDateSelectorComponent/>
+          <div
+            className="row"
+            style={{
+              color: "white",
+              marginRight: "100px",
+              justifyContent: "end",
+            }}
+          >
+            {`Current Real Date: ${new Date().toLocaleDateString()}`}
+            <br />
+            {`Current Real Time: ${new Date().toLocaleTimeString()}`}
+            <br />
+            {`Selected Current Date: ${moment(localStorage.getItem("currentDate")).format(
+              "MM/DD/YYYY"
+            )}`}
+          </div>
+          {/* <div
+            class="row"
+            style="color: white;margin-right: 100px;justify-content: end;"
+          >
+            {`Current Real Time: ${new Date().toISOString()}`}
+          </div> */}
+          <CurrentDateSelectorComponent />
         </AppBar>
       </Box>
     </>
