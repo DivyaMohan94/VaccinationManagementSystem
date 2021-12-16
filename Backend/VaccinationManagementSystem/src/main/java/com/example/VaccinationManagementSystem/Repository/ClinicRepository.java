@@ -11,5 +11,4 @@ import java.util.Optional;
 @Repository
 public interface ClinicRepository extends JpaRepository<Clinic, Integer> {
     Optional<Clinic> findClinicByName(String name);
-
 }

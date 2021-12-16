@@ -10,7 +10,6 @@ import { computeCurrentDateTime } from '../utils/utilities'
 function clearFields(event) {
   Array.from(event.target).forEach((e) => (e.value = ""));
 }
-
 class NewAppointmentComponent extends Component {
   constructor(props) {
     super(props);
@@ -27,13 +26,11 @@ class NewAppointmentComponent extends Component {
   }
 
   onDateChange(e) {
-    console.log("hitting this date", e);
     this.setState({
       appointment_date: e.target.value,
     });
   }
   async onSlotChange(e) {
-    console.log("hitting this", e);
     await this.setState({
       slot: e.target.value,
     });
@@ -67,7 +64,6 @@ class NewAppointmentComponent extends Component {
   }
 
   async componentDidMount() {
-    console.log("inside did");
     await axios.get(`${URL_VAL}/clinic/slots`).then((response) => {
       console.log("Status Code : ", response.status);
       console.log("Status Code : ", response.data);
@@ -78,7 +74,6 @@ class NewAppointmentComponent extends Component {
             allslots: response.data,
           });
         }
-        console.log("slots are there : ", this.state.allslots);
       }
     });
     let currentDate = localStorage.getItem("currentDate");
@@ -151,13 +146,10 @@ class NewAppointmentComponent extends Component {
             });
             clearFields(e);
             console.log(
-              "this.state.selectedListVal----",
               this.state.selectedListVal
             );
             window.location.reload(false);
-            //this.onRemove(this.state.selectedListVal)
           } else {
-            console.log(response);
             swal("Error", "Some error occured", "error", {
               dangerMode: true,
             });
@@ -169,7 +161,6 @@ class NewAppointmentComponent extends Component {
           swal("Error", errObj.badRequest.msg, "error", {
             dangerMode: true,
           });
-          //console.log(errorMessage);
         });
     }
   };

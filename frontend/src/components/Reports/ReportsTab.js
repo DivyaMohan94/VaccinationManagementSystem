@@ -6,10 +6,8 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import SystemReport from "../Reports/systemReport";
 import PerPersonReport from "../Reports/perPersonReport";
-
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
-
   return (
     <div
       role="tabpanel"

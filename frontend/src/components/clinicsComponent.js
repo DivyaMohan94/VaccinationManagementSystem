@@ -13,7 +13,6 @@ import moment from "moment";
 function clearFields(event) {
   Array.from(event.target).forEach((e) => (e.value = ""));
 }
-
 class ClinicComponent extends Component {
   constructor(props) {
     super(props);
@@ -99,10 +98,7 @@ class ClinicComponent extends Component {
   };
 
   componentDidMount() {
-    console.log("inside did");
     axios.get(`${URL_VAL}/disease/diseases`).then((response) => {
-      console.log("Status Code : ", response.status);
-      console.log("Status Code : ", response.data);
       if (response.status === 200) {
         console.log(response.data);
         if (response.data.length > 0) {
@@ -144,7 +140,6 @@ class ClinicComponent extends Component {
         },
         numberOfPhysicians: this.state.numberOfPhysicians,
       };
-      console.log(payload);
 
       await axios
         .post(`${URL_VAL}/clinic`, payload)
@@ -165,7 +160,6 @@ class ClinicComponent extends Component {
           swal("Error", errObj.badRequest.msg, "error", {
             dangerMode: true,
           });
-          //console.log(errorMessage);
         });
     }
   };

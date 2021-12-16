@@ -7,7 +7,6 @@ import IconButton from "@mui/material/IconButton";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import LoginIcon from "@mui/icons-material/Login";
 import LogoutIcon from "@mui/icons-material/Logout";
-import HowToRegIcon from "@mui/icons-material/HowToReg";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
@@ -102,14 +101,6 @@ export default function Navbar() {
                       <Link to="/login">Login</Link>
                     </ListItemText>
                   </MenuItem>
-                  {/*<MenuItem>
-                    <ListItemIcon>
-                      <HowToRegIcon />
-                    </ListItemIcon>
-                    <ListItemText>
-                      <Link to="/register">Sign-Up</Link>
-                    </ListItemText>
-                 </MenuItem>*/}
                 </>
               )}
             </Menu>
@@ -137,12 +128,6 @@ export default function Navbar() {
               <></>
             )}
           </div>
-          {/* <div
-            class="row"
-            style="color: white;margin-right: 100px;justify-content: end;"
-          >
-            {`Current Real Time: ${new Date().toISOString()}`}
-          </div> */}
         </AppBar>
       </Box>
     </>

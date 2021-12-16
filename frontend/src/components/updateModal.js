@@ -14,7 +14,6 @@ import swal from "sweetalert";
 export default function UpdateModal(props) {
   const [row, setRow] = React.useState();
   const [col, setCol] = React.useState();
-  console.log(props.reservationId);
   const reservation = props.reservationId;
   const updateReservation = async () => {
     await Axios.post("/reservation/modify", {

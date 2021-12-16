@@ -6,10 +6,8 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import DashboardMain from "../components/Dashboard/dashboard";
 import HistoryComponent from "../components/Dashboard/vaccinationHistoryComponent";
-
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
-
   return (
     <div
       role="tabpanel"

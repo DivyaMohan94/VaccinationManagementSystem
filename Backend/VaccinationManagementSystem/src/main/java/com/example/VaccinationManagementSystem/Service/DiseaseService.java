@@ -34,10 +34,8 @@ public class DiseaseService {
             Disease disease = diseaseRepository.findById(diseaseId).get();
             if(name != null && name.length() != 0 && name != disease.getName()) disease.setName(name);
             if(description != null && description.length() != 0 && description != disease.getDescription()) disease.setDescription(description);
-
             diseaseRepository.save(disease);
             return disease;
-
         }else{
             throw new IllegalStateException("Sorry, the requested disease with " + diseaseId + " does not exist.");
         }

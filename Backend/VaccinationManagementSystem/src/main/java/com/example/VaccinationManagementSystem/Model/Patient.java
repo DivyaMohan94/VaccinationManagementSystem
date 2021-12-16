@@ -11,20 +11,12 @@ import java.util.Date;
 
 @Entity
 @Table
-//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
-//        property = "mrn")
 public class Patient {
     @Id
     @TableGenerator(name = "mrnGenerator", initialValue = 100)
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
             generator = "mrnGenerator")
-//    @GeneratedValue(
-//            generator = "MrnGenerator.id"
-//    )
-//    @GenericGenerator(
-//            name = "MrnGenerator.id", strategy = "com.example.VaccinationManagementSystem.Model.MrnGenerator"
-//    )
     private Integer mrn;
     private String emailId;
     private String fname;
@@ -50,95 +42,71 @@ public class Patient {
         this.isAdmin = isAdmin;
         this.address = address;
     }
-
     public Patient() {
-
     }
-
     public Integer getMrn() {
         return mrn;
     }
-
     public void setMrn(Integer mrn) {
         this.mrn = mrn;
     }
-
     public String getEmailId() {
         return emailId;
     }
-
     public void setEmailId(String emailId) {
         this.emailId = emailId;
     }
-
     public String getFname() {
         return fname;
     }
-
     public void setFname(String fname) {
         this.fname = fname;
     }
-
     public String getMname() {
         return mname;
     }
-
     public void setMname(String mname) {
         this.mname = mname;
     }
-
     public String getLname() {
         return lname;
     }
-
     public void setLname(String lname) {
         this.lname = lname;
     }
-
     public Date getDob() {
         return dob;
     }
-
     public void setDob(Date dob) {
         this.dob = dob;
     }
-
     public String getGender() {
         return gender;
     }
-
     public void setGender(String gender) {
         this.gender = gender;
     }
-
     public boolean isAdmin() {
         return isAdmin;
     }
-
     public void setAdmin(boolean admin) {
         isAdmin = admin;
     }
-
     public Address getAddress() {
         return address;
     }
-
     public void setAddress(Address address) {
         this.address = address;
     }
-
     public String getStatus() {
         return status;
     }
-
     public void setStatus(String status) {
         this.status = status;
     }
-
     public String getPassword() {
         return password;
     }
-
     public void setPassword(String password) {
         this.password = password;
     }

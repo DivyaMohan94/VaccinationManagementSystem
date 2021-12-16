@@ -32,7 +32,6 @@ export default function DiseaseComponent() {
   }
 
   const handleSubmit = async (e) => {
-      console.log(URL_VAL);
     e.preventDefault();
     if (diseaseName === "" || description === "") {
       swal("Error", "Enter Details to add disease", "error", {

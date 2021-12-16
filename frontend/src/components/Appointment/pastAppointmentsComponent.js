@@ -10,26 +10,6 @@ class PastAppointmentComponent extends Component {
     super(props);
     this.state = {
       pastAppointments: [],
-      //   [
-      //   {
-      //     apptSlot: "9:10",
-      //     apptDate: "2021-03-01",
-      //     apptVaccines: ["a", "b", "c"],
-      //     apptId: 2,
-      //   },
-      //   {
-      //     apptSlot: "10:15",
-      //     apptDate: "2021-03-01",
-      //     apptVaccines: ["a"],
-      //     apptId: 1,
-      //   },
-      //   {
-      //     apptSlot: "01:20",
-      //     apptDate: "2021-03-01",
-      //     apptVaccines: ["a", "b"],
-      //     apptId: 3,
-      //   },
-      // ],
     };
   }
 
@@ -40,12 +20,9 @@ class PastAppointmentComponent extends Component {
   handleAppointmentVaccines = (vaccineList) => {
     return <>{vaccineList.map((v) => `${v.name}, `)}</>;
   };
-
   componentDidMount() {
     let currentDate = localStorage.getItem("currentDate");
     currentDate = computeCurrentDateTime(currentDate);
-    console.log("returned date" + currentDate);
-
     const data = {
       patient_id: parseInt(localStorage.getItem("mrn")),
       current_date: currentDate,
@@ -57,11 +34,8 @@ class PastAppointmentComponent extends Component {
       data: null,
       params: data,
     }).then((response) => {
-			console.log(response.status);
-			console.log(response.data);
       if (response.status === 200) {
         if (response.data.length > 0) {
-          console.log(response.data);
           this.setState({
             pastAppointments: response.data,
           });

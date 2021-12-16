@@ -14,10 +14,6 @@ const useStyles = makeStyles((theme) => ({
     colorText: {
         color: '#614E42',
     },    
-    // title: {
-    //     color: '#DD8042',
-    //     fontSize: '2.5rem'              
-    // },
 }));
 export default function LandingComponent() {
     const classes = useStyles();

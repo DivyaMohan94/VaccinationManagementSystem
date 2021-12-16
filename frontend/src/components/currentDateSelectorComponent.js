@@ -5,11 +5,9 @@ class CurrentDateSelectorComponent extends Component {
     super(props);
     this.state = {};
   }
-
   handleCurrentDateSelection = (e) => {
     localStorage.setItem("currentDate", e.target.value);
   };
-
   render() {
     let nextYear = new Date();
     let dd = nextYear.getDate();
@@ -23,7 +21,6 @@ class CurrentDateSelectorComponent extends Component {
     }
     const today = nextYear.getUTCFullYear() + "-" + mm + "-" + dd;
     nextYear = yyyy + "-" + mm + "-" + dd;
-
         return (
       <>
         <div
