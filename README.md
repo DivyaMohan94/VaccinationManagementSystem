@@ -1,10 +1,10 @@
 # CMPE275_GroupProject
 Team Members:
 
-Varsha Suresh (015245347, varsha.suresh@sjsu.edu)
-Lasya Bheemendra Nalini (014618695, lasyabheemendra.nalini@sjsu.edu)
-Divya Mohan (015213419, divya.mohan@sjsu.edu)
-Jayant Prakash (015276521, jayant.prakash@sjsu.edu)
+* Varsha Suresh (015245347, varsha.suresh@sjsu.edu)
+* Lasya Bheemendra Nalini (014618695, lasyabheemendra.nalini@sjsu.edu)
+* Divya Mohan (015213419, divya.mohan@sjsu.edu)
+* Jayant Prakash (015276521, jayant.prakash@sjsu.edu)
 
 URL for app access:
 http://204.236.141.230:3000/
