@@ -19,19 +19,19 @@ Prerequisites:
 2. Java version greater than 8, recommended Amazon Corretto 11.
 3. Node is installed (latest version)
 4. Npm is installed (latest version)
+
 How to run the application:
 Backend:
-Unzip CMPE275_GroupProject-main.zip.
-Open in IntelliJ the directory VaccinationManagementSystem to run the backend server.
-Wait for the Maven project to be installed with all its dependencies.
-Navigate to src/main/java/com/example/VaccinationManagementSystem
-Run VaccinationManagementSystemApplication class.
-
+1. Unzip CMPE275_GroupProject-main.zip.
+2. Open in IntelliJ the directory VaccinationManagementSystem to run the backend server.
+3. Wait for the Maven project to be installed with all its dependencies.
+4. Navigate to src/main/java/com/example/VaccinationManagementSystem
+5. Run VaccinationManagementSystemApplication class.
 
 Frontend: run below commands to access the web application
-Cd frontend
-Run npm install
-Npm start
+1. Cd frontend
+2. Run npm install
+3. Npm start
 
 This runs the backend on localhost:8080 and frontend on localhost:3000.
 Navigate to localhost:3000 on your browser to work with the app. 
